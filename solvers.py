@@ -134,19 +134,34 @@ for i in range(n ** 2):
 class Candidate():
     '''Sudoku puzzle candidate collection.'''
 
-    def __init__(self, candidates):
-        '''(Candidate, {(int, int): set of ints}) -> None
-        Precondition: ints in (int, int) are from 0 to n ** 2 - 1
-        inclusive; ints in values are from 1 to n ** 2 inclusive.
+    def __init__(self, candidates, n = 3):
+        '''(Candidate, {(int, int): set of objects}, int) -> None
+
+        Precondition: 
+        1. ints in "(int, int)" are from 0 to n ** 2 - 1 
+        inclusive, where n is a Sudoku class attribute or a user-defined
+        integer.
+        2. objects in "set of values" are elements of one_to_n_sq, one of 
+        Sudoku class attributes.
+
         Initialize Candidate object.
+        
+        >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg = Candidate(eg)
         '''
 
         self.show = candidates
-
+        self.n = n
+    
 
     def __getitem__(self, key):
-        '''(Candidate, (int, int)) -> set of ints
+        '''(Candidate, (int, int)) -> set of objects
+
         Return the value of self at key.
+
+        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg[(0, 1)]
+        {1, 2, 4}
         '''
 
         return self.show[key]
@@ -154,33 +169,342 @@ class Candidate():
 
     def __eq__(self, other):
         '''(Candidate, Candidate) -> bool
-        Return True iff keys and values of each keys match between
+
+        Return True iff keys and values of each key matches between
         self and other.
+
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg2 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg3 = Candidate({(0, 1): {1, 2, 7}, (0, 3): {6, 8}})
+        >>> eg1 == eg2
+        True
+        >>> eg1 == eg3
+        False
         '''
 
         return self.show == other.show
 
 
+    def __repr__(self):
+        '''(Candidate) -> str
+
+        Return the Candidate representation of self.
+
+        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg
+        Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        '''
+
+        return 'Candidate({0})'.format(self.show)
+
+
+    def __setitem__(self, key, value):
+        '''(Candidate, (int, int), set of objects) -> None
+
+        Assign value to key that either already exists in self, or 
+        initialize key with value if key doesn't already
+        exist.
+
+        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg[(1, 2)] = {7}
+        >>> eg
+        Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {7}})
+        >>> eg[(0, 1)] = {1}
+        >>> eg
+        Candidate({(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}})
+        '''
+
+        self.show[key] = value
+
+
     def copy(self):
         '''(Candidate) -> Candidate
-        
+
         Return the copy of self.
         '''
 
-        return self.show.copy()
+        copied = {}
+        for k, v in self.items():
+            copied[k] = v.copy()
+        return Candidate(copied.copy(), n = self.n)
 
-
+    
     def group(self, by):
-        '''(Candidate, str) -> {int: {(int, int): set of int}}
+        '''(Candidate, str) -> {int: Candidate}
+
         Precondition: by == 'submatrix' or 'row' or 'col'
-        Return the candidate values grouped by 'by', which is either 
-        'submatrix', 'row', or 'col'.       
+
+        Return the candidate values grouped by 'by', which is either
+        'submatrix', 'row', or 'col'.
+
+        >>> eg = Candidate({
+                (0, 0): {'4', '9', '7', '5', '1'}, 
+                (0, 1): {'5', '4'}, 
+                (0, 2): {'9', '1', '7'}, 
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'3', '8'}, 
+                (0, 6): {'1', '3', '5'}, 
+                (0, 7): {'5', '7', '3'}, 
+                (0, 8): {'1', '3', '5'}, 
+                (1, 2): {'2'}, 
+                (1, 6): {'5'}, 
+                (2, 0): {'2', '1', '7'}, 
+                (2, 2): {'2', '1', '7'}, 
+                (2, 4): {'3'}, 
+                (2, 7): {'2', '7', '3'}, 
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'2', '8', '6'}, 
+                (3, 4): {'5', '7', '8', '6'}, 
+                (3, 6): {'5', '8', '6'}, 
+                (3, 7): {'5', '8', '6'}, 
+                (4, 0): {'3', '6'}, 
+                (4, 2): {'3', '8', '6'}, 
+                (4, 4): {'5', '8', '6'}, 
+                (4, 6): {'9', '8', '5', '3', '6'}, 
+                (4, 7): {'5', '3', '8', '6'}, 
+                (5, 0): {'3', '6', '4'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}, 
+                (5, 8): {'9', '3'}, 
+                (6, 0): {'9', '1', '5', '3', '6', '2'}, 
+                (6, 1): {'2', '8', '5'}, 
+                (6, 3): {'2', '8'}, 
+                (6, 4): {'3', '8'}, 
+                (6, 5): {'3', '8'}, 
+                (6, 7): {'8', '5', '3', '6', '2'}, 
+                (6, 8): {'9', '2', '5', '3', '1'}, 
+                (7, 0): {'9', '2', '3', '6', '1'}, 
+                (7, 1): {'2', '8'}, 
+                (7, 2): {'9', '1', '8', '3', '6', '2'}, 
+                (7, 4): {'3', '8', '4'}, 
+                (7, 6): {'9', '8', '3', '6', '1'}, 
+                (7, 7): {'4', '8', '3', '6', '2'}, 
+                (7, 8): {'9', '1', '3', '2'}, 
+                (8, 0): {'5', '7', '3', '2'}, 
+                (8, 1): {'2', '8', '5'}, 
+                (8, 2): {'2', '7', '8', '3'}, 
+                (8, 6): {'5', '3', '8'}, 
+                (8, 7): {'4', '8', '5', '3', '2'}, 
+                (8, 8): {'2', '3', '5'}
+            })
+        >>> eg.group(by = 'submatrix')
+        {
+            1: Candidate({
+                (0, 0): {'7', '4', '1', '9', '5'}, 
+                (0, 1): {'4', '5'}, 
+                (0, 2): {'9', '1', '7'}, 
+                (1, 2): {'2'}, 
+                (2, 0): {'1', '2', '7'}, 
+                (2, 2): {'1', '2', '7'}
+            }), 
+            2: Candidate({
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'8', '3'}, 
+                (2, 4): {'3'}
+            }), 
+            3: Candidate({
+                (0, 6): {'1', '3', '5'}, 
+                (0, 7): {'3', '5', '7'}, 
+                (0, 8): {'1', '3', '5'}, 
+                (1, 6): {'5'}, 
+                (2, 7): {'2', '3', '7'}
+            }), 
+            4: Candidate({
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'8', '2', '6'}, 
+                (4, 0): {'6', '3'}, 
+                (4, 2): {'6', '8', '3'}, 
+                (5, 0): {'4', '6', '3'}
+            }), 
+            5: Candidate({
+                (3, 4): {'8', '6', '5', '7'}, 
+                (4, 4): {'8', '6', '5'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}
+            }), 
+            6: Candidate({
+                (3, 6): {'8', '6', '5'}, 
+                (3, 7): {'8', '6', '5'}, 
+                (4, 6): {'3', '9', '8', '6', '5'}, 
+                (4, 7): {'6', '8', '3', '5'}, 
+                (5, 8): {'9', '3'}
+            }), 
+            7: Candidate({
+                (6, 0): {'3', '1', '2', '9', '6', '5'}, 
+                (6, 1): {'8', '2', '5'}, 
+                (7, 0): {'3', '1', '2', '9', '6'}, 
+                (7, 1): {'8', '2'}, 
+                (7, 2): {'3', '1', '2', '9', '8', '6'}, 
+                (8, 0): {'2', '3', '5', '7'}, 
+                (8, 1): {'8', '2', '5'}, 
+                (8, 2): {'8', '2', '3', '7'}
+            }), 
+            8: Candidate({
+                (6, 3): {'8', '2'}, 
+                (6, 4): {'8', '3'}, 
+                (6, 5): {'8', '3'}, 
+                (7, 4): {'4', '8', '3'}
+            }), 
+            9: Candidate({
+                (6, 7): {'3', '2', '8', '6', '5'}, 
+                (6, 8): {'3', '1', '2', '9', '5'}, 
+                (7, 6): {'3', '1', '9', '8', '6'}, 
+                (7, 7): {'3', '4', '2', '8', '6'}, 
+                (7, 8): {'9', '1', '2', '3'}, 
+                (8, 6): {'8', '3', '5'}, 
+                (8, 7): {'3', '4', '2', '8', '5'}, 
+                (8, 8): {'2', '3', '5'}
+            })
+        }
+        >>> eg.group(by = 'row')
+        {
+            0: Candidate({
+                (0, 0): {'7', '4', '1', '9', '5'}, 
+                (0, 1): {'4', '5'}, 
+                (0, 2): {'9', '1', '7'}, 
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'8', '3'}, 
+                (0, 6): {'1', '3', '5'}, 
+                (0, 7): {'3', '5', '7'}, 
+                (0, 8): {'1', '3', '5'}
+            }), 
+            1: Candidate({
+                (1, 2): {'2'}, 
+                (1, 6): {'5'}
+            }), 
+            2: Candidate({
+                (2, 0): {'1', '2', '7'}, 
+                (2, 2): {'1', '2', '7'}, 
+                (2, 4): {'3'}, 
+                (2, 7): {'2', '3', '7'}
+            }), 
+            3: Candidate({
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'8', '2', '6'}, 
+                (3, 4): {'8', '6', '5', '7'}, 
+                (3, 6): {'8', '6', '5'}, 
+                (3, 7): {'8', '6', '5'}
+            }), 
+            4: Candidate({
+                (4, 0): {'6', '3'}, 
+                (4, 2): {'6', '8', '3'}, 
+                (4, 4): {'8', '6', '5'}, 
+                (4, 6): {'3', '9', '8', '6', '5'}, 
+                (4, 7): {'6', '8', '3', '5'}
+            }), 
+            5: Candidate({
+                (5, 0): {'4', '6', '3'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}, 
+                (5, 8): {'9', '3'}
+            }), 
+            6: Candidate({
+                (6, 0): {'3', '1', '2', '9', '6', '5'}, 
+                (6, 1): {'8', '2', '5'}, 
+                (6, 3): {'8', '2'}, 
+                (6, 4): {'8', '3'}, 
+                (6, 5): {'8', '3'}, 
+                (6, 7): {'3', '2', '8', '6', '5'}, 
+                (6, 8): {'3', '1', '2', '9', '5'}
+            }), 
+            7: Candidate({
+                (7, 0): {'3', '1', '2', '9', '6'}, 
+                (7, 1): {'8', '2'}, 
+                (7, 2): {'3', '1', '2', '9', '8', '6'}, 
+                (7, 4): {'4', '8', '3'}, 
+                (7, 6): {'3', '1', '9', '8', '6'}, 
+                (7, 7): {'3', '4', '2', '8', '6'}, 
+                (7, 8): {'9', '1', '2', '3'}
+            }), 
+            8: Candidate({
+                (8, 0): {'2', '3', '5', '7'}, 
+                (8, 1): {'8', '2', '5'}, 
+                (8, 2): {'8', '2', '3', '7'}, 
+                (8, 6): {'8', '3', '5'}, 
+                (8, 7): {'3', '4', '2', '8', '5'}, 
+                (8, 8): {'2', '3', '5'}
+            })
+        }
+        >>> eg.group(by = 'col')
+        {
+            0: Candidate({
+                (0, 0): {'7', '4', '1', '9', '5'}, 
+                (2, 0): {'1', '2', '7'}, 
+                (3, 0): {'2', '6'}, 
+                (4, 0): {'6', '3'}, 
+                (5, 0): {'4', '6', '3'}, 
+                (6, 0): {'3', '1', '2', '9', '6', '5'}, 
+                (7, 0): {'3', '1', '2', '9', '6'}, 
+                (8, 0): {'2', '3', '5', '7'}
+            }), 
+            1: Candidate({
+                (0, 1): {'4', '5'}, 
+                (6, 1): {'8', '2', '5'}, 
+                (7, 1): {'8', '2'}, 
+                (8, 1): {'8', '2', '5'}
+            }), 
+            2: Candidate({
+                (0, 2): {'9', '1', '7'}, 
+                (1, 2): {'2'}, 
+                (2, 2): {'1', '2', '7'}, 
+                (3, 2): {'8', '2', '6'}, 
+                (4, 2): {'6', '8', '3'}, 
+                (7, 2): {'3', '1', '2', '9', '8', '6'}, 
+                (8, 2): {'8', '2', '3', '7'}
+            }), 
+            3: Candidate({
+                (0, 3): {'8', '6'}, 
+                (5, 3): {'8', '6'}, 
+                (6, 3): {'8', '2'}
+            }), 
+            4: Candidate({
+                (2, 4): {'3'}, 
+                (3, 4): {'8', '6', '5', '7'},
+                (4, 4): {'8', '6', '5'}, 
+                (5, 4): {'8', '6'}, 
+                (6, 4): {'8', '3'}, 
+                (7, 4): {'4', '8', '3'}
+            }), 
+            5: Candidate({
+                (0, 5): {'8', '3'}, 
+                (5, 5): {'9', '8'}, 
+                (6, 5): {'8', '3'}
+            }), 
+            6: Candidate({
+                (0, 6): {'1', '3', '5'}, 
+                (1, 6): {'5'}, 
+                (3, 6): {'8', '6', '5'}, 
+                (4, 6): {'3', '9', '8', '6', '5'}, 
+                (7, 6): {'3', '1', '9', '8', '6'}, 
+                (8, 6): {'8', '3', '5'}
+            }), 
+            7: Candidate({
+                (0, 7): {'3', '5', '7'}, 
+                (2, 7): {'2', '3', '7'}, 
+                (3, 7): {'8', '6', '5'}, 
+                (4, 7): {'6', '8', '3', '5'}, 
+                (6, 7): {'3', '2', '8', '6', '5'}, 
+                (7, 7): {'3', '4', '2', '8', '6'}, 
+                (8, 7): {'3', '4', '2', '8', '5'}
+            }), 
+            8: Candidate({
+                (0, 8): {'1', '3', '5'}, 
+                (5, 8): {'9', '3'}, 
+                (6, 8): {'3', '1', '2', '9', '5'}, 
+                (7, 8): {'9', '1', '2', '3'}, 
+                (8, 8): {'2', '3', '5'}
+            })
+        }
         '''
 
         result = {}
+        n = self.n
         if by == 'submatrix':
             for g in range(1, n ** 2 + 1):
-                result[g] = {}
+                result[g] = Candidate({}, n = self.n)
             number = 0
             for i in range(n, n ** 2 + 1, n):
                 for j in range(n, n ** 2 + 1, n):
@@ -190,7 +514,7 @@ class Candidate():
                             result[number].update({k: v})
             return result
         for g in range(n ** 2):
-            result[g] = {}
+            result[g] = Candidate({}, n = self.n)
             for k, v in self.items():
                 if (by == 'row' and k[0] == g) or\
                     (by == 'col' and k[1] == g):
@@ -199,8 +523,13 @@ class Candidate():
 
     
     def items(self):
-        '''(Candidate) -> dict_items of (int, int), {int}
+        '''(Candidate) -> dict_items of (int, int), {object}
+
         Return dict_items of self.
+
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1.items()
+        dict_items([((0, 1), {1, 2, 4}), ((0, 2), {9, 6})])
         '''
 
         return self.show.items()
@@ -208,7 +537,12 @@ class Candidate():
     
     def keys(self):
         '''(Candidate) -> dict_keys of (int, int)
+
         Return dict_keys of self.
+
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1.keys()
+        dict_keys([(0, 1), (0, 2)])
         '''
 
         return self.show.keys()
@@ -216,20 +550,173 @@ class Candidate():
 
     def pop(self, key):
         '''(Candidate) -> None
+
         Pop out key and the respective value from self.
+
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1
+        Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1.pop((0, 1))
+        >>> eg1
+        Candidate({(0, 2): {9, 6}})
         '''
 
         self.show.pop(key)
 
-
+    
     def refine(self, entries_to_mutate, appearances):
-        '''(Candidate, dict, {int: [[int, int], {(int, int)}]}) -> None
+        '''(Candidate, Candidate, {int: [[int, int], {(int, int)}]}) 
+            -> None
+
         Update self and entries_to_mutate so that any unique candidate 
         number and the respective entry according to appearances is added
         to entries_to_mutate, and any candidate number that should be
         eliminated from some values of self due to the uniqueness of 
         candidate number in a certain row or column in appearances is
         eliminated.
+
+        >>> candids_old = Candidate({
+                (0, 0): {'4', '9', '7', '5', '1'}, 
+                (0, 1): {'5', '4'}, 
+                (0, 2): {'9', '1', '7'}, 
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'3', '8'}, 
+                (0, 6): {'1', '3', '5'}, 
+                (0, 7): {'5', '7', '3'}, 
+                (0, 8): {'1', '3', '5'}, 
+                (1, 2): {'2'}, 
+                (1, 6): {'5'}, 
+                (2, 0): {'2', '1', '7'}, 
+                (2, 2): {'2', '1', '7'}, 
+                (2, 4): {'3'}, 
+                (2, 7): {'2', '7', '3'}, 
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'2', '8', '6'}, 
+                (3, 4): {'5', '7', '8', '6'}, 
+                (3, 6): {'5', '8', '6'}, 
+                (3, 7): {'5', '8', '6'}, 
+                (4, 0): {'3', '6'}, 
+                (4, 2): {'3', '8', '6'}, 
+                (4, 4): {'5', '8', '6'}, 
+                (4, 6): {'9', '8', '5', '3', '6'}, 
+                (4, 7): {'5', '3', '8', '6'}, 
+                (5, 0): {'3', '6', '4'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}, 
+                (5, 8): {'9', '3'}, 
+                (6, 0): {'9', '1', '5', '3', '6', '2'}, 
+                (6, 1): {'2', '8', '5'}, 
+                (6, 3): {'2', '8'}, 
+                (6, 4): {'3', '8'}, 
+                (6, 5): {'3', '8'}, 
+                (6, 7): {'8', '5', '3', '6', '2'}, 
+                (6, 8): {'9', '2', '5', '3', '1'}, 
+                (7, 0): {'9', '2', '3', '6', '1'}, 
+                (7, 1): {'2', '8'}, 
+                (7, 2): {'9', '1', '8', '3', '6', '2'}, 
+                (7, 4): {'3', '8', '4'}, 
+                (7, 6): {'9', '8', '3', '6', '1'}, 
+                (7, 7): {'4', '8', '3', '6', '2'}, 
+                (7, 8): {'9', '1', '3', '2'}, 
+                (8, 0): {'5', '7', '3', '2'}, 
+                (8, 1): {'2', '8', '5'}, 
+                (8, 2): {'2', '7', '8', '3'}, 
+                (8, 6): {'5', '3', '8'}, 
+                (8, 7): {'4', '8', '5', '3', '2'}, 
+                (8, 8): {'2', '3', '5'}
+            })
+        >>> candids = candids_old.copy()
+        >>> candids == candids_old
+        True
+        >>> entries_to_mutate = Candidate({})
+        >>>
+        >>> # Case 1: only candids changes
+        >>> appearances1 = {
+                '4': [[1, 2], {(0, 1), (0, 0)}], 
+                '9': [[1, 2], {(0, 0), (0, 2)}], 
+                '5': [[1, 2], {(0, 1), (0, 0)}]
+            }
+        >>> candids.refine(entries_to_mutate, appearances1)
+        >>> entries_to_mutate
+        Candidate({})
+        >>> candids == candids_old
+        False
+        >>> 
+        >>> # Case 2: only entries_to_mutate changes
+        >>> appearances2 = {
+                '8': [[1, 2], {(0, 3), (0, 5)}], 
+                '6': [[1, 1], {(0, 3)}]
+            }
+        >>> candids.refine(entries_to_mutate, appearances2)
+        >>> entries_to_mutate
+        Candidate({(0, 3): {'6'}})
+        >>> candids == candids_old 
+        True
+        >>>
+        >>> # Case 3: both candids and entries_to_mutate change
+        >>> appearances3 = {
+                '1': [[1, 2], {(0, 6), (0, 8)}], 
+                '2': [[1, 1], {(2, 7)}], 
+                '7': [[2, 1], {(2, 7), (0, 7)}]
+            }
+        >>> candids.refine(entries_to_mutate, appearances3)
+        >>> entries_to_mutate
+        Candidate({(0, 3): {'6'}, (2, 7): {'2'}})
+        >>> candids == candids_old
+        False
+        >>> candids
+        Candidate({
+            (0, 0): {'9', '7', '5', '4'}, # '1' eliminated
+            (0, 1): {'4', '5'}, 
+            (0, 2): {'9', '7'},           # '1' eliminated
+            (0, 3): {'6', '8'}, 
+            (0, 5): {'3', '8'}, 
+            (0, 6): {'3', '1'},           # '5' eliminated
+            (0, 7): {'3', '7'},           # '5' eliminated
+            (0, 8): {'3', '1'},           # '5' eliminated
+            (1, 2): {'2'}, 
+            (1, 6): {'5'}, 
+            (2, 0): {'1', '2', '7'}, 
+            (2, 2): {'1', '2', '7'}, 
+            (2, 4): {'3'}, 
+            (2, 7): {'3', '7', '2'}, 
+            (3, 0): {'6', '2'}, 
+            (3, 2): {'6', '8', '2'}, 
+            (3, 4): {'6', '7', '8', '5'}, 
+            (3, 6): {'6', '8', '5'}, 
+            (3, 7): {'6', '8', '5'}, 
+            (4, 0): {'3', '6'}, 
+            (4, 2): {'3', '8', '6'}, 
+            (4, 4): {'6', '8', '5'}, 
+            (4, 6): {'6', '9', '5', '3', '8'}, 
+            (4, 7): {'3', '6', '8', '5'}, 
+            (5, 0): {'3', '4', '6'}, 
+            (5, 3): {'6', '8'}, 
+            (5, 4): {'6', '8'}, 
+            (5, 5): {'9', '8'}, 
+            (5, 8): {'3', '9'}, 
+            (6, 0): {'6', '9', '1', '2', '5', '3'}, 
+            (6, 1): {'5', '8', '2'}, 
+            (6, 3): {'8', '2'}, 
+            (6, 4): {'3', '8'}, 
+            (6, 5): {'3', '8'}, 
+            (6, 7): {'6', '2', '5', '3', '8'}, 
+            (6, 8): {'9', '1', '2', '5', '3'}, 
+            (7, 0): {'6', '9', '1', '2', '3'}, 
+            (7, 1): {'8', '2'}, 
+            (7, 2): {'6', '9', '1', '2', '3', '8'}, 
+            (7, 4): {'3', '4', '8'}, 
+            (7, 6): {'6', '9', '1', '3', '8'}, 
+            (7, 7): {'6', '2', '3', '4', '8'}, 
+            (7, 8): {'3', '9', '1', '2'}, 
+            (8, 0): {'3', '7', '2', '5'}, 
+            (8, 1): {'5', '8', '2'}, 
+            (8, 2): {'3', '7', '2', '8'}, 
+            (8, 6): {'3', '8', '5'}, 
+            (8, 7): {'2', '5', '3', '4', '8'}, 
+            (8, 8): {'3', '2', '5'}
+        })
         '''
 
         for k3, v3 in appearances.items():
@@ -253,9 +740,37 @@ class Candidate():
                         v_g2.remove(k3)
 
 
+    def update(self, other):
+        '''(Candidate, Candidate or {(int, int): set of objects}) -> None
+
+        Update self using other.
+
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1.update(Candidate({(1, 2): {1, 7}}))
+        >>> eg1
+        Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {1, 7}})
+        >>> eg1.update(Candidate({(0, 1): {1}}))
+        >>> eg1
+        Candidate({(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {1, 7}})
+        >>> eg1.update({(0, 0): {3}, (1, 2): {7}})
+        >>> eg1
+        Candidate({(0, 0): {3}, (0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}})
+        '''
+
+        if type(other) == dict:
+            self.show.update(other)
+        elif type(other) == Candidate:
+            self.show.update(other.show)
+
+
     def values(self):
-        '''(Candidate) -> dict_values of {int}
+        '''(Candidate) -> dict_values of {objects}
+
         Return dict_values of self.
+            
+        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1.values()
+        dict_values([{1, 2, 4}, {9, 6}])
         '''
 
         return self.show.values()
@@ -265,54 +780,191 @@ class Candidate():
 class Sudoku():
     '''Sudoku puzzle.'''
     
-    def __init__(self, array):
-        '''(Sudoku, list/array of [int and str]) -> NoneType
+    def __init__(
+            self, 
+            array,
+            elements = set([str(i) for i in range(1, n ** 2 + 1)]), 
+            empty = '.'
+        ):
+        '''(Sudoku, 2d-array of objects[, {objects}, str]) -> None
         
-        Precondition: array.shape == (n ** 2, n ** 2)
-        
+        Precondition: 
+        1. each element in elements is of length 1.
+        2. len(empty) == 1
+
         Initialize Sudoku puzzle.
-        
-        >>> empty = "."
-        >>> question1 = Sudoku([\
-        [empty, empty, empty, empty,     2, empty, empty, empty, empty],
-        [    8,     3, empty,     7,     1,     4, empty,     9,     6], 
-        [empty,     6, empty,     9, empty,     5,     4, empty,     8], 
-        [empty,     9, empty,     3, empty,     1, empty, empty,     4], 
-        [empty,     1, empty,     4, empty,     2, empty, empty,     7], 
-        [empty,     7,     5, empty, empty, empty,     2,     1, empty], 
-        [empty, empty,     4, empty, empty, empty,     7, empty, empty], 
-        [empty, empty, empty,     5, empty,     7, empty, empty, empty], 
-        [empty, empty, empty,     1,     9,     6, empty, empty, empty]
-        ])
-        >>> question1 = Sudoku(question1)
+
+        >>> question1 = np.array([
+                ['.', '.', '.', '.',   2, '.', '.', '.', '.'],
+                [  8,   3, '.',   7,   1,   4, '.',   9,   6], 
+                ['.',   6, '.',   9, '.',   5,   4, '.',   8], 
+                ['.',   9, '.',   3, '.',   1, '.', '.',   4], 
+                ['.',   1, '.',   4, '.',   2, '.', '.',   7], 
+                ['.',   7,   5, '.', '.', '.',   2,   1, '.'], 
+                ['.', '.',   4, '.', '.', '.',   7, '.', '.'], 
+                ['.', '.', '.',   5, '.',   7, '.', '.', '.'], 
+                ['.', '.', '.',   1,   9,   6, '.', '.', '.']
+            ])
+        >>> q1 = Sudoku(question1)
+        >>> q1.n
+        3
+        >>> question_big = np.array([
+                ['1', '6', 'F', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'E', 'G', '7'], 
+                ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'D', '3', 'A', 'F', '8', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', 'E', 'B', '5', 'C', 'G', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', 'G', '3', 'D', 'A', '1', '.', '.', '.', '.', 'C', '2'],
+                ['3', '9', '8', '.', '.', '.', '.', '.', '.', '.', '.', '.', '5', '1', 'B', 'G'],
+                ['B', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'E', '6', 'F', '2', 'A', '.'],
+                ['.', '.', '.', 'C', '.', '.', '9', 'A', '8', '7', 'B', '2', '.', '.', '.', '.'],
+                ['.', 'A', '1', 'E', '.', 'D', '6', 'C', '5', '3', '.', '.', '.', '.', '.', '4'],
+                ['F', 'B', '4', '8', '.', '.', '.', '.', '.', '.', '.', '.', '1', '7', 'E', '3'],
+                ['C', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '8', 'D', '4', '.', '.'],
+                ['.', '.', '.', '.', '.', '1', '.', 'G', '3', 'D', '6', '4', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '3', '8', 'F', '7', 'C', '5', '.', '.', '.', '2', '9'],
+                ['G', '4', 'D', 'B', '.', '.', '.', '.', '.', '.', '.', '.', '2', '9', 'F', '5'],
+                ['.', '.', '.', '.', '.', '.', '.', '4', '.', '.', '7', 'D', 'E', '6', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '2', '5', 'C', 'G', '8', 'E', '7', '.', '.', '.'],
+                ['.', '.', '.', '2', '.', '.', 'A', '1', '9', 'F', '.', '.', '.', '.', '3', '8']
+            ])
+        >>> q_big = Sudoku(
+                question_big, 
+                elements = set([str(i) for i in range(1, 3 ** 2 + 1)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
+            )
+        >>> q_big.n
+        4
         '''
-        
-        # Need to raise error if union of all elements minus 
-        # one_to_n_sq union {empty} is not the empty set.
-        # Need to raise error if the shape of array is not square.
-        # Need to raise error if the element denoting emptiness is not
-        # a string.
-        # Need to raise error if the element denoting emptiness is not
-        # unique.
-        self.show = np.array(array)
+
+        n = np.sqrt(len(array))
+        if n < 2:
+            raise ValueError(
+                'The number of rows of array is too small; ' +\
+                'it has to be at least 4.'
+            )
+        if int(n) != n:
+            raise ValueError(
+                'The number of rows of array is not compatible ' +\
+                'for Sudoku puzzle; it has to be a square ' +\
+                'of some integer, e.g. 9 = 3 ** 2, 16 = 4 ** 2, etc.'
+            )
+        if array.shape != (n ** 2, n ** 2):
+            raise ValueError(
+                'The shape of array must be square, ' +\
+                'i.e. number of rows must be equal to number of columns.'
+            )
+        if type(empty) != str:
+            raise TypeError('empty must be of type str.')
+        el_test = set(array.flatten()).difference(elements.union({empty}))
+        if el_test != set():
+            raise ValueError(
+                'There exists an element in array that is not ' +\
+                'a member of elements: ' + str(el_test)
+            )
+        self.show = array
+        self.n = int(n)
+        self.elements = elements
+        self.empty = empty
 
 
     def __eq__(self, other):
         '''(Sudoku, Sudoku) -> bool
-        
+
+        Precondition: both are non-empty, i.e. self.show != np.array([])
+        and other.self != np.array([]), so that self.show == other.show 
+        yield neither array([], dtype=bool) nor False.
+
         Return True iff all the entries of self and other are the same.
         '''
-        
-        return sum(sum(self.show == other.show)) == n ** 4
+
+        return (self.show == other.show).all()
+
+
+    def __repr__(self):
+        '''(Sudoku) -> str
+
+        Return the Sudoku representation of self.
+
+        >>> q1  # q1 in __init__()
+        Sudoku(
+            .    .    .    |    .    2    .    |    .    .    .
+            8    3    .    |    7    1    4    |    .    9    6
+            .    6    .    |    9    .    5    |    4    .    8
+        -------------------+-------------------+-------------------
+            .    9    .    |    3    .    1    |    .    .    4    
+            .    1    .    |    4    .    2    |    .    .    7    
+            .    7    5    |    .    .    .    |    2    1    .    
+        -------------------+-------------------+------------------- 
+            .    .    4    |    .    .    .    |    7    .    .    
+            .    .    .    |    5    .    7    |    .    .    .
+            .    .    .    |    1    9    6    |    .    .    .
+        )
+        >>> q_big  # q_big in __init__()
+        Sudoku(
+            1    6    F    .    |    .    .    .    .    |    .    .    .    .    |    .    E    G    7   
+            .    .    .    .    |    .    .    .    .    |    .    .    D    3    |    A    F    8    .    
+            .    .    .    .    |    .    .    .    E    |    B    5    C    G    |    .    .    .    .    
+            .    .    .    .    |    .    G    3    D    |    A    1    .    .    |    .    .    C    2    
+        ------------------------+------------------------+------------------------+------------------------
+            3    9    8    .    |    .    .    .    .    |    .    .    .    .    |    5    1    B    G    
+            B    .    .    .    |    .    .    .    .    |    .    .    E    6    |    F    2    A    .    
+            .    .    .    C    |    .    .    9    A    |    8    7    B    2    |    .    .    .    .    
+            .    A    1    E    |    .    D    6    C    |    5    3    .    .    |    .    .    .    4    
+        ------------------------+------------------------+------------------------+------------------------
+            F    B    4    8    |    .    .    .    .    |    .    .    .    .    |    1    7    E    3        
+            C    .    .    .    |    .    .    .    .    |    .    .    .    8    |    D    4    .    .    
+            .    .    .    .    |    .    1    .    G    |    3    D    6    4    |    .    .    .    .    
+            .    .    .    .    |    .    3    8    F    |    7    C    5    .    |    .    .    2    9    
+        ------------------------+------------------------+------------------------+------------------------
+            G    4    D    B    |    .    .    .    .    |    .    .    .    .    |    2    9    F    5        
+            .    .    .    .    |    .    .    .    4    |    .    .    7    D    |    E    6    .    .    
+            .    .    .    .    |    .    .    2    5    |    C    G    8    E    |    7    .    .    .    
+            .    .    .    2    |    .    .    A    1    |    9    F    .    .    |    .    .    3    8        
+        )
+        '''
+
+        n = self.n
+        headline, endline = 'Sudoku(\n', ')'
+        midline = ''
+        sep = '-----' * n + '----'
+        sepline = (sep + '+') * (n - 1) + sep + '\n'
+        str_self = str(self) # This is why each element has to be len 1
+        j = 0
+        for ind in range(0, len(str_self), n ** 2):
+            j += 1
+            str_row = list(str_self[ind:(ind + n ** 2)])
+            for i in range(len(str_row)):
+                if i != 0 and i % n == 0:
+                    midline += '    |    ' + str_row[i]
+                elif i == len(str_row) - 1:
+                    if j % n != 0 or j == n ** 2:
+                        midline += '    ' + str_row[i] + '\n'
+                    else:
+                        midline += '    ' + str_row[i] + '\n' + sepline
+                else:
+                    midline += '    ' + str_row[i]
+        subsize = 'n: ' + str(self.n) + '\n'
+        lst_els = list(self.elements)
+        lst_els.sort()
+        els = 'elements: '
+        for item in enumerate(lst_els):
+            if item[0] != len(lst_els) - 1:
+                els += item[1] + ', '
+            else:
+                els += item[1] + '\n'
+        emp = 'empty: ' + self.empty + '\n'
+        return headline + midline + subsize + els + emp + endline
 
 
     def __str__(self):
         '''(Sudoku) -> str
-        
+
         Return the string representation of self.
+
+        >>> str(q1)  # q1 in __init__()
+        '....2....83.714.96.6.9.54.8.9.3.1..4.1.4.2..7.75...21...4...7.....5.7......196...'
         '''
-        
-        result = ""
+
+        result = ''
         flattened = self.show.flatten()
         for item in flattened:
             result += item
@@ -321,10 +973,12 @@ class Sudoku():
 
     def all_missings(self):
         '''(Sudoku) -> {str: {int: set of ints}}
+
         Return all missing values of all submatrices, rows, and columns
         of self.
         '''
         
+        n = self.n
         result = {'submatrix': {}, 'row': {}, 'col': {}}
         for i in range(n ** 2):
             result['submatrix'].update({i + 1: self.missing(s = i + 1)})
@@ -333,13 +987,15 @@ class Sudoku():
         return result
 
 
-    def candidates(self, empty = '.'):
-        '''(Sudoku[, str]) -> Candidate
+    def candidates(self):
+        '''(Sudoku) -> Candidate
         
         Return all numbers that can be entered at each entry of self 
         if that entry is empty.
         '''
         
+        n = self.n
+        empty = self.empty
         entries = {}
         for i in range(1, n ** 2 - 1, n): # e.g. n == 3 => 1, 4, 7
             subm, subm_missing = {}, {}
@@ -359,15 +1015,15 @@ class Sudoku():
                             )
                     if L == col_iters[subm_index]:
                         subm_index += 1
-        return Candidate(entries)
+        return Candidate(entries, n = n)
 
 
     def col(self, c):
         '''(Sudoku) -> np.array of [int and str]
         
-        Precondition: 0 <= c <= n ** 2 - 1
+        Precondition: 0 <= c <= self.n ** 2 - 1
         
-        Return one of n ** 2 columns of self selected by c.
+        Return one of self.n ** 2 columns of self selected by c.
         '''
         
         return self.show[:, c]
@@ -385,7 +1041,9 @@ class Sudoku():
 
     def group(self, by):
         '''(Sudoku, str) -> {int: {(int, int): set of int}}
+
         Precondition: by == 'submatrix' or 'row' or 'col'
+
         Return the candidate values grouped by 'by', which is either 
         'submatrix', 'row', or 'col'.
         '''
@@ -396,6 +1054,7 @@ class Sudoku():
 
     def is_valid_answer(self, empty = "."):
         '''(Sudoku[, str]) -> bool
+
         Return True iff self is a valid sudoku answer, and False otherwise.
         '''
 
@@ -413,8 +1072,10 @@ class Sudoku():
 
     def itemset(self, entry, value):
         '''(Sudoku, (int, int), int) -> NoneType
+
         Precondition: value in one_to_n_sq; and each int in entry is from
         0 to n ** 2 - 1 inclusive.
+
         Mutate entry number of self to value.
         '''
 
@@ -423,8 +1084,10 @@ class Sudoku():
 
     def itemsets(self, entries):
         '''(Sudoku, {(int, int): set if ints} or Candidate) -> None
+
         Precondition: each int in entries is exactly one element of 
         one_to_n_sq.
+
         Mutate entry number of self according to values given in entries 
         if the value set has length 1.
         '''
@@ -445,6 +1108,7 @@ class Sudoku():
 
     def melt(self, include_empty = True):
         '''(Sudoku[, bool]) -> Candidate
+
         Return Candidate form of self, and include empty entries
         as well if include_empty is True (by default).
         '''
@@ -497,6 +1161,7 @@ class Sudoku():
 
     def solve(self, max_trial = 300):
         '''(Sudoku, int) -> str
+
         Mutate self to the answer form, or until max_trial is met, and
         return the time it took to compute the answer.
         '''
@@ -521,6 +1186,7 @@ class Sudoku():
 
     def solve_forcefully(self, max_trial = 300):
         '''(Sudoku, int) -> None
+
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met.
         '''
@@ -554,6 +1220,7 @@ class Sudoku():
 
     def solve_by_pairs(self):
         '''(Sudoku) -> Candidate
+
         Eliminate candidate numbers in other entries of the same rows or
         columns based on entries of submatrix it belongs, mutate self 
         into the closest answer form, and return a refined Candidate 
@@ -588,6 +1255,7 @@ class Sudoku():
 
     def solve_globally(self):
         '''(Sudoku) -> None
+
         Find the only possible number at each entry of self, plug it 
         into that entry, and repeat the process until no new mutation 
         is made.
@@ -606,7 +1274,9 @@ class Sudoku():
 
     def solve_locally(self, by):
         '''(Sudoku) -> NoneType
+
         Precondition: by == 'submatrix', 'row', or 'col'
+
         Find the unique candidate number within each 'by' of self,
         plug that number into that entry, and repeat the process across
         every other groups until no new mutation is made.
@@ -625,6 +1295,7 @@ class Sudoku():
 
     def solve_logically(self):
         '''(Sudoku) -> NoneType
+
         Mutate self to the answer form as close as possible (that is, 
         having the least number of empty's), using only logical 
         approaches that don't involve randomness or brute force in number
@@ -650,7 +1321,9 @@ class Sudoku():
 
     def submatrix(self, s):
         '''(Sudoku) -> list/array of [int and str]
+
         Precondition: 1 <= s <= n ** 2
+        
         Return one of n ** 2 submatrices of self selected by s.        
         '''
         
@@ -664,7 +1337,9 @@ class Sudoku():
 
     def unique_candidates(self, by):
         '''(Sudoku, str) -> {(int, int): set of int}
+
         Precondition: by == 'submatrix' or 'row' or 'col'
+        
         Return the unique candidate number at each entry, within each 
         group of self, grouped by 'by'.
         '''
@@ -692,8 +1367,10 @@ def aggregate_unions(unions, names):
     1. len(names) == 2
     2. names has exactly two of either 'submatrix', 'row', or 'col'.
     3. If name is a key of unions, then name[:len(name) - 1] in names.
+
     Aggregate value sets of unions by names, and return two lists of
     numbers consisting of elements in value sets.
+
     >>> names = ['row', 'col']
     >>> unions = {\
             'row1': {'5', '4', '7', '9'}, 'row2': {'9', '5', '6', '4'}, 
@@ -727,11 +1404,13 @@ def aggregate_unions(unions, names):
 def collect_appearances(union1, union2, V):
     '''([ints], [ints], {(int, int): {ints}}) -> 
         {int: [[int, int], {(int, int)}]}
+
     Count the number of the same elements in union1 and union2
     respectively, record them into the very first element (a list of two 
     ints) of the resulting dictionary's value list, and add the key of
     V to the second element (a set) of the value list if the value of V
     contains the element in either union1 or union2.
+
     >>> rows_union = [\
             '4', '4', '4', '5', '5', '5', '6', '6', '7', '7', 
             '9', '9', '9'
@@ -777,9 +1456,11 @@ def collect_appearances(union1, union2, V):
 
 def collect_unions(unions, n, names, V):
     '''({str: set()}, int, [str, str], {(int, int): {ints}}) -> None
+
     Precondition: 
     1. Each value in unions is the empty set set().
     2. If name is a key of unions, then name[:len(name) - 1] in names.
+
     Update unions for each matched name in names so that each value set
     of unions is a collection of all candidate values specified in V,
     where V is a collection of subset candidates from n ** 2 by n ** 2 
@@ -816,9 +1497,11 @@ def collect_unions(unions, n, names, V):
 
 def initialize_unions(n, names):
     '''(int, [str, str]) -> {str: set()}
+
     Precondition: 
     1. len(names) == 2
     2. names has exactly two of either 'submatrix', 'row', or 'col'.
+
     Create unions dictionary where each key is a numbered name of 
     Sudoku components (e.g. 'row1' or 'submatrix9') generated from names.
     
@@ -845,7 +1528,9 @@ def initialize_unions(n, names):
 
 def make_str_to_sudoku(sudoku_str):
     '''(str) -> Sudoku
+
     Precondition: set(list(sudoku_str)).issubset(one_to_n_sq.union('.'))
+
     Return the Sudoku object of sudoku_str if it is a string 
     representation of Sudoku.
     '''
@@ -856,9 +1541,11 @@ def make_str_to_sudoku(sudoku_str):
 
 def sieve_appearances(appearances):
     '''({int: [[int, int], {(int, int)}]}) -> None
+
     Update appearances so that if the first element of the value list
     does not contain 1, then the responsible key gets removed from
     appearances.
+
     >>> appearances = {\
             '1': [[0, 0], set()], 
             '2': [[0, 0], set()], 
@@ -879,3 +1566,56 @@ def sieve_appearances(appearances):
     for k2, v2 in appearances_copy.items():
         if 1 not in v2[0]:
             appearances.pop(k2)
+
+
+candids_old = Candidate({
+                            (0, 0): {'4', '9', '7', '5', '1'}, 
+                            (0, 1): {'5', '4'}, 
+                            (0, 2): {'9', '1', '7'}, 
+                            (0, 3): {'8', '6'}, 
+                            (0, 5): {'3', '8'}, 
+                            (0, 6): {'1', '3', '5'}, 
+                            (0, 7): {'5', '7', '3'}, 
+                            (0, 8): {'1', '3', '5'}, 
+                            (1, 2): {'2'}, 
+                            (1, 6): {'5'}, 
+                            (2, 0): {'2', '1', '7'}, 
+                            (2, 2): {'2', '1', '7'}, 
+                            (2, 4): {'3'}, 
+                            (2, 7): {'2', '7', '3'}, 
+                            (3, 0): {'2', '6'}, 
+                            (3, 2): {'2', '8', '6'}, 
+                            (3, 4): {'5', '7', '8', '6'}, 
+                            (3, 6): {'5', '8', '6'}, 
+                            (3, 7): {'5', '8', '6'}, 
+                            (4, 0): {'3', '6'}, 
+                            (4, 2): {'3', '8', '6'}, 
+                            (4, 4): {'5', '8', '6'}, 
+                            (4, 6): {'9', '8', '5', '3', '6'}, 
+                            (4, 7): {'5', '3', '8', '6'}, 
+                            (5, 0): {'3', '6', '4'}, 
+                            (5, 3): {'8', '6'}, 
+                            (5, 4): {'8', '6'}, 
+                            (5, 5): {'9', '8'}, 
+                            (5, 8): {'9', '3'}, 
+                            (6, 0): {'9', '1', '5', '3', '6', '2'}, 
+                            (6, 1): {'2', '8', '5'}, 
+                            (6, 3): {'2', '8'}, 
+                            (6, 4): {'3', '8'}, 
+                            (6, 5): {'3', '8'}, 
+                            (6, 7): {'8', '5', '3', '6', '2'}, 
+                            (6, 8): {'9', '2', '5', '3', '1'}, 
+                            (7, 0): {'9', '2', '3', '6', '1'}, 
+                            (7, 1): {'2', '8'}, 
+                            (7, 2): {'9', '1', '8', '3', '6', '2'}, 
+                            (7, 4): {'3', '8', '4'}, 
+                            (7, 6): {'9', '8', '3', '6', '1'}, 
+                            (7, 7): {'4', '8', '3', '6', '2'}, 
+                            (7, 8): {'9', '1', '3', '2'}, 
+                            (8, 0): {'5', '7', '3', '2'}, 
+                            (8, 1): {'2', '8', '5'}, 
+                            (8, 2): {'2', '7', '8', '3'}, 
+                            (8, 6): {'5', '3', '8'}, 
+                            (8, 7): {'4', '8', '5', '3', '2'}, 
+                            (8, 8): {'2', '3', '5'}
+                        })
