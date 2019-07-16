@@ -1,6 +1,7 @@
 
+from .candidate import *
 import numpy as np
-# using:
+# Currently using:
 # np.array()
 #     .copy()
 #     .itemset()
@@ -11,7 +12,6 @@ import numpy as np
 #     slicing in Sudoku.col()
 #     slicing in Sudoku.row()
 # np.random.choice()
-
 
 
 class Sudoku():
