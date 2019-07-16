@@ -20,19 +20,21 @@ class Candidate():
 
         self.show = candidates
         self.n = n
-    
 
-    def __getitem__(self, key):
-        '''(Candidate, (int, int)) -> set of objects
 
-        Return the value of self at key.
+    def __dict__(self):
+        '''(Candidate) -> {(int, int): set of objects}
 
-        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg[(0, 1)]
-        {1, 2, 4}
+        Return the dict representation of Candidate.
+
+        >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg = Candidate(eg)
+        Candidate({(0, 1): {1, 2, 4}, (0, 2): {9, 6}})
+        >>> dict(eg)
+        {(0, 1): {1, 2, 4}, (0, 2): {9, 6}}
         '''
 
-        return self.show[key]
+        return self.show
 
 
     def __eq__(self, other):
@@ -51,6 +53,19 @@ class Candidate():
         '''
 
         return self.show == other.show
+
+
+    def __getitem__(self, key):
+        '''(Candidate, (int, int)) -> set of objects
+
+        Return the value of self at key.
+
+        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg[(0, 1)]
+        {1, 2, 4}
+        '''
+
+        return self.show[key]
 
 
     def __repr__(self):

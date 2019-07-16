@@ -1,6 +1,6 @@
 
-# Need to have:
-# .shape that return a tuple
+
+# Under construction...
 
 
 class Array():
