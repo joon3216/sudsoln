@@ -52,7 +52,7 @@ class Candidate():
         False
         '''
 
-        return self.show == other.show
+        return self.show == other.show and self.n == other.n
 
 
     def __getitem__(self, key):
@@ -75,10 +75,13 @@ class Candidate():
 
         >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
         >>> eg
-        Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        Candidate(
+        {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        n: 3
+        )
         '''
 
-        return 'Candidate({0})'.format(self.show)
+        return 'Candidate({0}\nn: {1}\n)'.format(self.show, self.n)
 
 
     def __setitem__(self, key, value):
@@ -390,6 +393,11 @@ class Candidate():
         }
         '''
 
+        if by not in ['submatrix', 'row', 'col']:
+            raise ValueError(
+                "by must be either 'submatrix', 'row', or 'col', not " +\
+                str(by)
+            )
         result = {}
         n = self.n
         if by == 'submatrix':
@@ -707,6 +715,8 @@ class Candidate():
         if type(other) == dict:
             self.show.update(other)
         elif type(other) == Candidate:
+            if self.n != other.n:
+                raise ValueError('self.n != other.n')
             self.show.update(other.show)
 
 

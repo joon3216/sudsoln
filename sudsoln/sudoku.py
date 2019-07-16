@@ -27,10 +27,20 @@ class Sudoku():
         
         Precondition: 
         1. each element in elements is of length 1.
-        2. len(empty) == 1
+        2. len(elements) >= 4
+        3. len(empty) == 1
 
         Initialize Sudoku puzzle.
 
+        >>> question_small = np.array([
+                ['1', '.', '3', '.'],
+                ['.', '2', '.', '.'],
+                ['.', '.', '.', '.'],
+                ['.', '.', '.', '4']
+            ])
+        >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
+        >>> q_small.n
+        2
         >>> question1 = np.array([
                 ['.', '.', '.', '.',   2, '.', '.', '.', '.'],
                 [  8,   3, '.',   7,   1,   4, '.',   9,   6], 
@@ -65,7 +75,7 @@ class Sudoku():
             ])
         >>> q_big = Sudoku(
                 question_big, 
-                elements = set([str(i) for i in range(1, 3 ** 2 + 1)])\
+                elements = set([str(i) for i in range(1, 3 ** 2 + 1)])\\
                     .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             )
         >>> q_big.n
@@ -977,8 +987,10 @@ class Sudoku():
     def missing(self, s = None, r = None, c = None):
         '''(Sudoku[, int, int, int]) -> set of objects
         
-        Precondition: 1 <= s <= self.n ** 2 and\
-        0 <= r <= self.n ** 2 - 1 and 0 <= c <= self.n ** 2 - 1
+        Precondition: 
+        1. 1 <= s <= self.n ** 2
+        2. 0 <= r <= self.n ** 2 - 1
+        3. 0 <= c <= self.n ** 2 - 1
         
         Return all missing values of self at the specified submatrix 
         number s, the specified row number r, or the specified column 
@@ -1379,14 +1391,14 @@ def collect_appearances(union1, union2, V, elements):
     contains the element in either union1 or union2. Apperances in
     elements are to be counted.
 
-    >>> rows_union = [\
+    >>> rows_union = [
             '4', '4', '4', '5', '5', '5', '6', '6', '7', '7', 
             '9', '9', '9'
         ]
-    >>> cols_union = [\
+    >>> cols_union = [
             '4', '4', '4', '5', '5', '6', '6', '7', '9', '9', '9'
         ]
-    >>> V = {\
+    >>> V = {
             (0, 1): {'4', '9', '7', '5'}, (1, 0): {'9', '4'}, 
             (1, 1): {'4', '9', '6', '5'}, (1, 2): {'4', '9', '6', '5'}, 
             (2, 1): {'7', '9', '6', '5', '4'}
@@ -1395,7 +1407,7 @@ def collect_appearances(union1, union2, V, elements):
     >>> appearances = collect_appearances(
             rows_union, cols_union, V, elements
         )
-    >>> appearances == {\
+    >>> appearances == {
             '1': [[0, 0], set()], 
             '2': [[0, 0], set()], 
             '3': [[0, 0], set()], 
@@ -1440,13 +1452,13 @@ def collect_unions(unions, n, names, V):
     >>> n = 3
     >>> names = ['row', 'col']
     >>> unions = initialize_unions(n, names)
-    >>> V = {\
+    >>> V = {
             (0, 1): {'5', '4', '7', '9'}, (1, 0): {'9', '4'}, 
             (1, 1): {'5', '4', '6', '9'}, (1, 2): {'5', '4', '6', '9'}, 
             (2, 1): {'5', '4', '7', '9', '6'}
         }
     >>> collect_unions(unions, n, names, V)
-    >>> unions == {\
+    >>> unions == {
             'row1': {'5', '4', '7', '9'}, 'row2': {'9', '5', '6', '4'}, 
             'row3': {'5', '9', '6', '4', '7'}, 
             'col1': {'9', '4'}, 'col2': {'5', '4', '7', '9', '6'}, 
@@ -1478,7 +1490,7 @@ def initialize_unions(n, names):
     Sudoku components (e.g. 'row1' or 'submatrix9') generated from names.
     
     >>> unions = initialize_unions(3, ['row', 'col'])
-    >>> unions == {\
+    >>> unions == {
             'row1': set(), 'row2': set(), 'row3': set(),
             'col1': set(), 'col2': set(), 'col3': set()
         }
@@ -1505,7 +1517,7 @@ def sieve_appearances(appearances):
     does not contain 1, then the responsible key gets removed from
     appearances.
 
-    >>> appearances = {\
+    >>> appearances = {
             '1': [[0, 0], set()], 
             '2': [[0, 0], set()], 
             '3': [[0, 0], set()], 
