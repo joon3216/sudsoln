@@ -5,6 +5,7 @@
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object.
 * Eliminate `numpy` dependencies by adding `Array` object
+* Fix typo in `to_sudoku()`: it is `(str, {objects}, int)`, not `(str, int, {objects})`.
 * Make `Sudoku.elements` type-independent; i.e. it can accept not only a set of strings, but also a set of integers
 * Write more solving features
 * Write unittests of `Sudoku` object for simpler maintenance and automatic testing
