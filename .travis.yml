@@ -4,10 +4,9 @@ python:
   - "3.6"
 cache: pip
 install: "pip install -r requires.txt"
-script: 
-  - python sudsoln/tests_candidate.py
-  - mvn cobertura:cobertura
 env:
   - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
+script: 
+  - python sudsoln/tests_candidate.py
 after_success:
   - bash <(curl -s https://codecov.io/bash)
