@@ -6,3 +6,5 @@ cache: pip
 install: "pip install -r requires.txt"
 script: 
   - python sudsoln/tests_candidate.py
+env:
+  - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
