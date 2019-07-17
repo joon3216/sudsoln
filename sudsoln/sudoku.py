@@ -32,16 +32,16 @@ class Sudoku():
 
         Initialize Sudoku puzzle.
 
-        >>> question_small = np.array([
+        >>> q_small = [  # not a np.array, but acceptable
                 ['1', '.', '3', '.'],
                 ['.', '2', '.', '.'],
                 ['.', '.', '.', '.'],
                 ['.', '.', '.', '4']
-            ])
+            ]
         >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
         >>> q_small.n
         2
-        >>> question1 = np.array([
+        >>> question1 = [  # mixture of int and str, and not a np.array
                 ['.', '.', '.', '.',   2, '.', '.', '.', '.'],
                 [  8,   3, '.',   7,   1,   4, '.',   9,   6], 
                 ['.',   6, '.',   9, '.',   5,   4, '.',   8], 
@@ -51,7 +51,7 @@ class Sudoku():
                 ['.', '.',   4, '.', '.', '.',   7, '.', '.'], 
                 ['.', '.', '.',   5, '.',   7, '.', '.', '.'], 
                 ['.', '.', '.',   1,   9,   6, '.', '.', '.']
-            ])
+            ]
         >>> q1 = Sudoku(question1)
         >>> q1.n
         3
@@ -94,6 +94,24 @@ class Sudoku():
                 'for Sudoku puzzle; it has to be a square ' +\
                 'of some integer, e.g. 9 = 3 ** 2, 16 = 4 ** 2, etc.'
             )
+
+        if 'ndarray' not in str(type(array)):
+            if type(array) == str:
+                raise TypeError(
+                    'String object is not acceptable. If you want to ' +\
+                    'convert a string representation of Sudoku to ' +\
+                    'Sudoku object, use ' +\
+                    'sudsoln.to_sudoku(sudoku_str, elements, empty) ' +\
+                    'instead.'
+                )
+            try:
+                array = np.array(array)
+            except TypeError:
+                print(
+                    'array is not a type that can be converted into ' +\
+                    'numpy.array.'
+                )
+        
         if array.shape != (n ** 2, n ** 2):
             raise ValueError(
                 'The shape of array must be square, ' +\
