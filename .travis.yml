@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3"
+cache: pip 
+install: "pip install -r sudsoln.egg-info/requires.txt"
+script: 
+  - python sudsoln/tests_candidate.py
