@@ -5,7 +5,7 @@ python:
 cache: pip
 install: 
   - pip install -r requires.txt
-  - pip install --user codecov
+  - pip install codecov
 script: 
   - python sudsoln/tests_candidate.py
 env:
