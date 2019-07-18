@@ -6,6 +6,7 @@ cache: pip
 install: 
   - pip install -r requires.txt
   - pip install codecov
+  - pip install -i https://test.pypi.org/simple/ sudsoln
 script: 
   - python sudsoln/tests.py
 env:

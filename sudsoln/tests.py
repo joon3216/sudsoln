@@ -4,6 +4,7 @@ import candidate
 import sudoku
 
 
+
 # START: testing Candidate ###############################################
 
 class TestCandidate(unittest.TestCase):
@@ -16,7 +17,6 @@ class TestCandidate(unittest.TestCase):
         3. .keys()
         4. .pop()
         5. .update()
-        6. dict(), the dictionary representation.
         '''
 
         eg = candidate.Candidate(
@@ -135,21 +135,15 @@ class TestCandidate(unittest.TestCase):
         result_update = (result_update1, result_update2)
         expected_result_update = (expected_update1, expected_update2)
 
-        # 6. dict()
-        result_dict = (dict(eg) == eg.show)
-        expected_result_dict = True
-
         result = {
             '.copy': result_copy, '.items': result_items, 
             '.keys': result_keys, '.pop': result_pop,
-            '.update': result_update, 
-            'dict': result_dict
+            '.update': result_update
         }
         expected_result = {
             '.copy': expected_result_copy, '.items': expected_result_items, 
             '.keys': expected_result_keys, '.pop': expected_result_pop,
-            '.update': expected_result_update,
-            'dict': expected_result_dict
+            '.update': expected_result_update
         }
         self.assertEqual(result, expected_result)
 
