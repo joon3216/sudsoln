@@ -1,7 +1,7 @@
 
 import unittest
-import candidate
-import sudoku
+import sudsoln.candidate as candidate
+import sudsoln.sudoku as sudoku
 
 
 # START: testing Candidate ###############################################

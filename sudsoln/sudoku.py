@@ -1,5 +1,5 @@
 
-import candidate
+import sudsoln.candidate as candidate
 import numpy as np
 # Currently using:
 # np.array()
