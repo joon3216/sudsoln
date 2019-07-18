@@ -1557,12 +1557,15 @@ def sieve_appearances(appearances):
             appearances.pop(k2)
 
 
-def to_sudoku(sudoku_str, elements, empty = '.'):
-    '''(str, int, {objects}) -> Sudoku
+def to_sudoku(sudoku_str, 
+              elements = set([str(i) for i in range(1, 3 ** 2 + 1)]), 
+              empty = '.'):
+    '''(str, {objects}, str) -> Sudoku
 
     Precondition: 
     1. set(list(sudoku_str)).issubset(elements.union(empty))
     2. len(elements) == len(sudoku_str) ** .5
+    3. All elements in elements has len 1, as well as empty.
 
     Return the Sudoku object of sudoku_str if it is a string 
     representation of Sudoku.
