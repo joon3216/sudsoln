@@ -76,12 +76,12 @@ class Candidate():
         >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
         >>> eg
         Candidate(
-        {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
-        n: 3
+        {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+        n = 3
         )
         '''
 
-        return 'Candidate({0}\nn: {1}\n)'.format(self.show, self.n)
+        return 'Candidate(\n{0},\nn = {1}\n)'.format(self.show, self.n)
 
 
     def __setitem__(self, key, value):
@@ -396,7 +396,7 @@ class Candidate():
         if by not in ['submatrix', 'row', 'col']:
             raise ValueError(
                 "by must be either 'submatrix', 'row', or 'col', not " +\
-                str(by)
+                "'" + str(by) + "'."
             )
         result = {}
         n = self.n

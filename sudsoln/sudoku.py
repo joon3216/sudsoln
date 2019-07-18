@@ -1,5 +1,5 @@
 
-from .candidate import *
+import candidate
 import numpy as np
 # Currently using:
 # np.array()
@@ -492,7 +492,7 @@ class Sudoku():
                             )
                     if L == col_iters[subm_index]:
                         subm_index += 1
-        return Candidate(entries, n = n)
+        return candidate.Candidate(entries, n = n)
 
 
     def col(self, c):
@@ -954,8 +954,8 @@ class Sudoku():
             for entry, values in entries.items():
                 if len(values) == 1:
                     self.itemset(entry, list(values)[0])
-        elif type(entries) == Candidate:
-            if entries == Candidate({}):
+        elif 'Candidate' in str(type(entries)):
+            if entries == candidate.Candidate({}):
                 return None
             for entry, values in entries.items():
                 if len(values) == 1:
@@ -999,7 +999,7 @@ class Sudoku():
             for k, v in result_copy.items():
                 if list(v)[0] == empty:
                     result.pop(k)
-        return Candidate(result, n = n)
+        return candidate.Candidate(result, n = n)
 
 
     def missing(self, s = None, r = None, c = None):
@@ -1342,7 +1342,7 @@ class Sudoku():
 
         n = self.n
         start = self.group(by = by)
-        result = Candidate({}, n = n)
+        result = candidate.Candidate({}, n = n)
         for V in start.values():
             keys = list(V.keys()); keys.sort() # sorting is unnecessary
             for i in range(len(keys)):

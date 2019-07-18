@@ -1,3 +1,3 @@
 from .candidate import *
 from .sudoku import *
-from .version import version as __version__
+__version__ = '0.0.4'

@@ -7,9 +7,9 @@ install:
   - pip install -r requires.txt
   - pip install codecov
 script: 
-  - python sudsoln/tests_candidate.py
+  - python sudsoln/tests.py
 env:
   - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
 after_success:
-  - coverage run sudsoln/tests_candidate.py
+  - coverage run sudsoln/tests.py
   - codecov
