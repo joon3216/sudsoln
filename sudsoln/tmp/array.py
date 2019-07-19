@@ -26,3 +26,4 @@ class Array():
 
         self.show = lst
         self.n = len(lst)
+        self.n_sq = len(lst) ** 2

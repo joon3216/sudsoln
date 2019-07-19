@@ -82,6 +82,7 @@ class Sudoku():
         4
         '''
 
+        # Size
         n = len(array) ** .5
         if n < 2:
             raise ValueError(
@@ -95,6 +96,7 @@ class Sudoku():
                 'of some integer, e.g. 9 = 3 ** 2, 16 = 4 ** 2, etc.'
             )
 
+        # Array type and shape
         if 'ndarray' not in str(type(array)):
             if type(array) == str:
                 raise TypeError(
@@ -104,21 +106,20 @@ class Sudoku():
                     'sudsoln.to_sudoku(sudoku_str, elements, empty) ' +\
                     'instead.'
                 )
-            try:
-                array = np.array(array)
-            except TypeError:
-                print(
-                    'array is not a type that can be converted into ' +\
-                    'numpy.array.'
-                )
-        
+            array = np.array(array)
         if array.shape != (n ** 2, n ** 2):
             raise ValueError(
                 'The shape of array must be square, ' +\
                 'i.e. number of rows must be equal to number of columns.'
             )
+        
+        # empty type
         if type(empty) != str:
             raise TypeError('empty must be of type str.')
+
+        # elements
+        el_lst = list(elements)
+        elements = set([str(item) for item in el_lst])
         el_test = set(array.flatten()).difference(elements.union({empty}))
         if el_test != set():
             raise ValueError(
@@ -130,6 +131,7 @@ class Sudoku():
                 'The number of elements in elements must be ' +\
                 str(n ** 2) + ', not ' + str(len(elements)) + '.'
             )
+        
         self.show = array
         self.n = int(n)
         self.elements = elements
