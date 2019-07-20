@@ -1,26 +1,35 @@
 
 # `sudsoln`
 
-## Coming up: `sudsoln` ver 0.0.8
+## Coming up: ver 0.0.9
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of Candidate: for every element in elements, it gives you the number of appearances in each key of Candidate. 
 * Eliminate `numpy` dependencies by adding `Array` object
-* Make `Sudoku.elements` type-independent; i.e. it can accept not only a set of strings, but also a set of integers
 * Write more solving features
 * Write unittests on `Sudoku` object for simpler maintenance and automatic testing
 	+ Test `.__init__()` with more examples in unittest
-	+ Test `.solve_logically()` with more sudoku questions in unittest
+* Write unittests on `Appearance` object after it is defined.
 
-## `sudsoln` ver 0.0.7
+
+## ver 0.0.8
+
+* Deleted `from sudsoln.candidate import *` in `__init__.py`; unnecessary. 
+* Deleted `solvers.py` in `sudsoln/tmp` directory; redundant.
+* Made `Sudoku.elements` type-independent, i.e. i.e. it now accepts not only a set of strings, but also a set of integers, as well as a mixture of both
+* Wrote a test on `.solve_logically()` with questions in `questions.py`
+
+
+## ver 0.0.7
 
 * Edited `tests.py`: instead of using `import sudsoln.candidate as candidate`, it is now `import candidate`
 
-## `sudsoln` ver 0.0.6
+
+## ver 0.0.6
 
 * Packaging failed; edited `__init__.py` in `sudsoln` directory.
 
 
-## `sudsoln` ver 0.0.5
+## ver 0.0.5
 
 * `__version__` variable directly defined in `__init__.py`, and `version.py` deleted.
 * Added one unit test on Sudoku class
@@ -31,22 +40,22 @@
 
 
 
-## `sudsoln` ver 0.0.4
+## ver 0.0.4
 
 * Added unittests: `tests_candidate.py`
 * Updated `.__repr__()` in `Candidate` object.
 * Updated `Sudoku` object so that it now accepts a list of lists.
 
-## `sudsoln` ver 0.0.3
+## ver 0.0.3
 
 * Added: `from .candidates import *` in `sudoku.py`
 
 
-## `sudsoln` ver 0.0.2
+## ver 0.0.2
 
 * Edited: dependency in `setup.py`
 
 
-## `sudsoln` ver 0.0.1
+## ver 0.0.1
 
 * Created a package.
