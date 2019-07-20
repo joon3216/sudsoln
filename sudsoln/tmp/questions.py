@@ -75,9 +75,57 @@ a7 =\
 
 # (5 ** 2)-by-(5 ** 2) sudoku, or alphadoku
 q8 =\
-    ''
+    '..R.K.BC.T....XW.MN.YGE..' +\
+    '......UQ.A.J.LK..CITHW...' +\
+    '..T.PH.M..OWQ..Y.....DFS.' +\
+    'JG.I.X.YD.MB.....K.....A.' +\
+    'YX.....K.O...PC.....J.MRN' +\
+    'MV.AC.....KHP......RD.I..' +\
+    '..Y....DRW.N..U.TV......H' +\
+    '.HUEJM.SB....FA.Y.DO.P.L.' +\
+    '.L.F.O.AJ...Y.E..Q.HBT...' +\
+    'KNDT...U...COBR.SGF...X.A' +\
+    'IT..V.QX..FRK..BO.C.L..DY' +\
+    'GD..Q..T..V....X..WK..RHU' +\
+    '.BL..N.....TDQ.....U..JK.' +\
+    'NCX..BM..Y....J..T..O..GE' +\
+    'HO..E.L.FD..AUM..YQ.N..PC' +\
+    'R.P...EIQ.CLMT...D...OKVX' +\
+    '...CAV.P..U.W...BI.N.E.Q.' +\
+    '.U.L.SX.K.NP....GO.WARHC.' +\
+    'F......BT.Q..A.KER....U..' +\
+    '..M.XU......IJD.....FN.WP' +\
+    'VKA.T.....BD...R.E.....FW' +\
+    '.M.....L.....OQ.NH.D.U.JR' +\
+    '.SBO.....K..EXI..W.YQ.P..' +\
+    '...QFEOG..AV.R.I.US......' +\
+    '..CDW.TF.MH....O.JG.E.L..'
 a8 =\
-    ''
+    'LQRUKFBCPTSAHDXWJMNVYGEIO' +\
+    'DFNMORUQSAYJGLKEPCITHWVXB' +\
+    'CATBPHNMEJOWQIVYXLRGUDFSK' +\
+    'JGEIHXWYDVMBRNFUQKOSPLCAT' +\
+    'YXVWSGIKLOTEUPCDHFABJQMRN' +\
+    'MVOACTGENXKHPSWLUBJRDFIYQ' +\
+    'QPYXBLFDRWGNJMUATVEICKSOH' +\
+    'WHUEJMKSBCIQTFANYXDORPGLV' +\
+    'SLGFROPAJIDXYVECWQKHBTNUM' +\
+    'KNDTIQYUVHLCOBRPSGFMWJXEA' +\
+    'ITJSVPQXGUFRKHNBOACELMWDY' +\
+    'GDFPQAJTOEVYBCLXMNWKISRHU' +\
+    'ABLYMNCWISETDQOGRPHUVXJKF' +\
+    'NCXKUBMRHYPISWJVDTLFOAQGE' +\
+    'HOWREKLVFDXGAUMSIYQJNBTPC' +\
+    'RWPJGYEIQNCLMTBHFDUASOKVX' +\
+    'OYKCAVHPMRUFWGSJBIXNTEDQL' +\
+    'BUQLDSXJKFNPVEYMGOTWARHCI' +\
+    'FISVNWDBTLQOXAHKERPCGYUMJ' +\
+    'TEMHXUAOCGRKIJDQVSYLFNBWP' +\
+    'VKANTJSHUQBDCYGRLEMPXIOFW' +\
+    'EMIGYCVLXPWSFOQTNHBDKUAJR' +\
+    'USBOLDRNAKJMEXIFCWVYQHPTG' +\
+    'PJHQFEOGWBAVLRTIKUSXMCYND' +\
+    'XRCDWITFYMHUNKPOAJGQEVLBS'
 
 # END: solvable by logic #################################################
 
