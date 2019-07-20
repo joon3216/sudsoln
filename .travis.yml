@@ -5,6 +5,7 @@ env:
 matrix:
   include:
     - name: "Python 3.7.3 on macOS"
+      env: CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
       os: osx
       osx_image: xcode10.2
       language: shell
@@ -17,7 +18,9 @@ matrix:
         - choco install python
         - python --version
         - python -m pip install --upgrade pip
-      script: python sudsoln/tests.py
+      script: 
+        - python sudsoln/tests.py
+        - coverage run sudsoln/tests.py
 python:
   - "3.4"
   - "3.5"
