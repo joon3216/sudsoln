@@ -1,5 +1,18 @@
 dist: xenial
 language: python
+matrix:
+  include:
+    - name: "Python >= 3.4 on Xenial Linux"
+    - name: "Python >= 3.4 on macOS"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+    - name: "Python >= 3.4 on Windows"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python
+        - python -m pip install --upgrade pip
 python:
   - "3.4"
   - "3.5"
@@ -7,11 +20,12 @@ python:
   - "3.7"
 cache: pip
 install: 
+  - pip3 install --upgrade pip
   - pip install -r requires.txt
   - pip install codecov
   - pip install -i https://test.pypi.org/simple/ sudsoln
 script: 
-  - python sudsoln/tests.py
+  - python3 sudsoln/tests.py || python sudsoln/tests.py
 env:
   - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
 after_success:
