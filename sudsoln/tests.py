@@ -1,6 +1,7 @@
 
 import unittest
 import candidate
+import questions
 import sudoku
 
 
@@ -1077,138 +1078,57 @@ class TestSudoku(unittest.TestCase):
         '''
 
         # 1. .solve_globally() is sufficient
-        q1 = '....2....83.714.96.6.9.54.8.9.3.1..4.1.4.2..7.75...21...4...7.....5.7......196...'
-        q1 = sudoku.to_sudoku(q1)
+        q1 = sudoku.to_sudoku(questions.q1)
         q1.solve_logically()
-        a1 = '549628371832714596761935428298371654613452987475869213154283769986547132327196845'
-        result1 = (str(q1) == a1, q1.is_valid_answer())
+        result1 = (str(q1) == questions.a1, q1.is_valid_answer())
 
         # 2. .solve_locally() is sufficient
         # In fact, .solve_globally() doesn't do anything
-        q2 = '..3....2....416..56.8.......2.9.4.6..6..8..7..3.2.7.9.......6.42..841....5....9..'
-        q2 = sudoku.to_sudoku(q2)
+        q2 = sudoku.to_sudoku(questions.q2)
         q2.solve_logically()
-        a2 = '543798126972416835618352749721934568469185273835267491387529614296841357154673982'
-        result2 = (str(q2) == a2, q2.is_valid_answer())
+        result2 = (str(q2) == questions.a2, q2.is_valid_answer())
 
         # 3. .solve_by_pairs() not required
-        q3 = '.....5.8..2..7..46.5.9..3.......7..9.4.....6.1..8.......9..1.7.63..2..1..7.5.....'
-        q3 = sudoku.to_sudoku(q3)
+        q3 = sudoku.to_sudoku(questions.q3)
         q3.solve_logically()
-        a3 = '316245987928173546457968321863417259745392168192856734589631472634729815271584693'
-        result3 = (str(q3) == a3, q3.is_valid_answer())
+        result3 = (str(q3) == questions.a3, q3.is_valid_answer())
 
         # 4. .solve_by_pairs() required, but not the line 
         # "self.itemsets(candidates_global)" in .solve_by_pairs()
-        q4 = '3.2....6....7.81...........58.4............12...1......1....4..6...3........2....'
-        q4 = sudoku.to_sudoku(q4)
+        q4 = sudoku.to_sudoku(questions.q4)
         q4.solve_logically()
-        a4 = '342519867965748123178263945581472396496385712723196584219657438654831279837924651'
-        result4 = (str(q4) == a4, q4.is_valid_answer())
+        result4 = (str(q4) == questions.a4, q4.is_valid_answer())
 
         # 5. more than one iteration in while loop required
-        q5 = '...7.....1...........43.2..........6...5.9.........418....81.....2....5..4....3..'
-        q5 = sudoku.to_sudoku(q5)
+        q5 = sudoku.to_sudoku(questions.q5)
         q5.solve_logically()
-        a5 = '264715839137892645598436271423178596816549723759623418375281964982364157641957382'
-        result5 = (str(q5) == a5, q5.is_valid_answer())
+        result5 = (str(q5) == questions.a5, q5.is_valid_answer())
 
         # 6. (2 ** 2)-by-(2 ** 2) sudoku
-        q6 = '.3.4......1.2...'
-        q6 = sudoku.to_sudoku(q6, elements = {1, 2, 3, 4})
+        q6 = sudoku.to_sudoku(questions.q6, elements = {1, 2, 3, 4})
         q6.solve_logically()
-        a6 = '1324423134122143'
-        result6 = (str(q6) == a6, q6.is_valid_answer())
+        result6 = (str(q6) == questions.a6, q6.is_valid_answer())
 
         # 7. (4 ** 4)-by-(4 ** 4) sudoku, or hexadoku
-        q7 =\
-            '16F..........EG7' +\
-            '..........D3AF8.' +\
-            '.......EB5CG....' +\
-            '.....G3DA1....C2' +\
-            '398.........51BG' +\
-            'B.........E6F2A.' +\
-            '...C..9A87B2....' +\
-            '.A1E.D6C53.....4' +\
-            'FB48........17E3' +\
-            'C..........8D4..' +\
-            '.....1.G3D64....' +\
-            '.....38F7C5...29' +\
-            'G4DB........29F5' +\
-            '.......4..7DE6..' +\
-            '......25CG8E7...' +\
-            '...2..A19F....38'
         q7 = sudoku.to_sudoku(
-            q7,
+            questions.q7,
             elements = set([str(i) for i in range(1, 10)])\
                 .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
         )
         q7.solve_logically()
-        a7 = '16FDCA5B48293EG75CBG9742E6D3AF81732AF81EB5CG4D96E8946G3DA1F7B5C239862FE7D4AC51BGBD5784G319E6F2AC4FGC159A87B263DE2A1EBD6C53GF9874FB485CD6G29A17E3CG35A279FE18D46BA279E1BG3D648C5FDE61438F7C5BGA29G4DB7EC86A3129F585C3G9F42B7DE61A91AF3625CG8E7B4D67E2DBA19F45CG38'
-        result7 = (str(q7) == a7, q7.is_valid_answer())
+        result7 = (str(q7) == questions.a7, q7.is_valid_answer())
 
         # 8. (5 ** 2)-by-(5 ** 2) sudoku, or alphadoku
-        q8 =\
-            'CA....F..WG.D.P..YVOM.T.H' +\
-            '..G....K.O.......X.BIEJUQ' +\
-            '.BW.X.M.R..T..K.F..UGS.OA' +\
-            '...NY.GUI.H...R.QSMC.K...' +\
-            'JST..C..E..BMO....W.X.V.Y' +\
-            '..PQBYK.C..OJ.MR.UT.F..IG' +\
-            '..A..GIH..D..C.....X...PB' +\
-            '.OFJCR..D.VW..N...A..HSX.' +\
-            '...L....O.AE.I..D......Y.' +\
-            '.....X.Q...YPK.FO..SL.N.J' +\
-            '....O.S.AQ.XKD..Y.NHW...V' +\
-            'QI.D.O..J....T....CVY..R.' +\
-            'R.....T..IOAYUCQ..K.....X' +\
-            '.V..NHU....F....X..M.G.TO' +\
-            'T...SBR.K..HVG.PE.O.N....' +\
-            'S.D.AU..TH.MWR...V.Y.....' +\
-            '.U......M..S.NA.P....Q...' +\
-            '.CQR..E...L..PX.H..ITOYS.' +\
-            'NG...D.....I..O..QSE..X..' +\
-            'IH..T.CA.SK.EF..M.RJVNL..' +\
-            'A.O.L.D....CQY..J..K..PBF' +\
-            '...I.PACL.T...E.GWQ.RV...' +\
-            'FK.TME..G.W..J..S.U.C.IH.' +\
-            'GXCSJN.T.......Y.P....Q..' +\
-            'E.N.DSXV..R.A.BO..I....KU'
         q8 = sudoku.to_sudoku(
-            q8,
+            questions.q8,
             elements = {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
                 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
                 'U', 'V', 'W', 'X', 'Y'
             }
         )
-        a8 =\
-            'CAIEUJFLXWGQDSPKRYVOMBTNH' +\
-            'LDGMRANKSOYVCWFHTXPBIEJUQ' +\
-            'PBWHXQMYRVNTLEKIFJDUGSCOA' +\
-            'OFVNYTGUIBHJXAREQSMCPKWLD' +\
-            'JSTKQCHDEPIBMOULAGWNXRVFY' +\
-            'HEPQBYKSCNXOJLMRVUTWFDAIG' +\
-            'VTAUWGIHFEDRSCQJLNYXOMKPB' +\
-            'YOFJCRLPDTVWGBNMIKAQUHSXE' +\
-            'XNSLKVJMOUAEFIHGDCBPQWRYT' +\
-            'DRMGIXWQBAUYPKTFOEHSLCNVJ' +\
-            'ULEBOFSGAQJXKDITYRNHWPMCV' +\
-            'QIXDGOPWJMENBTSAUFCVYLHRK' +\
-            'RMHFPLTNVIOAYUCQWBKGSJDEX' +\
-            'WVKCNHUEYDPFRQLSXIJMAGBTO' +\
-            'TJYASBRXKCMHVGWPEDOLNFUQI' +\
-            'SPDOAUBFTHQMWRJXNVLYKIEGC' +\
-            'KULYEIVOMXCSHNAWPTGDBQFJR' +\
-            'MCQRVKEJNGLDUPXBHAFITOYSW' +\
-            'NGJWFDYRPLBITVOCKQSEHUXAM' +\
-            'IHBXTWCAQSKGEFYUMORJVNLDP' +\
-            'AWOVLMDIURSCQYGNJHXKETPBF' +\
-            'BYUIHPACLJTKNXEDGWQFRVOMS' +\
-            'FKRTMEQBGYWPOJDVSLUACXIHN' +\
-            'GXCSJNOTHKFUIMVYBPERDAQWL' +\
-            'EQNPDSXVWFRLAHBOCMITJYGKU'
-
+        q8.solve_logically()
+        result8 = (str(q8) == questions.a8, q8.is_valid_answer())
 
         result = {
             'test1': result1,
@@ -1218,7 +1138,7 @@ class TestSudoku(unittest.TestCase):
             'test5': result5,
             'test6': result6,
             'test7': result7,
-            'test8': []
+            'test8': result8
         }
         expected_result = {
             'test1': (True, True),
@@ -1228,7 +1148,7 @@ class TestSudoku(unittest.TestCase):
             'test5': (True, True),
             'test6': (True, True),
             'test7': (True, True),
-            'test8': []
+            'test8': (True, True)
         }
         self.assertEqual(result, expected_result)
 
