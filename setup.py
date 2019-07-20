@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sudsoln",
-    version="0.0.7",
+    version="0.0.8",
     author="Junkyu Park",
     author_email="joon3216@gmail.com",
     description="A n ** 2-by-n ** 2 sudoku solver.",
@@ -13,6 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/joon3216/sudsoln",
     packages=setuptools.find_packages(),
+    python_requires='>=3',
     install_requires=[
         'numpy'
     ],

@@ -4,6 +4,7 @@
 ## Coming up: ver 0.0.9
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of Candidate: for every element in elements, it gives you the number of appearances in each key of Candidate. 
+* Create `sudsoln/data` directory to store sudoku questions
 * Eliminate `numpy` dependencies by adding `Array` object
 * Write more solving features
 * Write unittests on `Sudoku` object for simpler maintenance and automatic testing
@@ -13,6 +14,7 @@
 
 ## ver 0.0.8
 
+* Added `python_requres=">=3"` in `setup.py`
 * Deleted `from sudsoln.candidate import *` in `__init__.py`; unnecessary. 
 * Deleted `solvers.py` in `sudsoln/tmp` directory; redundant.
 * Made `Sudoku.elements` type-independent, i.e. i.e. it now accepts not only a set of strings, but also a set of integers, as well as a mixture of both
