@@ -1,5 +1,7 @@
 dist: xenial
 language: python
+env:
+  - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
 matrix:
   include:
     - name: "Python 3.7.3 on macOS"
@@ -9,12 +11,13 @@ matrix:
       before_install: python3 --version; pip3 --version; sw_vers
     - name: "Python 3.7.4 on Windows"
       os: windows
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       language: shell
       before_install:
         - choco install python
         - python --version
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      script: python sudsoln/tests.py
 python:
   - "3.4"
   - "3.5"
@@ -28,8 +31,6 @@ install:
   - pip install -i https://test.pypi.org/simple/ sudsoln
 script: 
   - coverage run sudsoln/tests.py
-env:
-  - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
 after_success:
   - codecov
 notifications:
