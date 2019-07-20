@@ -1109,7 +1109,7 @@ class TestSudoku(unittest.TestCase):
         q6.solve_logically()
         result6 = (str(q6) == questions.a6, q6.is_valid_answer())
 
-        # 7. (4 ** 4)-by-(4 ** 4) sudoku, or hexadoku
+        # 7. (4 ** 2)-by-(4 ** 2) sudoku, or hexadoku
         q7 = sudoku.to_sudoku(
             questions.q7,
             elements = set([str(i) for i in range(1, 10)])\
