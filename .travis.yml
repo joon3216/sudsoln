@@ -2,12 +2,12 @@ dist: xenial
 language: python
 matrix:
   include:
-    - name: "Python 3.7.2 on macOS"
+    - name: "Python 3.7.3 on macOS"
       os: osx
       osx_image: xcode10.2
       language: shell
       before_install: python3 --version; pip3 --version; sw_vers
-    - name: "Python 3.7.3 on Windows"
+    - name: "Python 3.7.4 on Windows"
       os: windows
       language: shell
       before_install:
@@ -26,8 +26,6 @@ install:
   - pip install -r requires.txt
   - pip install codecov
   - pip install -i https://test.pypi.org/simple/ sudsoln
-script: 
-  - python3 sudsoln/tests.py || python sudsoln/tests.py
 env:
   - CODECOV_TOKEN="8b15563c-3721-44a3-b8a0-15362e28ec0f"
 after_success:
