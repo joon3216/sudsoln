@@ -1038,6 +1038,16 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+    def test_init_elements_error(self):
+        '''
+        Test .__init__() to see if it returns ValueError whenever
+        self.elements = None, and self.array does not contain all of the 
+        attempted elements at least once.
+        '''
+
+        with self.assertRaises(ValueError): sudoku.to_sudoku(questions.q4)
+
+
     def test_item_family(self):
         '''
         Test .__getitem__() and .__setitem__() to see if:
@@ -1106,9 +1116,12 @@ class TestSudoku(unittest.TestCase):
         q3.solve_logically()
         result3 = (str(q3) == questions.a3, q3.is_valid_answer())
 
-        # 4. .solve_by_pairs() required, but not the line 
+        # 4. .solve_by_pairs() required, but not the line
         # "self.itemsets(candidates_global)" in .solve_by_pairs()
-        q4 = sudoku.to_sudoku(questions.q4)
+        q4 = sudoku.to_sudoku(
+            questions.q4,
+            elements = set([str(i) for i in range(1, 10)])
+        )
         q4.solve_logically()
         result4 = (str(q4) == questions.a4, q4.is_valid_answer())
 
