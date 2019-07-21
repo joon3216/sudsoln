@@ -11,7 +11,6 @@ import numpy as np
 #     .shape
 #     slicing in Sudoku.col()
 #     slicing in Sudoku.row()
-# np.random.choice()
 
 
 class Sudoku():
@@ -998,11 +997,13 @@ class Sudoku():
         return self.show[r, :]
 
 
-    def solve(self, max_trial = 300):
-        '''(Sudoku, int) -> str
+    def solve(self, max_trial = 300, seed = None, quietly = False):
+        '''(Sudoku[, int, int or None, bool]) -> str
 
         Mutate self to the answer form, or until max_trial is met, and
-        return the time it took to compute the answer.
+        return the time it took to compute the answer. seed can be given
+        for reproducibility. Set quietly = True if you don't want to
+        display any messages.
         '''
 
         import datetime
@@ -1012,14 +1013,20 @@ class Sudoku():
         self.solve_logically()
         sudoku_copy = self.copy()
         if empty in self.show:
-            print("Logical approaches weren't enough.")
-            print("Solving with a brute force...")
-            self.solve_forcefully(max_trial = max_trial)
+            if not quietly:
+                print("Logical approaches weren't enough.")
+                print("Solving with a brute force...")
+            self.solve_forcefully(
+                max_trial = max_trial, 
+                seed = seed,
+                quietly = quietly
+            )
         end = datetime.datetime.now()
         if self.is_valid_answer():
             return str(end - start)
         else:
-            print('Mission failed; max_trial of', max_trial, 'met.')
+            if not quietly:
+                print('Mission failed; max_trial of', max_trial, 'met.')
             for i in range(n ** 2):
                 for j in range(n ** 2):
                     self.itemset((i, j), sudoku_copy.show[(i, j)])
@@ -1065,12 +1072,18 @@ class Sudoku():
         return candidates_global
 
 
-    def solve_forcefully(self, max_trial = 300, seed = None):
-        '''(Sudoku, int, int) -> None
+    def solve_forcefully(
+            self,
+            max_trial = 300, 
+            seed = None, 
+            quietly = False
+        ):
+        '''(Sudoku[, int, int or None, bool]) -> None
 
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met. seed
-        can be given for reproducibility.
+        can be given for reproducibility. Set quietly = True if you don't 
+        want to display any messages.
         '''
 
         import random
@@ -1085,11 +1098,14 @@ class Sudoku():
                 return None
             entries = self.solve_by_pairs()
             if set() in list(entries.values()):
-                print(\
-                    "Trial number ", trial, " out of ", max_trial, "; ",
-                    round(trial * 100 / max_trial, 4), '%', ' in progress',
-                    sep = ''
-                )
+                if not quietly:
+                    print(\
+                        "Trial number ", trial, 
+                        " out of ", max_trial, "; ",
+                        round(trial * 100 / max_trial, 4), '%', 
+                        ' in progress',
+                        sep = ''
+                    )
                 trial += 1
                 if trial == max_trial:
                     return None
