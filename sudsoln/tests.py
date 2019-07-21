@@ -982,6 +982,7 @@ class TestSudoku(unittest.TestCase):
         1. for list of lists of strings and integers
         2. when elements is a set of integers
         3. when elements is a set of both integers and strings
+        4. when elements is None
         '''
 
         eg = [
@@ -1010,15 +1011,28 @@ class TestSudoku(unittest.TestCase):
         q_small3 = sudoku.Sudoku(eg, elements = {1, '2', '3', 4})
         result_init3 = (q_small == q_small3)
 
+        # 4. elements is None
+        # 4.1. array contains only one type: str
+        q_small4_1 = sudoku.Sudoku(eg)
+        result_init4_1 = (q_small == q_small4_1)
+
+        # 4.2. array contains more than one type: str and int
+        q_small4_2 = sudoku.Sudoku(eg1)
+        result_init4_2 = (q_small == q_small4_2) 
+
         result = {
             'init1': result_init1, 
             'init2': result_init2, 
-            'init3': result_init3
+            'init3': result_init3,
+            'init4_1': result_init4_1,
+            'init4_2': result_init4_2
         }
         expected_result = {            
             'init1': True, 
             'init2': True, 
-            'init3': True
+            'init3': True,
+            'init4_1': True,
+            'init4_2': True
         }
 
         self.assertEqual(result, expected_result)

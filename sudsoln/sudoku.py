@@ -19,7 +19,7 @@ class Sudoku():
     def __init__(
             self, 
             array,
-            elements = set([str(i) for i in range(1, 3 ** 2 + 1)]), 
+            elements = None, 
             empty = '.'
         ):
         '''(Sudoku, 2d-array of objects[, {objects}, str]) -> None
@@ -116,13 +116,19 @@ class Sudoku():
                 'i.e. number of rows must be equal to number of columns.'
             )
         
-        # empty type
+        # elements and empty
         if type(empty) != str:
             raise TypeError('empty must be of type str.')
-
-        # elements
-        el_lst = list(elements)
-        elements = set([str(item) for item in el_lst])
+        if len(empty) != 1:
+            raise ValueError('Length of empty must be 1.')
+        if elements is None:
+            elements = set([str(i) for i in array.flat])
+            try:
+                elements.remove(empty)
+            except KeyError:
+                print("'" + empty + "' does not exist in array.")
+        if elements is not None:
+            elements = set([str(item) for item in list(elements)])
         el_test = set(array.flatten()).difference(elements.union({empty}))
         if el_test != set():
             raise ValueError(
@@ -132,7 +138,7 @@ class Sudoku():
         if len(elements) != n ** 2:
             raise ValueError(
                 'The number of elements in elements must be ' +\
-                str(n ** 2) + ', not ' + str(len(elements)) + '.'
+                str(int(n ** 2)) + ', not ' + str(len(elements)) + '.'
             )
         
         self.show = array

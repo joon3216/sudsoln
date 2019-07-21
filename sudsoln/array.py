@@ -20,6 +20,7 @@ class Array():
         >>> test = Array(test)
         '''
 
+        # require: changing all element types of lst to str
         self.show = lst
         self.n = len(lst)
 
@@ -27,12 +28,38 @@ class Array():
         '''(Array, (int, int)) -> object
 
         Return the entry of self at key.
+        
+        >>> test = [
+        ...     [1, 2, 3, 4], 
+        ...     [5, 2, 0, 3], 
+        ...     [7, 5, 1, 0], 
+        ...     [2, 6, 2, 4]
+        ... ]
+        ...
+        >>> test = Array(test)
+        >>> test[(0, 1)]
+        '5'
         '''
 
     def __repr__(self, key):
         '''(Array) -> str
 
         Return the Array representation of self.
+        >>> test = [
+        ...     [1, 2, 3, 4], 
+        ...     [5, 2, 0, 3], 
+        ...     [7, 5, 1, 0], 
+        ...     [2, 6, 2, 4]
+        ... ]
+        ...
+        >>> test = Array(test)
+        >>> test
+        Array([
+        ['1', '2', '3', '4'],
+        ['5', '2', '0', '3'],
+        ['7', '5', '1', '0'],
+        ['2', '6', '2', '4']
+        ])
         '''
 
     def __setitem__(self, key, value):

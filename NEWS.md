@@ -24,6 +24,7 @@
 * Added `test_solve_forcefully()` in `tests.py`
 * Added `seed` and `quietly` arguments to `.solve()` and `.solve_forcefully()`
 * Changed the numberings of `a_sta410_*` in `questions.py`, and added `q_sta410_testing` for unittest
+* Removed `numpy.random` dependency from `.solve_forcefully()`
 * Removed `sudsoln/tmp` directory and moved all the `.py` scripts out of it. `appearance.py` and `array.py` is now in `sudsoln` directory
 * Rewrote `__init__.py`:
 	+ Added: `from sudsoln.candidate import *`; realized having this is more convenient
