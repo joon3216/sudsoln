@@ -1,15 +1,29 @@
 
 # `sudsoln`
 
-## Coming up: ver 0.0.9
+## Coming up: ver 0.0.10
 
-* Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of Candidate: for every element in elements, it gives you the number of appearances in each key of Candidate. 
+* Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Create `sudsoln/data` directory to store sudoku questions
 * Eliminate `numpy` dependencies by adding `Array` object
+* Make `Sudoku` object guess the `elements` from the `array` so that one doesn't need to specify `elements` every time 
+* Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
 * Write unittests on `Sudoku` object for simpler maintenance and automatic testing
 	+ Test `.__init__()` with more examples in unittest
 * Write unittests on `Appearance` object after it is defined.
+
+
+## ver 0.0.9
+
+* Added `formatting.py` for a formatting of `questions.py`
+* Added `test_solve_forcefully()` in `tests.py`
+* Changed the numberings of `a_sta410_*` in `questions.py`, and added `q_sta410_testing` for unittest
+* Removed `sudsoln/tmp` directory and moved all the `.py` scripts out of it. `appearance.py` and `array.py` is now in `sudsoln` directory
+* Rewrote `__init__.py`:
+	+ Added: `from sudsoln.candidate import *`; realized having this is more convenient
+	+ Added: `from sudsoln.questions import *`; the same reason
+* Wrote `import doctest; doctest.testmod()` in `sudoku.py`
 
 
 ## ver 0.0.8
