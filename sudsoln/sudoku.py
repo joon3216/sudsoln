@@ -1065,13 +1065,17 @@ class Sudoku():
         return candidates_global
 
 
-    def solve_forcefully(self, max_trial = 300):
-        '''(Sudoku, int) -> None
+    def solve_forcefully(self, max_trial = 300, seed = None):
+        '''(Sudoku, int, int) -> None
 
         Try out candidate numbers in each entry randomly until self is 
-        mutated into the answer form, or until max_trial is met.
+        mutated into the answer form, or until max_trial is met. seed
+        can be given for reproducibility.
         '''
 
+        import random
+        if seed is not None:
+            random.seed(seed)
         trial = 1
         empty = self.empty
         #sudoku_copy = self.show.copy()
@@ -1092,7 +1096,8 @@ class Sudoku():
                 self.itemsets(sudoku_melt)
             else:
                 keys = list(entries.keys()); keys.sort()
-                guess = np.random.choice(list(entries[keys[0]]), 1)[0]
+                # guess = np.random.choice(list(entries[keys[0]]), 1)[0]
+                guess = random.choice(list(entries[keys[0]]))
                 self.itemset(keys[0], guess)
                 self.solve_logically()
                 if empty not in self.show and not self.is_valid_answer():
@@ -1282,7 +1287,7 @@ class Sudoku():
 
 
 def aggregate_unions(unions, names):
-    '''({str: {objects}}, [str, str]) -> [ints], [ints]
+    '''({str: {objects}}, [str, str]) -> [objects], [objects]
     
     Precondition:
     1. len(names) == 2
@@ -1328,7 +1333,7 @@ def aggregate_unions(unions, names):
 
 
 def collect_appearances(union1, union2, V, elements):
-    '''([ints], [ints], {(int, int): {ints}}, {objects}) -> 
+    '''([objects], [objects], Candidate, {objects}) -> 
         {int: [[int, int], {(int, int)}]}
 
     Count the number of the same elements in union1 and union2
@@ -1338,6 +1343,7 @@ def collect_appearances(union1, union2, V, elements):
     contains the element in either union1 or union2. Apperances in
     elements are to be counted.
 
+    >>> import sudsoln.candidate as sc
     >>> rows_union = [
     ...     '4', '4', '4', '5', '5', '5', '6', '6', '7', '7', 
     ...     '9', '9', '9'
@@ -1347,11 +1353,11 @@ def collect_appearances(union1, union2, V, elements):
     ...     '4', '4', '4', '5', '5', '6', '6', '7', '9', '9', '9'
     ... ]
     ...
-    >>> V = {
+    >>> V = sc.Candidate({
     ...     (0, 1): {'4', '9', '7', '5'}, (1, 0): {'9', '4'}, 
     ...     (1, 1): {'4', '9', '6', '5'}, (1, 2): {'4', '9', '6', '5'}, 
     ...     (2, 1): {'7', '9', '6', '5', '4'}
-    ... }
+    ... })
     ...
     >>> elements = set([str(i) for i in range(1, 3 ** 2 + 1)])
     >>> appearances = collect_appearances(
@@ -1390,7 +1396,7 @@ def collect_appearances(union1, union2, V, elements):
 
 
 def collect_unions(unions, n, names, V):
-    '''({str: set()}, int, [str, str], {(int, int): {objects}}) -> None
+    '''({str: set()}, int, [str, str], Candidate) -> None
 
     Precondition: 
     1. Each value in unions is the empty set set().
@@ -1401,16 +1407,17 @@ def collect_unions(unions, n, names, V):
     where V is a collection of subset candidates from n ** 2 by n ** 2 
     Sudoku.
 
+    >>> import sudsoln.candidate as sc
     >>> n = 3
     >>> names = ['row', 'col']
     >>> unions = initialize_unions(n, names)
-    >>> V = {
+    >>> V = sc.Candidate({
     ...     (0, 1): {'5', '4', '7', '9'}, 
     ...     (1, 0): {'9', '4'}, 
     ...     (1, 1): {'5', '4', '6', '9'}, 
     ...     (1, 2): {'5', '4', '6', '9'}, 
     ...     (2, 1): {'5', '4', '7', '9', '6'}
-    ... }
+    ... })
     ...
     >>> collect_unions(unions, n, names, V)
     >>> unions == {
@@ -1516,6 +1523,8 @@ def to_sudoku(sudoku_str,
     n = int(len(sudoku_str) ** .25)
     array = np.array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2)
     return Sudoku(array, elements, empty)
+
+
 
 if __name__ == '__main__':
     import doctest
