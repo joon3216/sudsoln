@@ -1,7 +1,7 @@
 
 # `sudsoln`
 
-## Coming up: ver 0.0.10
+## Coming up: ver 0.0.11
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Add `import doctest; doctest.testmod()` in `candidate.py`
@@ -14,8 +14,11 @@
 	+ Test `.__init__()` with more examples in unittest
 * Write unittests on `Appearance` object after it is defined.
 
+## ver 0.0.10 (changes made after current version)
 
-## ver 0.0.9
+* Wrote `import doctest; doctest.testmod()` in `candidate.py`
+
+## ver 0.0.9 (Current version)
 
 * Added `formatting.py` for a formatting of `questions.py`
 * Added `test_solve_forcefully()` in `tests.py`
