@@ -5,7 +5,6 @@ import questions
 import sudoku
 
 
-
 # START: testing Candidate ###############################################
 
 class TestCandidate(unittest.TestCase):
@@ -1150,6 +1149,26 @@ class TestSudoku(unittest.TestCase):
             'test7': (True, True),
             'test8': (True, True)
         }
+        self.assertEqual(result, expected_result)
+
+
+    def test_solve_forcefully(self):
+        '''
+        Test .solve_forcefully() to see if a brute force works.
+        '''
+
+        q_sta = sudoku.to_sudoku(questions.q_sta410_testing)
+        q_sta.solve_logically()
+        q_sta.solve_forcefully(quietly = True)
+        result = (
+            str(q_sta) in [
+                questions.a_sta410_4, 
+                questions.a_sta410_5,
+                questions.a_sta410_6
+            ],
+            q_sta.is_valid_answer()
+        )
+        expected_result = (True, True)
         self.assertEqual(result, expected_result)
 
 

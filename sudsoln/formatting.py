@@ -17,5 +17,5 @@ def formatting(sudoku_str):
             item = ''
     print(result)
 
-if __name__ == '__main__':
-    formatting(questions.q_boss)
+# if __name__ == '__main__':
+#     formatting(questions.a_sta410_6)
