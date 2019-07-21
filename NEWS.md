@@ -4,6 +4,7 @@
 ## Coming up: ver 0.0.10
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
+* Add `import doctest; doctest.testmod()` in `candidate.py`
 * Create `sudsoln/data` directory to store sudoku questions
 * Eliminate `numpy` dependencies by adding `Array` object
 * Make `Sudoku` object guess the `elements` from the `array` so that one doesn't need to specify `elements` every time 
@@ -18,6 +19,7 @@
 
 * Added `formatting.py` for a formatting of `questions.py`
 * Added `test_solve_forcefully()` in `tests.py`
+* Added `seed` and `quietly` arguments to `.solve()` and `.solve_forcefully()`
 * Changed the numberings of `a_sta410_*` in `questions.py`, and added `q_sta410_testing` for unittest
 * Removed `sudsoln/tmp` directory and moved all the `.py` scripts out of it. `appearance.py` and `array.py` is now in `sudsoln` directory
 * Rewrote `__init__.py`:

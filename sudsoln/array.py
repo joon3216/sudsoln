@@ -1,8 +1,4 @@
 
-
-# Under construction...
-
-
 class Array():
     '''A 2-dimensional array.'''
 
@@ -26,4 +22,56 @@ class Array():
 
         self.show = lst
         self.n = len(lst)
-        self.n_sq = len(lst) ** 2
+
+    def __getitem__(self, key):
+        '''(Array, (int, int)) -> object
+
+        Return the entry of self at key.
+        '''
+
+    def __repr__(self, key):
+        '''(Array) -> str
+
+        Return the Array representation of self.
+        '''
+
+    def __setitem__(self, key, value):
+        '''(Array, (int, int), object) -> None
+
+        Assign value to self's key.
+        '''
+
+    def copy(self):
+        '''(Array) -> Array
+
+        Return the deep copy of self.
+        '''
+
+    def flat(self):
+        '''
+
+        Flat version of self.
+        '''
+
+    def flatten(self):
+        '''
+        Flatten version of self.
+        '''
+
+    def itemset(self):
+        '''(Array) -> None
+        
+        Itemset
+        '''
+
+    def reshape(self):
+        '''(Array) -> Array
+
+        Reshape
+        '''
+
+    def shape(self):
+        '''(Array) -> (int, int)
+
+        Shape of self.
+        '''
