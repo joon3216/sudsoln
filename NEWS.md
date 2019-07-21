@@ -16,7 +16,9 @@
 
 ## ver 0.0.10 (changes made after current version)
 
+* Made `Sudoku` to guess `self.elements` whenever it is not specified; you don't need to specify it every time you initialize `Sudoku` puzzle.
 * Wrote `import doctest; doctest.testmod()` in `candidate.py`
+
 
 ## ver 0.0.9 (Current version)
 
