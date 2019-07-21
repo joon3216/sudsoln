@@ -22,11 +22,11 @@ class Sudoku():
             elements = None, 
             empty = '.'
         ):
-        '''(Sudoku, 2d-array of objects[, {objects}, str]) -> None
+        '''(Sudoku, 2d-array of objects[, {objects} or None, str]) -> None
         
         Precondition: 
         1. each element in elements is of length 1.
-        2. len(elements) >= 4
+        2. (elements is None) or (len(elements) >= 4)
         3. len(empty) == 1
 
         Initialize Sudoku puzzle.
@@ -126,7 +126,32 @@ class Sudoku():
             try:
                 elements.remove(empty)
             except KeyError:
-                print("'" + empty + "' does not exist in array.")
+                print(
+                    "'" + empty + "' does not exist in array. " +\
+                    "Did you:\n" +\
+                    "\t1. try to initialize Sudoku puzzle with an " +\
+                    "array that is already in the answer form? " +\
+                    " Specify 'is_answer = True' in Sudoku and try " +\
+                    "again.\n" +\
+                    "\t2. correctly specify the string denoting " +\
+                    "emptiness in array? The default empty is '.', " +\
+                    "a period. To change the string denoting emptiness " +\
+                    "in array, use sudoku.change_empty(array, from, to)."
+                )
+            if len(elements) != n ** 2:
+                raise ValueError(
+                    'Length of the guessed elements is ' +\
+                    str(len(elements)) + '. ' +\
+                    'Make sure that every element in array contains ' +\
+                    'all of your attempted elements at least once, or ' +\
+                    'specify elements explicitly. ' +\
+                    'For example, if you try to solve a 9-by-9 sudoku ' +\
+                    'whose answer form consists of integers from 1 to ' +\
+                    '9, either make sure that every integer from 1 to ' +\
+                    '9 shows up in array at least once, or explicitly ' +\
+                    'specify elements = set([str(i) for i in ' +\
+                    'range(1, 10)]).'
+                )
         if elements is not None:
             elements = set([str(item) for item in list(elements)])
         el_test = set(array.flatten()).difference(elements.union({empty}))
@@ -1529,7 +1554,7 @@ def sieve_appearances(appearances):
 
 
 def to_sudoku(sudoku_str, 
-              elements = set([str(i) for i in range(1, 3 ** 2 + 1)]), 
+              elements = None, 
               empty = '.'):
     '''(str, {objects}, str) -> Sudoku
 
