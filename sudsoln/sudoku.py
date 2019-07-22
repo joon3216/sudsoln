@@ -38,7 +38,7 @@ class Sudoku():
         ...        ['.', '.', '.', '4']
         ... ]
         ...
-        >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
+        >>> q_small = Sudoku(q_small)
         >>> q_small.n
         2
         >>> question1 = [  # mixture of int and str, and not a np.array
@@ -75,12 +75,7 @@ class Sudoku():
         ...     ['.', '.', '.', '2', '.', '.', 'A', '1', '9', 'F', '.', '.', '.', '.', '3', '8']
         ... ])
         ...
-        >>> q_big = Sudoku(
-        ...     question_big, 
-        ...     elements = set([str(i) for i in range(1, 3 ** 2 + 1)])\\
-        ...         .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
-        ... )
-        ...
+        >>> q_big = Sudoku(question_big)
         >>> q_big.n
         4
         '''
@@ -123,36 +118,46 @@ class Sudoku():
             raise ValueError('Length of empty must be 1.')
         if elements is None:
             elements = set([str(i) for i in array.flat])
-            try:
+            if empty not in elements:
+                try: # assuming it is already an answer
+                    Sudoku(
+                        array = array,
+                        elements = elements,
+                        empty = empty
+                    )
+                except ValueError: 
+                    # It isn't in its answer form.
+                    # i.e. wrong specification of empty
+                    raise KeyError(
+                        "empty = '" + empty + "'" + " does not exist " +\
+                        "in the array. Either specify the correct " +\
+                        "string denoting the emptiness in the array, " +\
+                        "or change the string denoting the emptiness " +\
+                        "in the array by using " +\
+                        "sudsoln.change_empty(array, from, to)."
+                    )
+            else:
                 elements.remove(empty)
-            except KeyError:
-                print(
-                    "'" + empty + "' does not exist in array. " +\
-                    "Did you:\n" +\
-                    "\t1. try to initialize Sudoku puzzle with an " +\
-                    "array that is already in the answer form? " +\
-                    " Specify 'is_answer = True' in Sudoku and try " +\
-                    "again.\n" +\
-                    "\t2. correctly specify the string denoting " +\
-                    "emptiness in array? The default empty is '.', " +\
-                    "a period. To change the string denoting emptiness " +\
-                    "in array, use sudoku.change_empty(array, from, to)."
-                )
             if len(elements) != n ** 2:
                 raise ValueError(
                     'Length of the guessed elements is ' +\
-                    str(len(elements)) + '. ' +\
-                    'Make sure that every element in array contains ' +\
-                    'all of your attempted elements at least once, or ' +\
-                    'specify elements explicitly. ' +\
+                    str(len(elements)) + ', not ' + str(int(n ** 2)) +\
+                    '. Either make sure that: ' +\
+                    '1. every element in the current array contains ' +\
+                    'all of your intended elements at least once, or; ' +\
+                    '2. specify elements explicitly, or; ' +\
+                    '3. there is exactly one string, and only one, ' +\
+                    'that denotes the emptiness in the array. ' +\
                     'For example, if you try to solve a 9-by-9 sudoku ' +\
                     'whose answer form consists of integers from 1 to ' +\
                     '9, either make sure that every integer from 1 to ' +\
-                    '9 shows up in array at least once, or explicitly ' +\
-                    'specify elements = set([str(i) for i in ' +\
-                    'range(1, 10)]).'
+                    '9 shows up in the current array at least once, ' +\
+                    'or explicitly specify elements = set([str(i) for ' +\
+                    'i in range(1, 10)]), or see if the array uses ' +\
+                    "'.' and some other string, like ',' or ' ',  to " +\
+                    'denote the emptiness.'
                 )
-        if elements is not None:
+        else:
             elements = set([str(item) for item in list(elements)])
         el_test = set(array.flatten()).difference(elements.union({empty}))
         if el_test != set():
@@ -1555,8 +1560,9 @@ def sieve_appearances(appearances):
 
 def to_sudoku(sudoku_str, 
               elements = None, 
-              empty = '.'):
-    '''(str, {objects}, str) -> Sudoku
+              empty = '.'
+    ):
+    '''(str[, {objects} or None, str]) -> Sudoku
 
     Precondition: 
     1. set(list(sudoku_str)).issubset(elements.union(empty))
@@ -1569,7 +1575,12 @@ def to_sudoku(sudoku_str,
 
     n = int(len(sudoku_str) ** .25)
     array = np.array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2)
-    return Sudoku(array, elements, empty)
+    return Sudoku(
+        array = array, 
+        elements = elements, 
+        empty = empty 
+        # is_answer = is_answer
+    )
 
 
 
