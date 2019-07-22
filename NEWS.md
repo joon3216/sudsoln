@@ -1,7 +1,7 @@
 
 # `sudsoln`
 
-## Coming up: ver 0.0.12
+## Coming up: ver >= 0.0.12
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Create `sudsoln/data` directory to store sudoku questions
@@ -15,6 +15,8 @@
 ## Working on: ver 0.0.11 (changes made after the current version)
 
 * Added two tests in `tests.py`: `test_init_detect_typo_elements_none()` and `test_init_detect_typo_elements_specific()`.
+* Changed the name of `array.py` to `sarray.py`
+* Edited `test_init_detect_answer()` to test two features: answer-form detection and empty-specification irrelevance.
 
 ## ver 0.0.10 (current version)
 
