@@ -16,7 +16,9 @@
 
 ## ver 0.0.10 (changes made after current version)
 
-* Made `Sudoku` to guess `self.elements` whenever it is not specified; you don't need to specify it every time you initialize `Sudoku` puzzle.
+* Added `change_empty(array, old, new)` in `sudoku.py`.
+* Erased `from sudsoln.candidate import *` and `from sudsoln.questions import *` in `__init__.py` because I think they should be accessed as submodules.
+* Made `Sudoku` to guess `self.elements` whenever it is not specified (i.e. `None`); you don't need to specify it every time you initialize `Sudoku` puzzle unless error messages specifically ask you to do so.
 * Wrote `import doctest; doctest.testmod()` in `candidate.py`
 
 
