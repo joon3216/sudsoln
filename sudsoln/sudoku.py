@@ -134,7 +134,7 @@ class Sudoku():
                         "string denoting the emptiness in the array, " +\
                         "or change the string denoting the emptiness " +\
                         "in the array by using " +\
-                        "sudsoln.change_empty(array, from, to)."
+                        "sudsoln.change_empty(array, old, new)."
                     )
             else:
                 elements.remove(empty)
@@ -1382,6 +1382,34 @@ def aggregate_unions(unions, names):
         else: # usually col
             union2.extend(list(v_unions))
     return union1, union2
+
+
+def change_empty(array, old, new):
+    '''(2d-array of objects, str, str) -> None
+
+    Precondition: len(new) == 1
+
+    Mutate array by replacing olds with new.
+
+    >>> eg = [  
+    ...     ['1', '.', '3', '.'],
+    ...     ['.', '2', '.', '.'],
+    ...     ['.', '.', '.', '.'],
+    ...     ['.', '.', '.', '4']
+    ... ]
+    ...
+    >>> change_empty(eg, '.', ' ')
+    >>> eg == [  
+    ...     ['1', ' ', '3', ' '],
+    ...     [' ', '2', ' ', ' '],
+    ...     [' ', ' ', ' ', ' '],
+    ...     [' ', ' ', ' ', '4']
+    ... ]
+    ...
+    True
+    '''
+    for i in range(len(array)):
+        array[i] = list(map(lambda x: new if x == old else x, array[i]))
 
 
 def collect_appearances(union1, union2, V, elements):
