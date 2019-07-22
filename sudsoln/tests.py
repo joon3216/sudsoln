@@ -1038,6 +1038,18 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+    def test_init_detect_answer(self):
+        '''
+        Test .__init__() to see if it detects whether the array
+        is already in its answer form given that elements = None.
+        '''
+
+        a6 = questions.a6
+        result = sudoku.to_sudoku(a6)
+        expected_result = sudoku.to_sudoku(a6, elements = {1, 2, 3, 4})
+        self.assertEqual(result, expected_result)
+
+
     def test_init_elements_error(self):
         '''
         Test .__init__() to see if it returns ValueError whenever
@@ -1046,6 +1058,21 @@ class TestSudoku(unittest.TestCase):
         '''
 
         with self.assertRaises(ValueError): sudoku.to_sudoku(questions.q4)
+
+
+    def test_init_empty_error(self):
+        '''
+        Test .__init__() to see if a wrong specification of empty raises
+        KeyError given that elements = None.
+        '''
+
+        eg = [  
+            ['1', '.', '3', '.'],
+            ['.', '2', '.', '.'],
+            ['.', '.', '.', '.'],
+            ['.', '.', '.', '4']
+        ]
+        with self.assertRaises(KeyError): sudoku.Sudoku(eg, empty = ',')
 
 
     def test_item_family(self):
