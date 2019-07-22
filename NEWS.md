@@ -14,7 +14,7 @@
 
 ## Working on: ver 0.0.11 (changes made after the current version)
 
-* to be continued
+* Added two tests in `tests.py`: `test_init_detect_typo_elements_none()` and `test_init_detect_typo_elements_specific()`.
 
 ## ver 0.0.10 (current version)
 
