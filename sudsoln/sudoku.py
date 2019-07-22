@@ -1,14 +1,15 @@
 
 import sudsoln.candidate as candidate
+# import sudsoln.sarray as sarray
 import numpy as np
 # Currently using:
 # np.array()
 #     .copy()
 #     .itemset()
-#     .flat
-#     .flatten()
+#     .flat                   --- implemented; returns a list instead.
+#     .flatten()              --- implemented
 #     .reshape()
-#     .shape
+#     .shape                  --- implemented
 #     slicing in Sudoku.col()
 #     slicing in Sudoku.row()
 
@@ -1408,6 +1409,7 @@ def change_empty(array, old, new):
     ...
     True
     '''
+
     for i in range(len(array)):
         array[i] = list(map(lambda x: new if x == old else x, array[i]))
 

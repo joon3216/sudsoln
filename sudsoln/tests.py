@@ -2,6 +2,7 @@
 import unittest
 import candidate
 import questions
+# import sarray
 import sudoku
 
 
@@ -1040,13 +1041,20 @@ class TestSudoku(unittest.TestCase):
 
     def test_init_detect_answer(self):
         '''
-        Test .__init__() to see if it detects whether the array
-        is already in its answer form given that elements = None.
+        Test .__init__() to check that for any array that is already in
+        its answer form:
+        1. Sudoku(array, elements = None) initialization does NOT raise
+           an error.
+        2. 'empty' specification in Sudoku(array, elements = None, empty) 
+           becomes irrelevant.
         '''
 
         a6 = questions.a6
-        result = sudoku.to_sudoku(a6)
-        expected_result = sudoku.to_sudoku(a6, elements = {1, 2, 3, 4})
+        result1 = sudoku.to_sudoku(a6)
+        result2 = sudoku.to_sudoku(a6, empty = ',')
+        expected = sudoku.to_sudoku(a6, elements = {1, 2, 3, 4})
+        result = [result1, result2]
+        expected_result = [expected, expected]
         self.assertEqual(result, expected_result)
 
 
