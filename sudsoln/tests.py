@@ -1050,6 +1050,37 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+    def test_init_detect_typo_elements_none(self):
+        '''
+        Test .__init__() to see if Sudoku having elements = None detects 
+        a typo in one of its empty strings by raising a ValueError.
+        '''
+
+        q_small = [
+               ['1', '.', '3', ','], # typo here
+               ['.', '2', '.', '.'],
+               ['.', '.', '.', '.'],
+               ['.', '.', '.', '4']
+        ]
+        with self.assertRaises(ValueError): sudoku.Sudoku(q_small)
+
+
+    def test_init_detect_typo_elements_specific(self):
+        '''
+        Test .__init__() to see if Sudoku having a specific element detects
+        a typo in one of its empty strings by raising a ValueError.
+        '''
+
+        q_small = [
+               ['1', '.', '3', ','], # typo here
+               ['.', '2', '.', '.'],
+               ['.', '.', '.', '.'],
+               ['.', '.', '.', '4']
+        ]
+        with self.assertRaises(ValueError):
+            sudoku.Sudoku(q_small, elements = {1, 2, 3, 4})
+
+
     def test_init_elements_error(self):
         '''
         Test .__init__() to see if it returns ValueError whenever
