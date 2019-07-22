@@ -25,7 +25,7 @@ class Sudoku():
         '''(Sudoku, 2d-array of objects[, {objects} or None, str]) -> None
         
         Precondition: 
-        1. each element in elements is of length 1.
+        1. each element in elements is of length 1 if specified.
         2. (elements is None) or (len(elements) >= 4)
         3. len(empty) == 1
 
