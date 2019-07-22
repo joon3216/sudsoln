@@ -1067,8 +1067,8 @@ class TestSudoku(unittest.TestCase):
 
     def test_init_detect_typo_elements_specific(self):
         '''
-        Test .__init__() to see if Sudoku having a specific element detects
-        a typo in one of its empty strings by raising a ValueError.
+        Test .__init__() to see if Sudoku having a specific 'elements' 
+        detects a typo in one of its empty strings by raising a ValueError.
         '''
 
         q_small = [
