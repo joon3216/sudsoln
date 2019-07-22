@@ -1564,7 +1564,7 @@ def to_sudoku(sudoku_str,
     ):
     '''(str[, {objects} or None, str]) -> Sudoku
 
-    Precondition: 
+    Preconditions if elements is not None:
     1. set(list(sudoku_str)).issubset(elements.union(empty))
     2. len(elements) == len(sudoku_str) ** .5
     3. All elements in elements has len 1, as well as empty.
@@ -1578,8 +1578,7 @@ def to_sudoku(sudoku_str,
     return Sudoku(
         array = array, 
         elements = elements, 
-        empty = empty 
-        # is_answer = is_answer
+        empty = empty
     )
 
 
