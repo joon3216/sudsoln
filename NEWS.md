@@ -1,20 +1,22 @@
 
 # `sudsoln`
 
-## Coming up: ver 0.0.11
+## Coming up: ver 0.0.12
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
-* Add `import doctest; doctest.testmod()` in `candidate.py`
 * Create `sudsoln/data` directory to store sudoku questions
 * Eliminate `numpy` dependencies by adding `Array` object
-* Make `Sudoku` object guess the `elements` from the `array` so that one doesn't need to specify `elements` every time 
 * Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
-* Write unittests on `Sudoku` object for simpler maintenance and automatic testing
-	+ Test `.__init__()` with more examples in unittest
-* Write unittests on `Appearance` object after it is defined.
+* Write unittests on:
+	+ `Appearance` object after it is defined.
+	+ `Array` object after it is defined.
 
-## ver 0.0.10 (changes made after current version)
+## Working on: ver 0.0.11 (changes made after the current version)
+
+* to be continued
+
+## ver 0.0.10 (current version)
 
 * Added `change_empty(array, old, new)` in `sudoku.py`.
 * Erased `from sudsoln.candidate import *` and `from sudsoln.questions import *` in `__init__.py` because I think they should be accessed as submodules.
@@ -23,7 +25,7 @@
 * Wrote `import doctest; doctest.testmod()` in `candidate.py`
 
 
-## ver 0.0.9 (Current version)
+## ver 0.0.9
 
 * Added `formatting.py` for a formatting of `questions.py`
 * Added `test_solve_forcefully()` in `tests.py`
