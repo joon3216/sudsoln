@@ -5,7 +5,7 @@ class Array():
     def __init__(self, array):
         '''(Array, list of objects or [objects]) -> None
 
-        Initialize the Array object.
+        Initialize the 2-dimensional Array object.
 
         >>> test = [
         ...     [1, 2, 3, 2], 
@@ -26,6 +26,20 @@ class Array():
         (3, 4)
         >>> test.size
         12
+        >>> test2_1 = ['1', '5', 2]
+        >>> test2_2 = [['1', '5', 2]]
+        >>> test2_1 = Array(test2_1)
+        >>> test2_1
+        Array([
+        ['1'],
+        ['5'],
+        ['2']
+        ])
+        >>> test2_2 = Array(test2_2)
+        >>> test2_2
+        Array([
+        ['1', '5', '2']
+        ])
         '''
 
         mkstr = lambda x: str(x) if type(x) != str else x
@@ -34,9 +48,10 @@ class Array():
         for i in range(lena):
             try:
                 ncols.append(len(array[i]))
+                array[i] = list(map(mkstr, array[i]))
             except TypeError: # e.g. Array([2, 3])
-                ncols.append(array[i])
-            array[i] = list(map(mkstr, array[i]))
+                ncols.append(len([array[i]]))
+                array[i] = list(map(mkstr, [array[i]]))
         if len(set(ncols)) != 1:
             raise ValueError(
                 'All sublists of array should have the same length.'
@@ -49,6 +64,15 @@ class Array():
             [array[i][j] for i in range(lena) for j in range(self.ncol)]
         self.shape = (self.nrow, self.ncol)
         self.size = sum(ncols)
+
+
+    def __eq__(self, other):
+        '''(Array, Array) -> bool
+
+        Return True iff self and other are identical at every position.
+        '''
+
+        return self.show == other.show
 
 
     def __getitem__(self, key):
@@ -113,8 +137,7 @@ class Array():
         ])
         >>> test[(1, 3), (2, 2)]
         Array([
-        ['0'],
-        ['2']
+        ['0', '2']
         ])
         '''
         
@@ -133,7 +156,7 @@ class Array():
             return Array([self.show[key[0]][key[1]]])
         elif key0_is_int and key1_is_tl:
             [result.append(self[key[0], i]) for i in key[1]]
-            return Array(result)
+            return Array([result])
         
         elif key0_is_slice and key1_is_int:
             cols = [list(row) for row in list(zip(*self.show))]
@@ -149,7 +172,7 @@ class Array():
             
         elif key0_is_tl and key1_is_int:
             [result.append(self[i, key[1]]) for i in key[0]]
-            return Array(result)
+            return Array([result])
         elif key0_is_tl and key1_is_slice:
             [result.append(self[i, key[1]].show[0]) for i in key[0]]
             return Array(result)
@@ -161,7 +184,7 @@ class Array():
                 )
             entries = list(zip(key[0], key[1]))
             [result.append(self[item]) for item in entries]
-            return Array(result)
+            return Array([result])
         else:
             raise TypeError('Invalid key type')
 
@@ -226,7 +249,9 @@ class Array():
         ['2', '6', '.', '4']
         ])
         '''
-
+    
+        if not (isinstance(key[0], int) and isinstance(key[1], int)):
+            raise TypeError('Broadcasting not supported.')
         self.show[key[0]][key[1]] = str(value)
 
 
@@ -341,5 +366,7 @@ if __name__ == '__main__':
     ]
     test_a = np.array(test)
     test_A = Array(test)
+    test_small = [['1', '2'], ['3', '4']]
+    test_small_a = np.array(test_small)    
     import doctest
     doctest.testmod()
