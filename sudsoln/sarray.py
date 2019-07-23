@@ -32,7 +32,10 @@ class Array():
         lena = len(array)
         ncols = []
         for i in range(lena):
-            ncols.append(len(array[i]))
+            try:
+                ncols.append(len(array[i]))
+            except TypeError: # e.g. Array([2, 3])
+                ncols.append(array[i])
             array[i] = list(map(mkstr, array[i]))
         if len(set(ncols)) != 1:
             raise ValueError(
@@ -73,15 +76,23 @@ class Array():
         Array([
         ['4', '3', '0', '4']
         ])
-        >>> test[(1, 3), :]
+        >>> test[(1, -1, 2), :]
         Array([
         ['5', '2', '0', '3'],
-        ['2', '6', '2', '4']
+        ['2', '6', '2', '4'],
+        ['7', '5', '1', '0']
         ])
-        >>> test[:2, ] # subject to unittest: Raises IndexError
+        >>> test[:, (2, 0)]  # problem
         Array([
-        ['1', '2', '3', '4'],
-        ['5', '2', '0', '3']
+        ['3', '1'],
+        ['0', '5'],
+        ['1', '7'],
+        ['2', '2']
+        ])
+        >>> test[2:, [0, 2, 3]] # problem
+        Array([
+        ['7', '1', '0'],
+        ['2', '2', '4']
         ])
         >>> test[:, :2]
         Array([
@@ -100,27 +111,59 @@ class Array():
         ['1', '3'],
         ['2', '2']
         ])
+        >>> test[(1, 3), (2, 2)]
+        Array([
+        ['0'],
+        ['2']
+        ])
         '''
         
-        key0_is_slice = isinstance(key[0], slice)
         key0_is_int   = isinstance(key[0], int)
-        key1_is_slice = isinstance(key[1], slice)
+        key0_is_slice = isinstance(key[0], slice)
+        key0_is_tl    = isinstance(key[0], (tuple, list))
         key1_is_int   = isinstance(key[1], int)
+        key1_is_slice = isinstance(key[1], slice)
+        key1_is_tl    = isinstance(key[1], (tuple, list))
         
-        if key0_is_slice and key1_is_slice:
-            lz_inner = list(zip(*self.show[key[0]]))[key[1]]
-            lz = [list(row) for row in zip(*lz_inner)]
-            return Array(lz)
+        # 9 cases
+        result = []
+        if key0_is_int and key1_is_int:
+            return self.show[key[0]][key[1]]
+        elif key0_is_int and key1_is_slice:
+            return Array([self.show[key[0]][key[1]]])
+        elif key0_is_int and key1_is_tl:
+            [result.append(self[key[0], i]) for i in key[1]]
+            return Array(result)
+        
         elif key0_is_slice and key1_is_int:
             cols = [list(row) for row in list(zip(*self.show))]
             return Array([cols[key[1]][key[0]]])
-        elif key0_is_int and key1_is_slice:
-            return Array([self.show[key[0]][key[1]]])
-        elif key0_is_int and key1_is_int:
-            return self.show[key[0]][key[1]]
+        elif key0_is_slice and key1_is_slice:
+            lz_inner = list(zip(*self.show[key[0]]))[key[1]]
+            lz = [list(row) for row in zip(*lz_inner)]
+            return Array(lz)
+        elif key0_is_slice and key1_is_tl:
+            base = self[key[0], :]
+            [result.append(base[:, i].show[0]) for i in key[1]]
+            return Array(list(zip(*result)))
+            
+        elif key0_is_tl and key1_is_int:
+            [result.append(self[i, key[1]]) for i in key[0]]
+            return Array(result)
+        elif key0_is_tl and key1_is_slice:
+            [result.append(self[i, key[1]].show[0]) for i in key[0]]
+            return Array(result)
+        elif key0_is_tl and key1_is_tl:
+            if len(key[0]) != len(key[1]):
+                raise IndexError(
+                    'Indexing arrays having different lengths cannot ' +\
+                    'be broadcasted together.'
+                )
+            entries = list(zip(key[0], key[1]))
+            [result.append(self[item]) for item in entries]
+            return Array(result)
         else:
-            print('key0 is tuple ', isinstance(key[0], tuple))
-            raise TypeError('Invalid argument type asdf')
+            raise TypeError('Invalid key type')
 
 
     def __repr__(self):
@@ -212,7 +255,7 @@ class Array():
         ['1', '2', '3', '5', '2', '0', '7', '5', '1']
         '''
 
-        return list(self.flat)
+        return self.flat
 
 
     def itemset(self, key, value):
@@ -289,5 +332,14 @@ class Array():
 
 
 if __name__ == '__main__':
+    import numpy as np
+    test = [
+        [1, 2, 3, 4], 
+        [5, 2, 0, 3], 
+        [7, 5, 1, 0], 
+        [2, 6, 2, 4]
+    ]
+    test_a = np.array(test)
+    test_A = Array(test)
     import doctest
     doctest.testmod()
