@@ -81,7 +81,7 @@ class TestArray(unittest.TestCase):
         # 1.1.3. key[0] is int and key[1] is tuple/list
         result1_1_3_1 = eg[-1, [0, 1, 3]]
         result1_1_3_2 = eg[-1, (0, 1, 3)]
-        result1_1_3 = result1_1_3_1.show == result1_1_3_2.show
+        result1_1_3 = result1_1_3_1 == result1_1_3_2
 
         # 1.2.1 key[0] is slice and key[1] is int
         result1_2_1 = eg[::2, 1].show == [['2', '5']]
