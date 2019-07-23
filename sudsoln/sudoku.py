@@ -1588,9 +1588,10 @@ def sieve_appearances(appearances):
             appearances.pop(k2)
 
 
-def to_sudoku(sudoku_str, 
-              elements = None, 
-              empty = '.'
+def to_sudoku(
+        sudoku_str, 
+        elements = None, 
+        empty = '.'
     ):
     '''(str[, {objects} or None, str]) -> Sudoku
 
