@@ -1,11 +1,12 @@
 
 import sudsoln.candidate as candidate
+import sarray
 # import sudsoln.sarray as sarray
 import numpy as np
 # Currently using:
 # np.array()
 #     .__iter__(self)
-#     .__eq__(self, other)
+#     .__eq__(self, other)    --- implemented
 #     .copy()                 --- implemented
 #     .itemset()              --- implemented
 #     .flat                   --- implemented; returns a list instead.
@@ -59,7 +60,7 @@ class Sudoku():
         >>> q1 = Sudoku(question1)
         >>> q1.n
         3
-        >>> question_big = np.array([
+        >>> question_big = [
         ...     ['1', '6', 'F', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'E', 'G', '7'], 
         ...     ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'D', '3', 'A', 'F', '8', '.'],
         ...     ['.', '.', '.', '.', '.', '.', '.', 'E', 'B', '5', 'C', 'G', '.', '.', '.', '.'],
@@ -76,7 +77,7 @@ class Sudoku():
         ...     ['.', '.', '.', '.', '.', '.', '.', '4', '.', '.', '7', 'D', 'E', '6', '.', '.'],
         ...     ['.', '.', '.', '.', '.', '.', '2', '5', 'C', 'G', '8', 'E', '7', '.', '.', '.'],
         ...     ['.', '.', '.', '2', '.', '.', 'A', '1', '9', 'F', '.', '.', '.', '.', '3', '8']
-        ... ])
+        ... ]
         ...
         >>> q_big = Sudoku(question_big)
         >>> q_big.n
@@ -98,16 +99,16 @@ class Sudoku():
             )
 
         # Array type and shape
-        if 'ndarray' not in str(type(array)):
-            if type(array) == str:
-                raise TypeError(
-                    'String object is not acceptable. If you want to ' +\
-                    'convert a string representation of Sudoku to ' +\
-                    'Sudoku object, use ' +\
-                    'sudsoln.to_sudoku(sudoku_str, elements, empty) ' +\
-                    'instead.'
-                )
-            array = np.array(array)
+        if type(array) == str:
+            raise TypeError(
+                'String object is not acceptable. If you want to ' +\
+                'convert a string representation of Sudoku to ' +\
+                'Sudoku object, use ' +\
+                'sudsoln.to_sudoku(sudoku_str, elements, empty) ' +\
+                'instead.'
+            )
+        # array = np.array(array) # OLD
+        array = sarray.Array(array) # NEW
         if array.shape != (n ** 2, n ** 2):
             raise ValueError(
                 'The shape of array must be square, ' +\
@@ -120,7 +121,8 @@ class Sudoku():
         if len(empty) != 1:
             raise ValueError('Length of empty must be 1.')
         if elements is None:
-            elements = set([str(i) for i in array.flat])
+            elements = set(array.flat) # NEW
+            # elements = set([str(i) for i in array.flat]) # OLD
             if empty not in elements:
                 try: # assuming it is already an answer
                     Sudoku(
@@ -183,14 +185,11 @@ class Sudoku():
     def __eq__(self, other):
         '''(Sudoku, Sudoku) -> bool
 
-        Precondition: both are non-empty, i.e. self.show != np.array([])
-        and other.self != np.array([]), so that self.show == other.show 
-        yield neither array([], dtype=bool) nor False.
-
         Return True iff all the entries of self and other are the same.
         '''
 
-        return (self.show == other.show).all()
+        # return (self.show == other.show).all() # OLD
+        return self.show == other.show # NEW
 
 
     def __getitem__(self, key):
@@ -252,12 +251,7 @@ class Sudoku():
         elements: 1, 2, 3, 4, 5, 6, 7, 8, 9
         empty: .
         )
-        >>> q_big = ss.to_sudoku(
-        ...     sq.q7, 
-        ...     elements = set([str(i) for i in range(1, 3 ** 2 + 1)])\\
-        ...         .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
-        ... )
-        ...
+        >>> q_big = ss.to_sudoku(sq.q7)
         >>> q_big
         Sudoku(
             1    6    F    .    |    .    .    .    .    |    .    .    .    .    |    .    E    G    7
@@ -580,7 +574,8 @@ class Sudoku():
         array(['.', '.', '.', '.', '2', '.', '.', '.', '.'], dtype='<U1')
         '''
         
-        puzzle_copy = np.array([row[:] for row in self.show])
+        # puzzle_copy = np.array([row[:] for row in self.show])
+        puzzle_copy = self.show.copy() # NEW
         return Sudoku(
             puzzle_copy, 
             elements = self.elements, 
@@ -599,7 +594,7 @@ class Sudoku():
         >>> import sudsoln as ss
         >>> import sudsoln.candidate as sc
         >>> import sudsoln.questions as sq
-        >>> q6 = ss.to_sudoku(sq.q6, elements = {1, 2, 3, 4})
+        >>> q6 = ss.to_sudoku(sq.q6)
         >>> q6
         Sudoku(
             .    3    |    .    4
@@ -741,7 +736,7 @@ class Sudoku():
         ...     ['.', '.', '.',   4]
         ... ]
         ...
-        >>> q_small = ss.Sudoku(q_small, elements = {'1', '2', '3', '4'})
+        >>> q_small = ss.Sudoku(q_small)
         >>> q_small
         Sudoku(
             1    .    |    3    .
@@ -802,7 +797,7 @@ class Sudoku():
         ...     ['.', '.', '.',   4]
         ... ])
         ...
-        >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
+        >>> q_small = Sudoku(q_small)
         >>> q_small
         Sudoku(
             1    .    |    3    .
@@ -922,7 +917,7 @@ class Sudoku():
         ...     ['.', '.', '.',   4]
         ... ])
         ...
-        >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
+        >>> q_small = Sudoku(q_small)
         >>> q_small.melt() == sc.Candidate({
         ...     (0, 0): {'1'}, (0, 1): {'.'}, (0, 2): {'3'}, (0, 3): {'.'}, 
         ...     (1, 0): {'.'}, (1, 1): {'2'}, (1, 2): {'.'}, (1, 3): {'.'}, 
@@ -1132,8 +1127,10 @@ class Sudoku():
         empty = self.empty
         #sudoku_copy = self.show.copy()
         sudoku_melt = self.melt()
-        while empty in self.show:
-            if empty not in self.show:
+        # while empty in self.show: # OLD
+        while empty in self.show.flat:  # NEW 
+            # if empty not in self.show: # OLD
+            if empty not in self.show.flat: # NEW
                 return None
             entries = self.solve_by_pairs()
             if set() in list(entries.values()):
@@ -1155,8 +1152,10 @@ class Sudoku():
                 guess = random.choice(list(entries[keys[0]]))
                 self.itemset(keys[0], guess)
                 self.solve_logically()
-                if empty not in self.show and not self.is_valid_answer():
-                    self.itemsets(sudoku_melt)
+                # if empty not in self.show and not self.is_valid_answer(): # OLD
+                #     self.itemsets(sudoku_melt) # OLD
+                if empty not in self.show.flat and not self.is_valid_answer(): # NEW
+                    self.itemsets(sudoku_melt) # NEW
         return None
 
 
@@ -1412,8 +1411,16 @@ def change_empty(array, old, new):
     True
     '''
 
-    for i in range(len(array)):
-        array[i] = list(map(lambda x: new if x == old else x, array[i]))
+    ch_old = lambda x: new if x == old else x # NEW
+    if 'ndarray' in str(type(array)) or 'list' in str(type(array)): # NEW
+        for i in range(len(array)): # NEW indentation
+            array[i] = list(map(ch_old, array[i])) # NEW indentation
+    elif 'Array' in str(type(array)): # NEW
+        shape = array.shape # NEW
+        for i in range(len(array.show)): # NEW
+            array.show[i] = list(map(ch_old, array.show[i])) # NEW
+    else: # NEW
+        raise TypeError(str(type(array)) + ' not supported') # NEW
 
 
 def collect_appearances(union1, union2, V, elements):
@@ -1607,7 +1614,8 @@ def to_sudoku(
     '''
 
     n = int(len(sudoku_str) ** .25)
-    array = np.array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2)
+    # array = np.array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2) # OLD
+    array = sarray.Array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2) # NEW
     return Sudoku(
         array = array, 
         elements = elements, 
