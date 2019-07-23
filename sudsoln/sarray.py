@@ -42,6 +42,8 @@ class Array():
         ])
         '''
 
+        if 'ndarray' in str(type(array)):
+            array = list(array)
         mkstr = lambda x: str(x) if type(x) != str else x
         lena = len(array)
         ncols = []
