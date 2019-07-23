@@ -44,6 +44,8 @@ class Array():
 
         if 'ndarray' in str(type(array)):
             array = list(array)
+        elif 'Array' in str(type(array)):
+            array = array.show
         mkstr = lambda x: str(x) if type(x) != str else x
         lena = len(array)
         ncols = []
