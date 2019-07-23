@@ -4,7 +4,7 @@ import sudsoln.candidate as candidate
 import numpy as np
 # Currently using:
 # np.array()
-#     .copy()
+#     .copy()                 --- implemented
 #     .itemset()
 #     .flat                   --- implemented; returns a list instead.
 #     .flatten()              --- implemented
