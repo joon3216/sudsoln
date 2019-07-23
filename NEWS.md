@@ -14,6 +14,7 @@
 
 ## Working on: ver 0.0.11 (changes made after the current version)
 
+* Added `Array` object, an array that is ALWAYS 2-dimensional.
 * Added two tests in `tests.py`: `test_init_detect_typo_elements_none()` and `test_init_detect_typo_elements_specific()`.
 * Changed the name of `array.py` to `sarray.py`
 * Edited `test_init_detect_answer()` to test two features: answer-form detection and empty-specification irrelevance.
