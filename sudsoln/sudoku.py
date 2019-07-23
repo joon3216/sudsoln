@@ -4,14 +4,16 @@ import sudsoln.candidate as candidate
 import numpy as np
 # Currently using:
 # np.array()
+#     .__iter__(self)
+#     .__eq__(self, other)
 #     .copy()                 --- implemented
-#     .itemset()
+#     .itemset()              --- implemented
 #     .flat                   --- implemented; returns a list instead.
 #     .flatten()              --- implemented
-#     .reshape()
+#     .reshape()              --- implemented
 #     .shape                  --- implemented
-#     slicing in Sudoku.col()
-#     slicing in Sudoku.row()
+#     slicing in Sudoku.col() --- implemented
+#     slicing in Sudoku.row() --- implemented
 
 
 class Sudoku():
