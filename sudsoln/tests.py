@@ -2,8 +2,153 @@
 import unittest
 import candidate
 import questions
-# import sarray
+import sarray
 import sudoku
+
+# START: testing Array ##################################################
+
+class TestArray(unittest.TestCase):
+
+    def test_init(self):
+        '''
+        Test .__init__() to see if it realizes any one-dimensional list
+        as a column vector.
+        '''
+
+        test1 = sarray.Array([3, 4, 2, 7])
+        test2 = sarray.Array([[3, 4, 2, 7]])
+        result1 = test1.show == [['3'], ['4'], ['2'], ['7']]
+        result2 = test2.show == [['3', '4', '2', '7']]
+        result = [result1, result2]
+        expected_result = [True, True]
+        self.assertEqual(result, expected_result)
+
+
+    def test_getitem_error(self):
+        '''
+        Test .__getitem__() to see if error is raised when components 
+        of key are not of type int, slice, tuple, or list.
+        '''
+
+        eg = [
+            [1, 2, 3, 4], 
+            [5, 2, 0, 3], 
+            [7, 5, 1, 0], 
+            [2, 6, 2, 4]
+        ]
+        eg = sarray.Array(eg)
+
+        # 1. None
+        with self.assertRaises(IndexError): eg[2, ]        
+        
+        # 2. set
+        with self.assertRaises(TypeError): eg[{2, 3}, :]
+
+
+    def test_item_family(self):
+        '''
+        Test .__getitem__() and .__setitem__() to see if:
+        1. item evaluation is supported when:
+            1.1. key[0] is int 
+                1.1.1. and key[1] is int
+                1.1.2.       "       slice
+                1.1.3.       "       tuple or list
+            1.2. key[0] is slice 
+                1.2.1. and key[1] is int
+                1.2.2.       "       slice
+                1.2.3.       "       tuple or list
+            1.3. key[0] is tuple or list
+                1.3.1. and key[1] is int
+                1.3.2.       "       slice
+                1.3.3.       "       tuple or list
+        2. item assignment is supported
+        '''
+
+        eg = [
+            [1, 2, 3, 4], 
+            [5, 2, 0, 3], 
+            [7, 5, 1, 0], 
+            [2, 6, 2, 4]
+        ]
+        eg = sarray.Array(eg)
+
+        # 1.1.1. key[0] is int and key[1] is int
+        result1_1_1 = (eg[(0, 3)] == eg[0, 3] == '4')
+
+        # 1.1.2. key[0] is int and key[1] is slice
+        result1_1_2 = eg[2, :2].show == sarray.Array([['7', '5']]).show
+
+        # 1.1.3. key[0] is int and key[1] is tuple/list
+        result1_1_3_1 = eg[-1, [0, 1, 3]]
+        result1_1_3_2 = eg[-1, (0, 1, 3)]
+        result1_1_3 = result1_1_3_1.show == result1_1_3_2.show
+
+        # 1.2.1 key[0] is slice and key[1] is int
+        result1_2_1 = eg[::2, 1].show == [['2', '5']]
+
+        # 1.2.2 key[0] is slice and key[1] is slice
+        result1_2_2 = eg[:3:3, ::2].show == [['1', '3']]
+
+        # 1.2.3 key[0] is slice and key[1] is tuple/list
+        testing1_2_3 = eg[::3, (2, -1)]
+        expected1_2_3 = [['3', '4'], ['2', '4']]
+        result1_2_3 = testing1_2_3.show == expected1_2_3
+
+        # 1.3.1 key[0] is tuple/list and key[1] is int
+        result1_3_1 = eg[[1, 3, -2], -2].show == [['0', '2', '1']]
+
+        # 1.3.2 key[0] is tuple/list and key[1] is slice
+        result1_3_2 = eg[(1, -2, 3), :3].show ==\
+            [
+                ['5', '2', '0'],
+                ['7', '5', '1'],
+                ['2', '6', '2']
+            ]
+
+        # 1.3.3 key[0] is tuple/list and key[1] is tuple/list
+        result1_3_3 = eg[(1, 3, 2), [2, 1, -1]].show == [['0', '6', '0']]
+
+        # 2. item assignment
+        eg[0, 3] = 5
+        result2 = eg[0, :].show == [['1', '2', '3', '5']]
+
+        result = {
+            '1_1_1': result1_1_1, 
+            '1_1_2': result1_1_2, 
+            '1_1_3': result1_1_3,
+            '1_2_1': result1_2_1, 
+            '1_2_2': result1_2_2, 
+            '1_2_3': result1_2_3,
+            '1_3_1': result1_3_1, 
+            '1_3_2': result1_3_2, 
+            '1_3_3': result1_3_3,
+            '2': result2
+        }
+        expected_result = {
+            '1_1_1': True, '1_1_2': True, '1_1_3': True,
+            '1_2_1': True, '1_2_2': True, '1_2_3': True,
+            '1_3_1': True, '1_3_2': True, '1_3_3': True,
+            '2': True
+        }
+        self.assertEqual(result, expected_result)
+
+
+    def test_setitem_error(self):
+        '''
+        Test .__setitem__() to check it does NOT support broadcasting.
+        '''
+
+        eg = [
+            [1, 2, 3, 4], 
+            [5, 2, 0, 3], 
+            [7, 5, 1, 0], 
+            [2, 6, 2, 4]
+        ]
+        eg = sarray.Array(eg)
+        with self.assertRaises(TypeError): eg[:2, :] = 3
+
+
+# END: testing Array ####################################################
 
 
 # START: testing Candidate ###############################################
