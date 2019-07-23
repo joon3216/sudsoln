@@ -71,9 +71,11 @@ class Array():
     def __eq__(self, other):
         '''(Array, Array) -> bool
 
-        Return True iff self and other are identical at every position.
+        Return True iff self and other are identical element-wise.
         '''
 
+        if self.shape != other.shape:
+            return False
         return self.show == other.show
 
 
