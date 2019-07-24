@@ -126,10 +126,11 @@ class Candidate():
         'submatrix', 'row', or 'col'.
 
         >>> import sudsoln as ss
-        >>> q6 = ss.to_sudoku(ss.q6, elements = {1, 2, 3, 4})
+        >>> import sudsoln.questions as sq
+        >>> q6 = ss.to_sudoku(sq.q6, elements = {1, 2, 3, 4})
         >>> q6 = q6.candidates()
         >>> q6.group(by = 'submatrix') == {
-        ...     1: ss.Candidate(
+        ...     1: Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (1, 0): {'4', '1'}, 
@@ -137,7 +138,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     2: ss.Candidate(
+        ...     2: Candidate(
         ...         {
         ...             (0, 2): {'2'}, 
         ...             (1, 2): {'3', '2'}, 
@@ -145,7 +146,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     3: ss.Candidate(
+        ...     3: Candidate(
         ...         {
         ...             (2, 0): {'3', '4'}, 
         ...             (2, 1): {'4'}, 
@@ -153,7 +154,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     4: ss.Candidate(
+        ...     4: Candidate(
         ...         {
         ...             (2, 3): {'3', '2'}, 
         ...             (3, 2): {'3', '4'}, 
@@ -165,14 +166,14 @@ class Candidate():
         ...
         True
         >>> q6.group(by = 'row') == {
-        ...     0: ss.Candidate(
+        ...     0: Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (0, 2): {'2'}
         ...         },
         ...         n = 2
         ...     ), 
-        ...     1: ss.Candidate(
+        ...     1: Candidate(
         ...         {
         ...             (1, 0): {'4', '1'}, 
         ...             (1, 1): {'4', '2', '1'}, 
@@ -181,7 +182,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     2: ss.Candidate(
+        ...     2: Candidate(
         ...         {
         ...             (2, 0): {'3', '4'}, 
         ...             (2, 1): {'4'}, 
@@ -189,7 +190,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     3: ss.Candidate(
+        ...     3: Candidate(
         ...         {
         ...             (3, 1): {'4', '1'}, 
         ...             (3, 2): {'3', '4'}, 
@@ -201,7 +202,7 @@ class Candidate():
         ...
         True
         >>> q6.group(by = 'col') == {
-        ...     0: ss.Candidate(
+        ...     0: Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (1, 0): {'4', '1'}, 
@@ -209,7 +210,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     1: ss.Candidate(
+        ...     1: Candidate(
         ...         {
         ...             (1, 1): {'4', '2', '1'}, 
         ...             (2, 1): {'4'}, 
@@ -217,7 +218,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     2: ss.Candidate(
+        ...     2: Candidate(
         ...         {
         ...             (0, 2): {'2'}, 
         ...             (1, 2): {'3', '2'}, 
@@ -225,7 +226,7 @@ class Candidate():
         ...         },
         ...         n = 2
         ...     ), 
-        ...     3: ss.Candidate(
+        ...     3: Candidate(
         ...         {
         ...             (1, 3): {'3', '2', '1'}, 
         ...             (2, 3): {'3', '2'}, 
