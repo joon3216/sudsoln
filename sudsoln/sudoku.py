@@ -1,7 +1,6 @@
 
 import sudsoln.candidate as candidate
-import sarray
-# import sudsoln.sarray as sarray
+import sudsoln.sarray as sarray
 
 
 class Sudoku():
@@ -355,6 +354,9 @@ class Sudoku():
         >>> q1 = ss.to_sudoku(sq.q1)
         >>> str(q1)  # q1 in __init__()
         '....2....83.714.96.6.9.54.8.9.3.1..4.1.4.2..7.75...21...4...7.....5.7......196...'
+        >>> q1.solve_logically()
+        >>> str(q1)
+        '549628371832714596761935428298371654613452987475869213154283769986547132327196845'
         '''
 
         result = ''
@@ -530,7 +532,7 @@ class Sudoku():
         elements: 1, 2, 3, 4, 5, 6, 7, 8, 9
         empty: .
         )
-        >>> list(q1.col(3))
+        >>> q1.col(3).flatten()
         ['.', '7', '9', '3', '4', '.', '.', '5', '1']
         '''
         
@@ -550,11 +552,15 @@ class Sudoku():
         True
         >>> id(q1_cp) != id(q1)
         True
-        >>> q1_cp.row(0)[0] = 5
+        >>> q1_cp[0, 0] = 5
         >>> q1_cp.row(0)
-        array(['5', '.', '.', '.', '2', '.', '.', '.', '.'], dtype='<U1')
+        Array([
+        ['5', '.', '.', '.', '2', '.', '.', '.', '.']
+        ])
         >>> q1.row(0)
-        array(['.', '.', '.', '.', '2', '.', '.', '.', '.'], dtype='<U1')
+        Array([
+        ['.', '.', '.', '.', '2', '.', '.', '.', '.']
+        ])
         '''
         
         puzzle_copy = self.show.copy()
@@ -772,12 +778,12 @@ class Sudoku():
 
         Mutate entry number of self to value.
 
-        >>> q_small = np.array([
+        >>> q_small = [
         ...     [  1, '.',   3, '.'],
         ...     ['.',   2, '.', '.'],
         ...     ['.', '.', '.', '.'],
         ...     ['.', '.', '.',   4]
-        ... ])
+        ... ]
         ...
         >>> q_small = Sudoku(q_small)
         >>> q_small
@@ -818,12 +824,12 @@ class Sudoku():
         if the value set has length 1.
 
         >>> import sudsoln.candidate as sc
-        >>> q_small = np.array([
+        >>> q_small = [
         ...     [  1, '.',   3, '.'],
         ...     ['.',   2, '.', '.'],
         ...     ['.', '.', '.', '.'],
         ...     ['.', '.', '.',   4]
-        ... ])
+        ... ]
         ...
         >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
         >>> candids = q_small.candidates()
@@ -891,6 +897,7 @@ class Sudoku():
         Return Candidate form of self, and include empty entries
         as well if include_empty is True (by default).
 
+        >>> import numpy as np
         >>> import sudsoln.candidate as sc
         >>> q_small = np.array([
         ...     [  1, '.',   3, '.'],
@@ -1007,7 +1014,9 @@ class Sudoku():
         empty: .
         )
         >>> q1.row(2)
-        array(['.', '6', '.', '9', '.', '5', '4', '.', '8'], dtype='<U1')
+        Array([
+        ['.', '6', '.', '9', '.', '5', '4', '.', '8']
+        ])
         '''
         
         return self.show[r, :]
@@ -1230,17 +1239,23 @@ class Sudoku():
         empty: .
         )
         >>> q1.submatrix(1)
-        array([['.', '.', '.'],
-               ['8', '3', '.'],
-               ['.', '6', '.']], dtype='<U1')
+        Array([
+        ['.', '.', '.'],
+        ['8', '3', '.'],
+        ['.', '6', '.']
+        ])
         >>> q1.submatrix(3)
-        array([['.', '.', '.'],
-               ['.', '9', '6'],
-               ['4', '.', '8']], dtype='<U1')
+        Array([
+        ['.', '.', '.'],
+        ['.', '9', '6'],
+        ['4', '.', '8']
+        ])
         >>> q1.submatrix(4)
-        array([['.', '9', '.'],
-               ['.', '1', '.'],
-               ['.', '7', '5']], dtype='<U1')
+        Array([
+        ['.', '9', '.'],
+        ['.', '1', '.'],
+        ['.', '7', '5']
+        ])
         '''
         
         n = self.n
@@ -1388,6 +1403,7 @@ def change_empty(array, old, new):
     True
     '''
 
+    assert len(new) == 1, 'len(new) != 1'
     ch_old = lambda x: new if x == old else x
     if 'ndarray' in str(type(array)) or 'list' in str(type(array)):
         for i in range(len(array)):
