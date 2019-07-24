@@ -2,7 +2,7 @@
 import sudsoln.candidate as candidate
 import sarray
 # import sudsoln.sarray as sarray
-import numpy as np
+# import numpy as np
 # Currently using:
 # np.array()
 #     .__iter__(self)
