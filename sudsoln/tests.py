@@ -1342,10 +1342,13 @@ class TestSudoku(unittest.TestCase):
         result5 = (str(q5) == questions.a5, q5.is_valid_answer())
 
         q5_1 = sudoku.to_sudoku(questions.q5_1)
-        q5_1.solve_logicaly()
+        q5_1.solve_logically()
         result5_1 = (str(q5_1) == questions.a5_1, q5_1.is_valid_answer())
 
-        q5_2 = sudoku.to_sudoku(questions.q5_2)
+        q5_2 = sudoku.to_sudoku( # q5_2 doesn't have 9 in its Array
+            questions.q5_2,
+            elements = set([str(i) for i in range(1, 10)])
+        )
         q5_2.solve_logically()
         result5_2 = (str(q5_2) == questions.a5_2, q5_2.is_valid_answer())
 
