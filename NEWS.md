@@ -1,7 +1,7 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.13
+## Coming up: ver >= 0.0.14
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Create `sudsoln/data` directory to store sudoku questions
@@ -9,11 +9,15 @@
 * Write more solving features
 * Write unittests on `Appearance` object after it is defined.
 
-## Workign on: ver 0.0.12 (changes made after the current version)
+## Working on: ver 0.0.13 (changes made after the current version)
 
 * to be continued
 
-## Working on: ver 0.0.11 (current version)
+## ver 0.0.12 (current version)
+
+* Commented out `install_requires=['numpy']` in `setup.py`
+
+## ver 0.0.11
 
 * Added `Array` object, an array that is ALWAYS 2-dimensional:
 	+ supported attributes: `.show`, `.nrow`, `.ncol`, `.shape`, `.size`
