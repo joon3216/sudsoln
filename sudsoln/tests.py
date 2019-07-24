@@ -5,7 +5,7 @@ import questions
 import sarray
 import sudoku
 
-# START: testing Array ##################################################
+# START: testing Array ###################################################
 
 class TestArray(unittest.TestCase):
 
@@ -1341,6 +1341,18 @@ class TestSudoku(unittest.TestCase):
         q5.solve_logically()
         result5 = (str(q5) == questions.a5, q5.is_valid_answer())
 
+        q5_1 = sudoku.to_sudoku(questions.q5_1)
+        q5_1.solve_logicaly()
+        result5_1 = (str(q5_1) == questions.a5_1, q5_1.is_valid_answer())
+
+        q5_2 = sudoku.to_sudoku(questions.q5_2)
+        q5_2.solve_logically()
+        result5_2 = (str(q5_2) == questions.a5_2, q5_2.is_valid_answer())
+
+        q5_3 = sudoku.to_sudoku(questions.q5_3)
+        q5_3.solve_logically()
+        result5_3 = (str(q5_3) == questions.a5_3, q5_3.is_valid_answer())
+
         # 6. (2 ** 2)-by-(2 ** 2) sudoku
         q6 = sudoku.to_sudoku(questions.q6, elements = {1, 2, 3, 4})
         q6.solve_logically()
@@ -1373,6 +1385,9 @@ class TestSudoku(unittest.TestCase):
             'test3': result3,
             'test4': result4,
             'test5': result5,
+            'test5_1': result5_1, 
+            'test5_2': result5_2, 
+            'test5_3': result5_3,
             'test6': result6,
             'test7': result7,
             'test8': result8
@@ -1383,6 +1398,9 @@ class TestSudoku(unittest.TestCase):
             'test3': (True, True),
             'test4': (True, True),
             'test5': (True, True),
+            'test5_1': (True, True),
+            'test5_2': (True, True),
+            'test5_3': (True, True),
             'test6': (True, True),
             'test7': (True, True),
             'test8': (True, True)
