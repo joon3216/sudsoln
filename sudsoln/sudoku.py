@@ -80,18 +80,15 @@ class Sudoku():
                 'sudsoln.to_sudoku(sudoku_str, elements, empty) ' +\
                 'instead.'
             )
-        # array = np.array(array) # OLD
-        array = sarray.Array(array) # NEW
-        # if array.shape != (n ** 2, n ** 2): # OLD
-        if len(set(array.shape)) != 1: # NEW
+        array = sarray.Array(array)
+        if len(set(array.shape)) != 1:
             raise ValueError(
                 'The shape of array must be square, ' +\
                 'i.e. number of rows must be equal to number of columns.'
             )
 
         # Size
-        # n = len(array) ** .5 # OLD
-        n = list(set(array.shape))[0] ** .5 # NEW
+        n = list(set(array.shape))[0] ** .5
         if n < 2:
             raise ValueError(
                 'The number of rows of array is too small; ' +\
@@ -110,8 +107,7 @@ class Sudoku():
         if len(empty) != 1:
             raise ValueError('Length of empty must be 1.')
         if elements is None:
-            elements = set(array.flatten()) # NEW: .flatten()
-            # elements = set([str(i) for i in array.flat]) # OLD
+            elements = set(array.flatten())
             if empty not in elements:
                 try: # assuming it is already an answer
                     Sudoku(
@@ -177,8 +173,7 @@ class Sudoku():
         Return True iff all the entries of self and other are the same.
         '''
 
-        # return (self.show == other.show).all() # OLD
-        return self.show == other.show # NEW
+        return self.show == other.show
 
 
     def __getitem__(self, key):
@@ -562,8 +557,7 @@ class Sudoku():
         array(['.', '.', '.', '.', '2', '.', '.', '.', '.'], dtype='<U1')
         '''
         
-        # puzzle_copy = np.array([row[:] for row in self.show])
-        puzzle_copy = self.show.copy() # NEW
+        puzzle_copy = self.show.copy()
         return Sudoku(
             puzzle_copy, 
             elements = self.elements, 
@@ -757,7 +751,7 @@ class Sudoku():
         n = self.n
         empty = self.empty
         elements = self.elements
-        if empty in self.show.flatten(): # not even finished yet # NEW: .flatten()
+        if empty in self.show.flatten(): # not even finished yet
             return False
         for i in range(n ** 2):
             if elements != set(self.submatrix(i + 1).flatten()):
@@ -1113,12 +1107,9 @@ class Sudoku():
             random.seed(seed)
         trial = 1
         empty = self.empty
-        #sudoku_copy = self.show.copy()
         sudoku_melt = self.melt()
-        # while empty in self.show: # OLD
-        while empty in self.show.flatten():  # NEW 
-            # if empty not in self.show: # OLD
-            if empty not in self.show.flatten(): # NEW
+        while empty in self.show.flatten():
+            if empty not in self.show.flatten():
                 return None
             entries = self.solve_by_pairs()
             if set() in list(entries.values()):
@@ -1136,14 +1127,12 @@ class Sudoku():
                 self.itemsets(sudoku_melt)
             else:
                 keys = list(entries.keys()); keys.sort()
-                # guess = np.random.choice(list(entries[keys[0]]), 1)[0]
                 guess = random.choice(list(entries[keys[0]]))
                 self.itemset(keys[0], guess)
                 self.solve_logically()
-                # if empty not in self.show and not self.is_valid_answer(): # OLD
-                #     self.itemsets(sudoku_melt) # OLD
-                if empty not in self.show.flatten() and not self.is_valid_answer(): # NEW
-                    self.itemsets(sudoku_melt) # NEW
+                if empty not in self.show.flatten() and \
+                    not self.is_valid_answer():
+                    self.itemsets(sudoku_melt)
         return None
 
 
@@ -1399,16 +1388,16 @@ def change_empty(array, old, new):
     True
     '''
 
-    ch_old = lambda x: new if x == old else x # NEW
-    if 'ndarray' in str(type(array)) or 'list' in str(type(array)): # NEW
-        for i in range(len(array)): # NEW indentation
-            array[i] = list(map(ch_old, array[i])) # NEW indentation
-    elif 'Array' in str(type(array)): # NEW
-        shape = array.shape # NEW
-        for i in range(len(array.show)): # NEW
-            array.show[i] = list(map(ch_old, array.show[i])) # NEW
-    else: # NEW
-        raise TypeError(str(type(array)) + ' not supported') # NEW
+    ch_old = lambda x: new if x == old else x
+    if 'ndarray' in str(type(array)) or 'list' in str(type(array)):
+        for i in range(len(array)):
+            array[i] = list(map(ch_old, array[i]))
+    elif 'Array' in str(type(array)):
+        shape = array.shape
+        for i in range(len(array.show)):
+            array.show[i] = list(map(ch_old, array.show[i]))
+    else:
+        raise TypeError(str(type(array)) + ' not supported')
 
 
 def collect_appearances(union1, union2, V, elements):
@@ -1602,8 +1591,7 @@ def to_sudoku(
     '''
 
     n = int(len(sudoku_str) ** .25)
-    # array = np.array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2) # OLD
-    array = sarray.Array(list(sudoku_str[:(n ** 4)])).reshape(n ** 2, n ** 2) # NEW
+    array = sarray.Array(list(sudoku_str[:(n**4)])).reshape(n**2, n**2)
     return Sudoku(
         array = array, 
         elements = elements, 
