@@ -1,25 +1,30 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.12
+## Coming up: ver >= 0.0.13
 
 * Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Create `sudsoln/data` directory to store sudoku questions
-* Eliminate `numpy` dependencies by adding `Array` object
 * Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
-* Write unittests on:
-	+ `Appearance` object after it is defined.
-	+ `Array` object after it is defined.
+* Write unittests on `Appearance` object after it is defined.
 
-## Working on: ver 0.0.11 (changes made after the current version)
+## Workign on: ver 0.0.12 (changes made after the current version)
 
-* Added `Array` object, an array that is ALWAYS 2-dimensional.
+* to be continued
+
+## Working on: ver 0.0.11 (current version)
+
+* Added `Array` object, an array that is ALWAYS 2-dimensional:
+	+ supported attributes: `.show`, `.nrow`, `.ncol`, `.shape`, `.size`
+	+ supported methods: `.__eq__()`, `.__getitem__()`, `.__setitem__()`, `.__repr__()`, `.copy()`, `.flatten()`, `.itemset()`, `.reshape()`
 * Added two tests in `tests.py`: `test_init_detect_typo_elements_none()` and `test_init_detect_typo_elements_specific()`.
+* Added `TestArray(unittest.TestCase)` in `tests.py`.
 * Changed the name of `array.py` to `sarray.py`
 * Edited `test_init_detect_answer()` to test two features: answer-form detection and empty-specification irrelevance.
+* Made `sudoku.py` completely numpy-free
 
-## ver 0.0.10 (current version)
+## ver 0.0.10
 
 * Added `change_empty(array, old, new)` in `sudoku.py`.
 * Erased `from sudsoln.candidate import *` and `from sudsoln.questions import *` in `__init__.py` because I think they should be accessed as submodules.
