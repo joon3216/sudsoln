@@ -9,7 +9,7 @@ import numpy as np
 #     .__eq__(self, other)    --- implemented
 #     .copy()                 --- implemented
 #     .itemset()              --- implemented
-#     .flat                   --- implemented; returns a list instead.
+#     .flat                   --- deprecated
 #     .flatten()              --- implemented
 #     .reshape()              --- implemented
 #     .shape                  --- implemented
@@ -84,20 +84,6 @@ class Sudoku():
         4
         '''
 
-        # Size
-        n = len(array) ** .5
-        if n < 2:
-            raise ValueError(
-                'The number of rows of array is too small; ' +\
-                'it has to be at least 4.'
-            )
-        if int(n) != n:
-            raise ValueError(
-                'The number of rows of array is not compatible ' +\
-                'for Sudoku puzzle; it has to be a square ' +\
-                'of some integer, e.g. 9 = 3 ** 2, 16 = 4 ** 2, etc.'
-            )
-
         # Array type and shape
         if type(array) == str:
             raise TypeError(
@@ -109,10 +95,26 @@ class Sudoku():
             )
         # array = np.array(array) # OLD
         array = sarray.Array(array) # NEW
-        if array.shape != (n ** 2, n ** 2):
+        # if array.shape != (n ** 2, n ** 2): # OLD
+        if len(set(array.shape)) != 1: # NEW
             raise ValueError(
                 'The shape of array must be square, ' +\
                 'i.e. number of rows must be equal to number of columns.'
+            )
+
+        # Size
+        # n = len(array) ** .5 # OLD
+        n = list(set(array.shape))[0] ** .5 # NEW
+        if n < 2:
+            raise ValueError(
+                'The number of rows of array is too small; ' +\
+                'it has to be at least 4.'
+            )
+        if int(n) != n:
+            raise ValueError(
+                'The number of rows of array is not compatible ' +\
+                'for Sudoku puzzle; it has to be a square ' +\
+                'of some integer, e.g. 9 = 3 ** 2, 16 = 4 ** 2, etc.'
             )
         
         # elements and empty
@@ -374,8 +376,7 @@ class Sudoku():
         '''
 
         result = ''
-        flattened = self.show.flatten()
-        for item in flattened:
+        for item in self.show.flatten():
             result += item
         return result
 
@@ -463,7 +464,7 @@ class Sudoku():
         >>> import sudsoln as ss
         >>> import sudsoln.candidate as sc
         >>> import sudsoln.questions as sq
-        >>> q6 = ss.to_sudoku(sq.q6, elements = {1, 2, 3, 4})
+        >>> q6 = ss.to_sudoku(sq.q6)
         >>> q6
         Sudoku(
             .    3    |    .    4
@@ -769,7 +770,7 @@ class Sudoku():
         n = self.n
         empty = self.empty
         elements = self.elements
-        if empty in self.show: # not even finished yet
+        if empty in self.show.flat: # not even finished yet # NEW: .flat
             return False
         for i in range(n ** 2):
             if elements != set(self.submatrix(i + 1).flat):
@@ -1046,7 +1047,7 @@ class Sudoku():
         start = datetime.datetime.now()
         self.solve_logically()
         sudoku_copy = self.copy()
-        if empty in self.show:
+        if empty in self.show.flat:
             if not quietly:
                 print("Logical approaches weren't enough.")
                 print("Solving with a brute force...")

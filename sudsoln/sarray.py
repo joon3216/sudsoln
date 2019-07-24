@@ -16,8 +16,6 @@ class Array():
         >>> test = Array(test)
         >>> test.show
         [['1', '2', '3', '2'], ['5', '2', '0', '4'], ['7', '5', '1', '0']]
-        >>> test.flat
-        ['1', '2', '3', '2', '5', '2', '0', '4', '7', '5', '1', '0']
         >>> test.nrow
         3
         >>> test.ncol
@@ -64,8 +62,6 @@ class Array():
         self.show = array
         self.nrow = lena
         self.ncol = ncols[0]
-        self.flat =\
-            [array[i][j] for i in range(lena) for j in range(self.ncol)]
         self.shape = (self.nrow, self.ncol)
         self.size = sum(ncols)
 
@@ -286,7 +282,10 @@ class Array():
         ['1', '2', '3', '5', '2', '0', '7', '5', '1']
         '''
 
-        return self.flat
+        array = self.show
+        nrow = self.nrow
+        ncol = self.ncol
+        return [array[i][j] for i in range(nrow) for j in range(ncol)]
 
 
     def itemset(self, key, value):
@@ -373,6 +372,10 @@ if __name__ == '__main__':
     test_a = np.array(test)
     test_A = Array(test)
     test_small = [['1', '2'], ['3', '4']]
-    test_small_a = np.array(test_small)    
+    test_small_a = np.array(test_small)  
+    import sudoku
+    import sudsoln.questions as sq
+    test_B = sq.q1
+    q1 = sudoku.to_sudoku(test_B)
     import doctest
     doctest.testmod()

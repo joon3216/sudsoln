@@ -1280,7 +1280,7 @@ class TestSudoku(unittest.TestCase):
 
         # 2. item assignment to the empty entry
         eg[(0, 1)] = '4'
-        result_assign = list(eg.show[0]) == ['1', '4', '3', '.']
+        result_assign = eg.show[0, :].show == [['1', '4', '3', '.']]
         expected_result_assign = True
 
         result = {
