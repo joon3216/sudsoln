@@ -506,7 +506,7 @@ class Sudoku():
 
 
     def col(self, c):
-        '''(Sudoku, int) -> np.array of [objects]
+        '''(Sudoku, int) -> Array
         
         Precondition: 0 <= c <= self.n ** 2 - 1
         
@@ -988,7 +988,7 @@ class Sudoku():
 
 
     def row(self, r):
-        '''(Sudoku, int) -> np.array of [objects]
+        '''(Sudoku, int) -> Array
         
         Precondition: 0 <= r <= self.n ** 2 - 1
         
@@ -1213,7 +1213,7 @@ class Sudoku():
 
 
     def submatrix(self, s):
-        '''(Sudoku, int) -> list/array of [objects]
+        '''(Sudoku, int) -> Array
 
         Precondition: 1 <= s <= self.n ** 2
         
