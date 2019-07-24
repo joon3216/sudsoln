@@ -2,19 +2,6 @@
 import sudsoln.candidate as candidate
 import sarray
 # import sudsoln.sarray as sarray
-# import numpy as np
-# Currently using:
-# np.array()
-#     .__iter__(self)
-#     .__eq__(self, other)    --- implemented
-#     .copy()                 --- implemented
-#     .itemset()              --- implemented
-#     .flat                   --- deprecated
-#     .flatten()              --- implemented
-#     .reshape()              --- implemented
-#     .shape                  --- implemented
-#     slicing in Sudoku.col() --- implemented
-#     slicing in Sudoku.row() --- implemented
 
 
 class Sudoku():
