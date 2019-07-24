@@ -123,7 +123,7 @@ class Sudoku():
         if len(empty) != 1:
             raise ValueError('Length of empty must be 1.')
         if elements is None:
-            elements = set(array.flat) # NEW
+            elements = set(array.flatten()) # NEW: .flatten()
             # elements = set([str(i) for i in array.flat]) # OLD
             if empty not in elements:
                 try: # assuming it is already an answer
@@ -770,14 +770,14 @@ class Sudoku():
         n = self.n
         empty = self.empty
         elements = self.elements
-        if empty in self.show.flat: # not even finished yet # NEW: .flat
+        if empty in self.show.flatten(): # not even finished yet # NEW: .flatten()
             return False
         for i in range(n ** 2):
-            if elements != set(self.submatrix(i + 1).flat):
+            if elements != set(self.submatrix(i + 1).flatten()):
                 return False
-            elif elements != set(self.row(i).flat):
+            elif elements != set(self.row(i).flatten()):
                 return False
-            elif elements != set(self.col(i).flat):
+            elif elements != set(self.col(i).flatten()):
                 return False
         return True
 
@@ -992,11 +992,11 @@ class Sudoku():
         
         elements = self.elements
         if s is not None:
-            return elements.difference(set(self.submatrix(s).flat))
+            return elements.difference(set(self.submatrix(s).flatten()))
         elif r is not None:
-            return elements.difference(set(self.row(r).flat))
+            return elements.difference(set(self.row(r).flatten()))
         elif c is not None:
-            return elements.difference(set(self.col(c).flat))
+            return elements.difference(set(self.col(c).flatten()))
 
 
     def row(self, r):
@@ -1047,7 +1047,7 @@ class Sudoku():
         start = datetime.datetime.now()
         self.solve_logically()
         sudoku_copy = self.copy()
-        if empty in self.show.flat:
+        if empty in self.show.flatten():
             if not quietly:
                 print("Logical approaches weren't enough.")
                 print("Solving with a brute force...")
@@ -1129,9 +1129,9 @@ class Sudoku():
         #sudoku_copy = self.show.copy()
         sudoku_melt = self.melt()
         # while empty in self.show: # OLD
-        while empty in self.show.flat:  # NEW 
+        while empty in self.show.flatten():  # NEW 
             # if empty not in self.show: # OLD
-            if empty not in self.show.flat: # NEW
+            if empty not in self.show.flatten(): # NEW
                 return None
             entries = self.solve_by_pairs()
             if set() in list(entries.values()):
@@ -1155,7 +1155,7 @@ class Sudoku():
                 self.solve_logically()
                 # if empty not in self.show and not self.is_valid_answer(): # OLD
                 #     self.itemsets(sudoku_melt) # OLD
-                if empty not in self.show.flat and not self.is_valid_answer(): # NEW
+                if empty not in self.show.flatten() and not self.is_valid_answer(): # NEW
                     self.itemsets(sudoku_melt) # NEW
         return None
 
