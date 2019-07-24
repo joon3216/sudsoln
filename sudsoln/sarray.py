@@ -362,20 +362,5 @@ class Array():
 
 
 if __name__ == '__main__':
-    import numpy as np
-    test = [
-        [1, 2, 3, 4], 
-        [5, 2, 0, 3], 
-        [7, 5, 1, 0], 
-        [2, 6, 2, 4]
-    ]
-    test_a = np.array(test)
-    test_A = Array(test)
-    test_small = [['1', '2'], ['3', '4']]
-    test_small_a = np.array(test_small)  
-    import sudoku
-    import sudsoln.questions as sq
-    test_B = sq.q1
-    q1 = sudoku.to_sudoku(test_B)
     import doctest
     doctest.testmod()
