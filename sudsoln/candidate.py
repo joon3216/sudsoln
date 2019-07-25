@@ -8,24 +8,39 @@ import union
 class Candidate():
     '''Sudoku puzzle candidate collection.'''
 
-    def __init__(self, candidates, n = 3):
-        '''(Candidate, {(int, int): set of objects}[, int]) -> None
+    def __init__(self, candidates, elements = None):
+        '''(Candidate, {(int, int): set of objects}) -> None
 
         Precondition: 
         1. ints in "(int, int)" are from 0 to n ** 2 - 1 
-        inclusive, where n is a Sudoku class attribute or a user-defined
-        integer.
-        2. objects in "set of values" are elements of one_to_n_sq, one of 
-        Sudoku class attributes.
+        inclusive, where n is a Sudoku class attribute.
+        2. objects in "set of objects" are elements of self.elements, 
+        one of Sudoku class attributes.
 
         Initialize Candidate object.
         
         >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
-        >>> eg = Candidate(eg)
+        >>> eg = Candidate(
+        ...     eg, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> eg.n
+        3
         '''
+
+        assert elements != None, \
+            'elements of Candidate must be specified'
+        elements = set(map(lambda x: str(x), list(elements)))
+        n = int(len(elements) ** .5)
+
+        if candidates != {}:
+            for k, v in candidates.items():
+                candidates[k] = set(map(lambda x: str(x), list(v)))
 
         self.show = candidates
         self.n = n
+        self.elements = elements
 
 
     def __dict__(self):
@@ -34,9 +49,13 @@ class Candidate():
         Return the dict representation of Candidate.
 
         >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
-        >>> eg = Candidate(eg)
-        >>> dict(eg)
-        {(0, 1): {1, 2, 4}, (0, 2): {9, 6}}
+        >>> eg = Candidate(
+        ...     eg, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> dict(eg) == {(0, 1): {'1', '2', '4'}, (0, 2): {'9', '6'}}
+        True
         '''
 
         return self.show
@@ -48,16 +67,29 @@ class Candidate():
         Return True iff keys and values of each key matches between
         self and other.
 
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg2 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg3 = Candidate({(0, 1): {1, 2, 7}, (0, 3): {6, 8}})
+        >>> eg1 = Candidate(
+        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> eg2 = Candidate(
+        ...     {(0, 1): {'1', '2', '4'}, (0, 2): {'9', '6'}}, 
+        ...     elements = set([i for i in range(1, 10)])
+        ... )
+        ...
+        >>> eg3 = Candidate(
+        ...     {(0, 1): {1, 2, 7}, (0, 3): {6, 8}},
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>> eg1 == eg2
         True
         >>> eg1 == eg3
         False
         '''
 
-        return self.show == other.show and self.n == other.n
+        return self.show == other.show and\
+            self.n == other.n and self.elements == other.elements
 
 
     def __getitem__(self, key):
@@ -65,9 +97,14 @@ class Candidate():
 
         Return the value of self at key.
 
-        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg[(0, 1)]
-        {1, 2, 4}
+        >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg = Candidate(
+        ...     eg, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> eg[(0, 1)] == {'1', '2', '4'}
+        True
         '''
 
         return self.show[key]
@@ -79,7 +116,9 @@ class Candidate():
         Return the Candidate representation of self.
         '''
 
-        return 'Candidate(\n{0},\nn = {1}\n)'.format(self.show, self.n)
+        return 'Candidate(\n{0},\nelements = {1}\n)\n(n: {2})'.format(
+            self.show, self.elements, self.n
+        )
 
 
     def __setitem__(self, key, value):
@@ -89,23 +128,34 @@ class Candidate():
         initialize key with value if key doesn't already
         exist.
 
-        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg = Candidate(
+        ...     eg, 
+        ...     elements = set([i for i in range(1, 10)])
+        ... )
+        ...
         >>> eg[(1, 2)] = {7}
         >>> eg == Candidate(
-        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {7}}
+        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {7}},
+        ...     elements = set([i for i in range(1, 10)])
         ... )
         ...
         True
         >>> eg[(0, 1)] = {1}
-        >>> eg == Candidate({(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}})
+        >>> eg == Candidate(
+        ...     {(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}},
+        ...     elements = set([i for i in range(1, 10)])
+        ... )
+        ...
         True
         '''
 
+        value = set(map(lambda x: str(x), list(value)))
         self.show[key] = value
 
 
-    def appearances(self, elements, names):
-        '''(Candidate, {objects}, [str, str]) -> Appearance
+    def appearances(self, names):
+        '''(Candidate, [str, str]) -> Appearance
 
         Define union1 and union2 as the aggregated unions of self with
         name in names. Count the number of the same elements in union1 and 
@@ -116,18 +166,16 @@ class Candidate():
         union2. Appearances in elements are to be counted.
 
         >>> V = Candidate({ # candidates of submatrix1
-        ...     (0, 1): {'5', '4', '7', '9'}, 
-        ...     (1, 0): {'9', '4'}, 
-        ...     (1, 1): {'5', '4', '6', '9'}, 
-        ...     (1, 2): {'5', '4', '6', '9'}, 
-        ...     (2, 1): {'5', '4', '7', '9', '6'}
-        ... })
-        ...
-        >>> appearances = V.appearances(
-        ...     elements = set([str(i) for i in range(1, 10)]),
-        ...     names = ['row', 'col']
+        ...         (0, 1): {'5', '4', '7', '9'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'5', '4', '6', '9'}, 
+        ...         (1, 2): {'5', '4', '6', '9'}, 
+        ...         (2, 1): {'5', '4', '7', '9', '6'}
+        ...     },
+        ...     elements = set([i for i in range(1, 10)])
         ... )
         ...
+        >>> appearances = V.appearances(names = ['row', 'col'])
         >>> appearances.show == {
         ...     '1': [[0, 0], set()], 
         ...     '2': [[0, 0], set()], 
@@ -143,12 +191,7 @@ class Candidate():
         True
         '''
 
-        return appearance.Appearance(
-            C = self, 
-            elements = elements, 
-            names = names
-        )
-
+        return appearance.Appearance(C = self, names = names)
 
 
     def copy(self):
@@ -156,7 +199,12 @@ class Candidate():
 
         Return the deep copy of self.
 
-        >>> eg = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg = Candidate(
+        ...     eg, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>> eg_copy = eg.copy()
         >>> id(eg) != id(eg_copy)
         True
@@ -167,7 +215,7 @@ class Candidate():
         copied = {}
         for k, v in self.items():
             copied[k] = v.copy()
-        return Candidate(copied.copy(), n = self.n)
+        return Candidate(copied.copy(), elements = self.elements)
 
     
     def group(self, by):
@@ -189,7 +237,7 @@ class Candidate():
         ...             (1, 0): {'4', '1'}, 
         ...             (1, 1): {'4', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     2: Candidate(
         ...         {
@@ -197,7 +245,7 @@ class Candidate():
         ...             (1, 2): {'3', '2'}, 
         ...             (1, 3): {'3', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     3: Candidate(
         ...         {
@@ -205,7 +253,7 @@ class Candidate():
         ...             (2, 1): {'4'}, 
         ...             (3, 1): {'4', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     4: Candidate(
         ...         {
@@ -213,7 +261,7 @@ class Candidate():
         ...             (3, 2): {'3', '4'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
@@ -224,7 +272,7 @@ class Candidate():
         ...             (0, 0): {'1'}, 
         ...             (0, 2): {'2'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     1: Candidate(
         ...         {
@@ -233,7 +281,7 @@ class Candidate():
         ...             (1, 2): {'3', '2'}, 
         ...             (1, 3): {'3', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     2: Candidate(
         ...         {
@@ -241,7 +289,7 @@ class Candidate():
         ...             (2, 1): {'4'}, 
         ...             (2, 3): {'3', '2'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     3: Candidate(
         ...         {
@@ -249,7 +297,7 @@ class Candidate():
         ...             (3, 2): {'3', '4'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
@@ -261,7 +309,7 @@ class Candidate():
         ...             (1, 0): {'4', '1'}, 
         ...             (2, 0): {'3', '4'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     1: Candidate(
         ...         {
@@ -269,7 +317,7 @@ class Candidate():
         ...             (2, 1): {'4'}, 
         ...             (3, 1): {'4', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     2: Candidate(
         ...         {
@@ -277,7 +325,7 @@ class Candidate():
         ...             (1, 2): {'3', '2'}, 
         ...             (3, 2): {'3', '4'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
         ...     3: Candidate(
         ...         {
@@ -285,7 +333,7 @@ class Candidate():
         ...             (2, 3): {'3', '2'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
@@ -301,7 +349,7 @@ class Candidate():
         n = self.n
         if by == 'submatrix':
             for g in range(1, n ** 2 + 1):
-                result[g] = Candidate({}, n = n)
+                result[g] = Candidate({}, elements = self.elements)
             number = 0
             for i in range(n, n ** 2 + 1, n):
                 for j in range(n, n ** 2 + 1, n):
@@ -311,7 +359,7 @@ class Candidate():
                             result[number].update({k: v})
             return result
         for g in range(n ** 2):
-            result[g] = Candidate({}, n = n)
+            result[g] = Candidate({}, elements = self.elements)
             for k, v in self.items():
                 if (by == 'row' and k[0] == g) or\
                     (by == 'col' and k[1] == g):
@@ -323,10 +371,6 @@ class Candidate():
         '''(Candidate) -> dict_items of {(int, int), {object}}
 
         Return dict_items of self.
-
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg1.items()
-        dict_items([((0, 1), {1, 2, 4}), ((0, 2), {9, 6})])
         '''
 
         return self.show.items()
@@ -337,7 +381,12 @@ class Candidate():
 
         Return dict_keys of self.
 
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1 = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
+        >>> eg1 = Candidate(
+        ...     eg1, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>> eg1.keys()
         dict_keys([(0, 1), (0, 2)])
         '''
@@ -350,24 +399,34 @@ class Candidate():
 
         Pop out key and the respective value from self.
 
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        >>> eg1 = Candidate(
+        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>> eg1 == Candidate(
         ...     {(0, 1): {1, 2, 4}, (0, 2): {9, 6}},
-        ...     n = 3
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         True
         >>> eg1.pop((0, 1))
-        >>> eg1 == Candidate({(0, 2): {9, 6}}, n = 3)
+        >>> eg1 == Candidate(
+        ...     {(0, 2): {9, 6}},
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         True
         '''
 
         self.show.pop(key)
 
     
-    def refine(self, entries_to_mutate, appearances):
-        '''(Candidate, Candidate, {int: [[int, int], {(int, int)}]}) 
+    def refine(self, entries_to_mutate, appearances = None, names = None):
+        '''(Candidate, Candidate, Appearance or None, [str, str] or None)
             -> None
+
+        Precondition: names is not None if appearances is None
 
         Update self and entries_to_mutate so that any unique candidate 
         number and the respective entry according to appearances is added
@@ -426,21 +485,36 @@ class Candidate():
         ...     (8, 6): {'5', '3', '8'}, 
         ...     (8, 7): {'4', '8', '5', '3', '2'}, 
         ...     (8, 8): {'2', '3', '5'}
-        ... })
+        ... },
+        ... elements = set([str(i) for i in range(1, 10)])
+        ... )
         ...
         >>> candids = candids_old.copy()
         >>> candids == candids_old
         True
-        >>> entries_to_mutate = Candidate({})
+        >>> entries_to_mutate = Candidate(
+        ...     {}, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>>
         >>> # Case 1: only candids changes
-        >>> appearances1 = {
+        >>> candids_part1 = candids.group('submatrix')[1]
+        >>> appearances1 = candids_part1.appearances(['row', 'col'])
+        >>> appearances1.sieve()
+        >>> appearances1.show == {
         ...     '4': [[1, 2], {(0, 1), (0, 0)}], 
         ...     '9': [[1, 2], {(0, 0), (0, 2)}], 
         ...     '5': [[1, 2], {(0, 1), (0, 0)}]
         ... }
+        ...
+        True
         >>> candids.refine(entries_to_mutate, appearances1)
-        >>> entries_to_mutate == Candidate({})
+        >>> entries_to_mutate == Candidate(
+        ...     {}, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         True
         >>> candids == candids_old
         False
@@ -494,36 +568,59 @@ class Candidate():
         ...     (8, 6): {'5', '8', '3'}, 
         ...     (8, 7): {'5', '8', '2', '3', '4'}, 
         ...     (8, 8): {'5', '2', '3'}
-        ... })
+        ... },
+        ... elements = set([str(i) for i in range(1, 10)])
+        ... )
         ...
         True
         >>> 
         >>> # Case 2: only entries_to_mutate changes
+        >>> candids_part2 = candids.group('submatrix')[2]
         >>> candids_old = candids.copy()
-        >>> appearances2 = {
+        >>> appearances2 = candids_part2.appearances(['row', 'col'])
+        >>> appearances2.sieve()
+        >>> appearances2.show == {
         ...     '8': [[1, 2], {(0, 3), (0, 5)}], 
         ...     '6': [[1, 1], {(0, 3)}]
         ... }
+        ...
+        True
         >>> candids.refine(entries_to_mutate, appearances2)
-        >>> entries_to_mutate == Candidate({})
+        >>> entries_to_mutate == Candidate(
+        ...     {}, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         False
-        >>> entries_to_mutate == Candidate({(0, 3): {'6'}})
+        >>> entries_to_mutate == Candidate(
+        ...     {(0, 3): {'6'}},
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
         True
         >>> candids == candids_old 
         True
         >>>
         >>> # Case 3: both candids and entries_to_mutate change
-        >>> appearances3 = {
+        >>> candids_part3 = candids.group('submatrix')[3]
+        >>> appearances3 = candids_part3.appearances(['row', 'col'])
+        >>> appearances3.sieve()
+        >>> appearances3.show == {
         ...     '1': [[1, 2], {(0, 6), (0, 8)}], 
         ...     '2': [[1, 1], {(2, 7)}], 
+        ...     '5': [[1, 1], {(1, 6)}],
         ...     '7': [[2, 1], {(2, 7), (0, 7)}]
         ... }
         ...
+        True
         >>> candids.refine(entries_to_mutate, appearances3)
-        >>> entries_to_mutate == Candidate({})
+        >>> entries_to_mutate == Candidate(
+        ...     {}, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
         False
         >>> entries_to_mutate == Candidate(
-        ...     {(0, 3): {'6'}, (2, 7): {'2'}}
+        ...     {(0, 3): {'6'}, (1, 6): {'5'}, (2, 7): {'2'}},
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         True
@@ -579,11 +676,20 @@ class Candidate():
         ...     (8, 6): {'5', '8', '3'}, 
         ...     (8, 7): {'5', '8', '2', '3', '4'}, 
         ...     (8, 8): {'5', '2', '3'}
-        ... })
+        ... },
+        ... elements = set([str(i) for i in range(1, 10)])
+        ... )
         ...
         True
         '''
 
+        if appearances is None:
+            assert names is not None, \
+                'If appearances is None, then names must not be None.'
+            appearances = self.appearances(names)
+            appearances.sieve()
+        else:
+            appearances.sieve()
         for k3, v3 in appearances.items():
             if v3[0] == [1, 1]: # only candid value in the subm
                 entries_to_mutate[list(v3[1])[0]] = {k3}
@@ -616,7 +722,10 @@ class Candidate():
         ...     (1, 1): {'5', '4', '6', '9'}, 
         ...     (1, 2): {'5', '4', '6', '9'}, 
         ...     (2, 1): {'5', '4', '7', '9', '6'}
-        ... })
+        ... },
+        ... elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
         >>> unions = V.unions()
         >>> unions.show == {
         ...     'submatrix': {
@@ -645,28 +754,49 @@ class Candidate():
 
         Update self using other.
 
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg1.update(Candidate({(1, 2): {1, 7}}))
+        >>> eg1 = Candidate(
+        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> eg1.update(
+        ...     Candidate(
+        ...         {(1, 2): {1, 7}},
+        ...         elements = set([str(i) for i in range(1, 10)])
+        ...     )
+        ... )
+        ...
         >>> eg1 == Candidate(
-        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {1, 7}}
+        ...     {(0, 1): {1, 2, 4}, (0, 2): {6, 9}, (1, 2): {1, 7}},
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         True
-        >>> eg1.update(Candidate({(0, 1): {1}}))
+        >>> eg1.update(
+        ...     Candidate(
+        ...         {(0, 1): {1}}, 
+        ...         elements = set([str(i) for i in range(1, 10)])
+        ...     )
+        ... )
+        ...
         >>> eg1 == Candidate(
-        ...     {(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {1, 7}}
+        ...     {(0, 1): {1}, (0, 2): {6, 9}, (1, 2): {1, 7}},
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         True
         >>> eg1.update({(0, 0): {3}, (1, 2): {7}})
         >>> eg1 == Candidate(
-        ...     {(0, 0): {3}, (0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}}
+        ...     {(0, 0): {3}, (0, 1): {1}, (0, 2): {6, 9}, (1, 2): {7}},
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         True
         '''
 
         if type(other) == dict:
+            for k, v in other.items():
+                other[k] = set(map(lambda x: str(x), list(v)))
             self.show.update(other)
         elif type(other) == Candidate:
             if self.n != other.n:
@@ -678,13 +808,11 @@ class Candidate():
         '''(Candidate) -> dict_values of {objects}
 
         Return dict_values of self.
-            
-        >>> eg1 = Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
-        >>> eg1.values()
-        dict_values([{1, 2, 4}, {9, 6}])
         '''
 
         return self.show.values()
+
+
 
 if __name__ == '__main__':
     import doctest
