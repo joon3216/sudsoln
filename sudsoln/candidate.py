@@ -1,5 +1,9 @@
 
+# import sudsoln.appearance as appearance
+# import sudsoln.union as union
+import appearance
 import union
+
 
 class Candidate():
     '''Sudoku puzzle candidate collection.'''
@@ -98,6 +102,53 @@ class Candidate():
         '''
 
         self.show[key] = value
+
+
+    def appearances(self, elements, names):
+        '''(Candidate, {objects}, [str, str]) -> Appearance
+
+        Define union1 and union2 as the aggregated unions of self with
+        name in names. Count the number of the same elements in union1 and 
+        union2 respectively, record them into the very first element 
+        (a list of two ints) of the resulting dictionary's value list, 
+        and add the key of self to the second element (a set) of the value
+        list if the value of self contains the element in either union1 or
+        union2. Appearances in elements are to be counted.
+
+        >>> V = Candidate({ # candidates of submatrix1
+        ...     (0, 1): {'5', '4', '7', '9'}, 
+        ...     (1, 0): {'9', '4'}, 
+        ...     (1, 1): {'5', '4', '6', '9'}, 
+        ...     (1, 2): {'5', '4', '6', '9'}, 
+        ...     (2, 1): {'5', '4', '7', '9', '6'}
+        ... })
+        ...
+        >>> appearances = V.appearances(
+        ...     elements = set([str(i) for i in range(1, 10)]),
+        ...     names = ['row', 'col']
+        ... )
+        ...
+        >>> appearances.show == {
+        ...     '1': [[0, 0], set()], 
+        ...     '2': [[0, 0], set()], 
+        ...     '3': [[0, 0], set()], 
+        ...     '4': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}], 
+        ...     '5': [[3, 2], {(0, 1), (2, 1), (1, 1), (1, 2)}], 
+        ...     '6': [[2, 2], {(1, 2), (1, 1), (2, 1)}], 
+        ...     '7': [[2, 1], {(0, 1), (2, 1)}], 
+        ...     '8': [[0, 0], set()], 
+        ...     '9': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}]
+        ... }
+        ...
+        True
+        '''
+
+        return appearance.Appearance(
+            C = self, 
+            elements = elements, 
+            names = names
+        )
+
 
 
     def copy(self):
