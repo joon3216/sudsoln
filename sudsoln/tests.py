@@ -183,7 +183,7 @@ class TestCandidate(unittest.TestCase):
                 (3, 1): {'3', '1'}, 
                 (3, 2): {'2', '1'}
             }, 
-            n = 2
+            elements = {1, 2, 3, 4}
         )
 
         # 1. .copy(), but not a shallow one but a deep one
@@ -249,7 +249,7 @@ class TestCandidate(unittest.TestCase):
                 (3, 1): {'3', '1'}, 
                 (3, 2): {'2', '1'}
             }, 
-            n = 2
+            elements = {1, 2, 3, 4}
         ))
         expected_result_pop = True
 
@@ -257,7 +257,7 @@ class TestCandidate(unittest.TestCase):
         # 5.1. .update() through Candidate
         eg.update(candidate.Candidate(
             {(0, 3): {'2'}, (1, 0): {'3', '4'}},
-            n = 2
+            elements = {1, 2, 3, 4}
         ))
         result_update1 = (eg == candidate.Candidate(
             {
@@ -272,7 +272,7 @@ class TestCandidate(unittest.TestCase):
                 (3, 1): {'3', '1'}, 
                 (3, 2): {'2', '1'}
             }, 
-            n = 2
+            elements = {'1', '2', '3', '4'}
         ))
         expected_update1 = True
 
@@ -303,8 +303,13 @@ class TestCandidate(unittest.TestCase):
         and self.n != other.n.
         '''
 
-        eg = candidate.Candidate({(0, 1): {'4'}}, n = 2)
-        updating_eg = candidate.Candidate({(8, 8): {'9'}}, n = 3)
+        eg = candidate.Candidate(
+            {(0, 1): {'4'}}, elements = {1, 2, 3, 4}
+        )
+        updating_eg = candidate.Candidate(
+            {(8, 8): {'9'}}, 
+            elements = set([str(i) for i in range(1, 10)])
+        )
         with self.assertRaises(ValueError): eg.update(updating_eg)
 
 
@@ -322,24 +327,40 @@ class TestCandidate(unittest.TestCase):
            n are evaluated as not equivalent.
         '''
 
-        eg = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        eg = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
 
         # Case 1: same
-        eg1 = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        eg1 = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
 
         # Case 2: different key same value
-        eg2 = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 3): {6, 9}})
+        eg2 = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 3): {6, 9}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
 
         # Case 3: same key different value
-        eg3 = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 8}})
+        eg3 = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 2): {6, 8}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
 
         # Case 4: different key different value
-        eg4 = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 3): {6, 9}})
+        eg4 = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 3): {6, 9}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
 
         # Case 5: same key same value, but different n
         eg5 = candidate.Candidate(
             {(0, 1): {1, 2, 4}, (0, 3): {6, 9}}, 
-            n = 4
+            elements = set([str(i) for i in range(1, 10)])\
+                .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
         )
 
         result = [eg == eg1, eg != eg2, eg != eg3, eg != eg4, eg != eg5]
@@ -372,7 +393,7 @@ class TestCandidate(unittest.TestCase):
                 (3, 1): {'3', '1'}, 
                 (3, 2): {'2', '1'}
             }, 
-            n = 2
+            elements = {1, 2, 3, 4}
         )
         eg3 = candidate.Candidate(
             {
@@ -425,7 +446,8 @@ class TestCandidate(unittest.TestCase):
                 (8, 6): {'5', '3', '8'}, 
                 (8, 7): {'4', '8', '5', '3', '2'}, 
                 (8, 8): {'2', '3', '5'}
-            }
+            },
+            elements = set([str(i) for i in range(1, 10)])
         )
         eg4 = candidate.Candidate(
             {
@@ -581,7 +603,8 @@ class TestCandidate(unittest.TestCase):
                 (15, 12): {'B', '4', 'C', 'G'},
                 (15, 13): {'B', 'C', 'G', 'D'}
             },
-            n = 4
+            elements = set([str(i) for i in range(1, 10)])\
+                .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
         )
 
         # 1. grouping
@@ -591,7 +614,7 @@ class TestCandidate(unittest.TestCase):
                     (0, 1): {'4'}, 
                     (0, 3): {'2'}
                 }, 
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             1: candidate.Candidate(
                 {
@@ -599,7 +622,7 @@ class TestCandidate(unittest.TestCase):
                     (1, 2): {'4', '1'}, 
                     (1, 3): {'1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ),
             2: candidate.Candidate(
                 {
@@ -608,7 +631,7 @@ class TestCandidate(unittest.TestCase):
                     (2, 2): {'2', '1'}, 
                     (2, 3): {'3', '2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             3: candidate.Candidate(
                 {
@@ -616,7 +639,7 @@ class TestCandidate(unittest.TestCase):
                     (3, 1): {'3', '1'}, 
                     (3, 2): {'2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             )
         })
         result_col = (eg2.group(by = 'col') == {
@@ -626,7 +649,7 @@ class TestCandidate(unittest.TestCase):
                     (2, 0): {'3', '2', '4'}, 
                     (3, 0): {'3', '2'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             1: candidate.Candidate(
                 {
@@ -634,7 +657,7 @@ class TestCandidate(unittest.TestCase):
                     (2, 1): {'3', '4', '1'}, 
                     (3, 1): {'3', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             2: candidate.Candidate(
                 {
@@ -642,7 +665,7 @@ class TestCandidate(unittest.TestCase):
                     (2, 2): {'2', '1'}, 
                     (3, 2): {'2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             3: candidate.Candidate(
                 {
@@ -650,7 +673,7 @@ class TestCandidate(unittest.TestCase):
                     (1, 3): {'1'}, 
                     (2, 3): {'3', '2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             )
         })
         result_submatrix2 = (eg2.group(by = 'submatrix') == {
@@ -659,7 +682,7 @@ class TestCandidate(unittest.TestCase):
                     (0, 1): {'4'}, 
                     (1, 0): {'3', '4'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             2: candidate.Candidate(
                 {
@@ -667,7 +690,7 @@ class TestCandidate(unittest.TestCase):
                     (1, 2): {'4', '1'}, 
                     (1, 3): {'1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             3: candidate.Candidate(
                 {
@@ -676,7 +699,7 @@ class TestCandidate(unittest.TestCase):
                     (3, 0): {'3', '2'}, 
                     (3, 1): {'3', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             4: candidate.Candidate(
                 {
@@ -684,79 +707,106 @@ class TestCandidate(unittest.TestCase):
                     (2, 3): {'3', '2', '1'}, 
                     (3, 2): {'2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             )
         })
 
         # 2. grouping by submatrix works for n = 3
         result_submatrix3 = (eg3.group(by = 'submatrix') == {
-            1: candidate.Candidate({
-                (0, 0): {'7', '4', '1', '9', '5'}, 
-                (0, 1): {'4', '5'}, 
-                (0, 2): {'9', '1', '7'}, 
-                (1, 2): {'2'}, 
-                (2, 0): {'1', '2', '7'}, 
-                (2, 2): {'1', '2', '7'}
-            }), 
-            2: candidate.Candidate({
-                (0, 3): {'8', '6'}, 
-                (0, 5): {'8', '3'}, 
-                (2, 4): {'3'}
-            }), 
-            3: candidate.Candidate({
-                (0, 6): {'1', '3', '5'}, 
-                (0, 7): {'3', '5', '7'}, 
-                (0, 8): {'1', '3', '5'}, 
-                (1, 6): {'5'}, 
-                (2, 7): {'2', '3', '7'}
-            }), 
-            4: candidate.Candidate({
-                (3, 0): {'2', '6'}, 
-                (3, 2): {'8', '2', '6'}, 
-                (4, 0): {'6', '3'}, 
-                (4, 2): {'6', '8', '3'}, 
-                (5, 0): {'4', '6', '3'}
-            }), 
-            5: candidate.Candidate({
-                (3, 4): {'8', '6', '5', '7'}, 
-                (4, 4): {'8', '6', '5'}, 
-                (5, 3): {'8', '6'}, 
-                (5, 4): {'8', '6'}, 
-                (5, 5): {'9', '8'}
-            }), 
-            6: candidate.Candidate({
-                (3, 6): {'8', '6', '5'}, 
-                (3, 7): {'8', '6', '5'}, 
-                (4, 6): {'3', '9', '8', '6', '5'}, 
-                (4, 7): {'6', '8', '3', '5'}, 
-                (5, 8): {'9', '3'}
-            }), 
-            7: candidate.Candidate({
-                (6, 0): {'3', '1', '2', '9', '6', '5'}, 
-                (6, 1): {'8', '2', '5'}, 
-                (7, 0): {'3', '1', '2', '9', '6'}, 
-                (7, 1): {'8', '2'}, 
-                (7, 2): {'3', '1', '2', '9', '8', '6'}, 
-                (8, 0): {'2', '3', '5', '7'}, 
-                (8, 1): {'8', '2', '5'}, 
-                (8, 2): {'8', '2', '3', '7'}
-            }), 
-            8: candidate.Candidate({
-                (6, 3): {'8', '2'}, 
-                (6, 4): {'8', '3'}, 
-                (6, 5): {'8', '3'}, 
-                (7, 4): {'4', '8', '3'}
-            }), 
-            9: candidate.Candidate({
-                (6, 7): {'3', '2', '8', '6', '5'}, 
-                (6, 8): {'3', '1', '2', '9', '5'}, 
-                (7, 6): {'3', '1', '9', '8', '6'}, 
-                (7, 7): {'3', '4', '2', '8', '6'}, 
-                (7, 8): {'9', '1', '2', '3'}, 
-                (8, 6): {'8', '3', '5'}, 
-                (8, 7): {'3', '4', '2', '8', '5'}, 
-                (8, 8): {'2', '3', '5'}
-            })
+            1: candidate.Candidate(
+                {
+                    (0, 0): {'7', '4', '1', '9', '5'}, 
+                    (0, 1): {'4', '5'}, 
+                    (0, 2): {'9', '1', '7'}, 
+                    (1, 2): {'2'}, 
+                    (2, 0): {'1', '2', '7'}, 
+                    (2, 2): {'1', '2', '7'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            2: candidate.Candidate(
+                {
+                    (0, 3): {'8', '6'}, 
+                    (0, 5): {'8', '3'}, 
+                    (2, 4): {'3'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            3: candidate.Candidate(
+                {
+                    (0, 6): {'1', '3', '5'}, 
+                    (0, 7): {'3', '5', '7'}, 
+                    (0, 8): {'1', '3', '5'}, 
+                    (1, 6): {'5'}, 
+                    (2, 7): {'2', '3', '7'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            4: candidate.Candidate(
+                {
+                    (3, 0): {'2', '6'}, 
+                    (3, 2): {'8', '2', '6'}, 
+                    (4, 0): {'6', '3'}, 
+                    (4, 2): {'6', '8', '3'}, 
+                    (5, 0): {'4', '6', '3'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            5: candidate.Candidate(
+                {
+                    (3, 4): {'8', '6', '5', '7'}, 
+                    (4, 4): {'8', '6', '5'}, 
+                    (5, 3): {'8', '6'}, 
+                    (5, 4): {'8', '6'}, 
+                    (5, 5): {'9', '8'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            6: candidate.Candidate(
+                {
+                    (3, 6): {'8', '6', '5'}, 
+                    (3, 7): {'8', '6', '5'}, 
+                    (4, 6): {'3', '9', '8', '6', '5'}, 
+                    (4, 7): {'6', '8', '3', '5'}, 
+                    (5, 8): {'9', '3'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            7: candidate.Candidate(
+                {
+                    (6, 0): {'3', '1', '2', '9', '6', '5'}, 
+                    (6, 1): {'8', '2', '5'}, 
+                    (7, 0): {'3', '1', '2', '9', '6'}, 
+                    (7, 1): {'8', '2'}, 
+                    (7, 2): {'3', '1', '2', '9', '8', '6'}, 
+                    (8, 0): {'2', '3', '5', '7'}, 
+                    (8, 1): {'8', '2', '5'}, 
+                    (8, 2): {'8', '2', '3', '7'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            8: candidate.Candidate(
+                {
+                    (6, 3): {'8', '2'}, 
+                    (6, 4): {'8', '3'}, 
+                    (6, 5): {'8', '3'}, 
+                    (7, 4): {'4', '8', '3'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            ), 
+            9: candidate.Candidate(
+                {
+                    (6, 7): {'3', '2', '8', '6', '5'}, 
+                    (6, 8): {'3', '1', '2', '9', '5'}, 
+                    (7, 6): {'3', '1', '9', '8', '6'}, 
+                    (7, 7): {'3', '4', '2', '8', '6'}, 
+                    (7, 8): {'9', '1', '2', '3'}, 
+                    (8, 6): {'8', '3', '5'}, 
+                    (8, 7): {'3', '4', '2', '8', '5'}, 
+                    (8, 8): {'2', '3', '5'}
+                }, 
+                elements = set([str(i) for i in range(1, 10)])
+            )
         })
 
         # 3. grouping by submatrix works for n = 4
@@ -777,7 +827,8 @@ class TestCandidate(unittest.TestCase):
                     (3, 2): {'9', 'B', '7', '5', 'E'}, 
                     (3, 3): {'9', '5', '4', '7'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             2: candidate.Candidate(
                 {
@@ -794,7 +845,8 @@ class TestCandidate(unittest.TestCase):
                     (2, 6): {'4', 'F', '1', '7'}, 
                     (3, 4): {'8', '9', 'B', '4', 'F', '7', '6', '5'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             3: candidate.Candidate(
                 {
@@ -807,7 +859,8 @@ class TestCandidate(unittest.TestCase):
                     (3, 10): {'9', 'F', '4'}, 
                     (3, 11): {'9', 'F', '7'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             4: candidate.Candidate(
                 {
@@ -820,7 +873,8 @@ class TestCandidate(unittest.TestCase):
                     (3, 12): {'9', 'B', '4', '6'}, 
                     (3, 13): {'B', '5'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             5: candidate.Candidate(
                 {
@@ -833,7 +887,8 @@ class TestCandidate(unittest.TestCase):
                     (6, 2): {'6', 'G', '5'}, 
                     (7, 0): {'2', '7'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             6: candidate.Candidate(
                 {
@@ -849,7 +904,8 @@ class TestCandidate(unittest.TestCase):
                     (6, 5): {'F', 'E', '4', '5'}, 
                     (7, 4): {'8', 'B', 'F', '7', '2', 'G'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             7: candidate.Candidate(
                 {
@@ -862,7 +918,8 @@ class TestCandidate(unittest.TestCase):
                     (7, 10): {'9', 'F', 'G'}, 
                     (7, 11): {'9', 'F'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             8: candidate.Candidate(
                 {
@@ -875,7 +932,8 @@ class TestCandidate(unittest.TestCase):
                     (7, 13): {'8'}, 
                     (7, 14): {'9', '7'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             9: candidate.Candidate(
                 {
@@ -891,7 +949,8 @@ class TestCandidate(unittest.TestCase):
                     (11, 2): {'6', 'E', 'G', 'A'}, 
                     (11, 3): {'1', 'D', '6', 'G', 'A'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             10: candidate.Candidate(
                 {
@@ -907,7 +966,8 @@ class TestCandidate(unittest.TestCase):
                     (10, 6): {'B', 'C', '7', '5', 'E'}, 
                     (11, 4): {'B', '4', 'D', '6', 'E', 'A'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             11: candidate.Candidate(
                 {
@@ -920,7 +980,8 @@ class TestCandidate(unittest.TestCase):
                     (9, 10): {'1', '9', 'F', '2', 'G', 'A'}, 
                     (11, 11): {'B', '1', 'A'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ),
             12: candidate.Candidate(
                 {
@@ -933,7 +994,8 @@ class TestCandidate(unittest.TestCase):
                     (11, 12): {'6', 'B', 'G'}, 
                     (11, 13): {'B', 'G', 'A'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             13: candidate.Candidate(
                 {
@@ -949,7 +1011,8 @@ class TestCandidate(unittest.TestCase):
                     (15, 1): {'5', 'E', 'C', '7'}, 
                     (15, 2): {'7', 'C', '5', '6', 'E'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ),
             14: candidate.Candidate(
                 {
@@ -965,7 +1028,8 @@ class TestCandidate(unittest.TestCase):
                     (15, 4): {'B', 'C', 'D', '7', '6', 'E', 'G'}, 
                     (15, 5): {'B', 'C', '7', '6', 'E'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             15: candidate.Candidate(
                 {
@@ -978,7 +1042,8 @@ class TestCandidate(unittest.TestCase):
                     (15, 10): {'4'}, 
                     (15, 11): {'B', '5'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             ), 
             16: candidate.Candidate(
                 {
@@ -990,7 +1055,8 @@ class TestCandidate(unittest.TestCase):
                     (15, 12): {'B', '4', 'C', 'G'}, 
                     (15, 13): {'B', 'C', 'G', 'D'}
                 },
-                n = 4
+                elements = set([str(i) for i in range(1, 10)])\
+                    .union({'A', 'B', 'C', 'D', 'E', 'F', 'G'})
             )
         })
 
@@ -998,14 +1064,14 @@ class TestCandidate(unittest.TestCase):
         eg2.pop((0, 1))
         eg2.pop((1, 0))
         result_nosub_1 = (eg2.group(by = 'submatrix') == {
-            1: candidate.Candidate({}, n = 2), 
+            1: candidate.Candidate({}, elements = {1, 2, 3, 4}), 
             2: candidate.Candidate(
                 {
                     (0, 3): {'2'}, 
                     (1, 2): {'4', '1'}, 
                     (1, 3): {'1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ),
             3: candidate.Candidate(
                 {
@@ -1014,7 +1080,7 @@ class TestCandidate(unittest.TestCase):
                     (3, 0): {'3', '2'}, 
                     (3, 1): {'3', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             ), 
             4: candidate.Candidate(
                 {
@@ -1022,7 +1088,7 @@ class TestCandidate(unittest.TestCase):
                     (2, 3): {'3', '2', '1'}, 
                     (3, 2): {'2', '1'}
                 },
-                n = 2
+                elements = {1, 2, 3, 4}
             )
         })
 
@@ -1066,7 +1132,7 @@ class TestCandidate(unittest.TestCase):
                 (3, 1): {'3', '1'}, 
                 (3, 2): {'2', '1'}
             }, 
-            n = 2
+            elements = {1, 2, 3, 4}
         )
         with self.assertRaises(ValueError): eg.group(by = 'subarray')
 
@@ -1079,29 +1145,38 @@ class TestCandidate(unittest.TestCase):
         3. item mutation is supported
         '''
 
-        eg = candidate.Candidate({(0, 1): {1, 2, 4}, (0, 2): {6, 9}})
+        eg = candidate.Candidate(
+            {(0, 1): {1, 2, 4}, (0, 2): {6, 9}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
         
-        # Item subscription
-        result_select = (eg[(0, 1)] == {1, 2, 4})
+        # Item subscription; Candidate converts all the values into str
+        result_select = (eg[(0, 1)] == {'1', '2', '4'})
         expected_result_select = True
 
         # Item assignment
         eg[(0, 3)] = {7, 8}
-        expected_assign = candidate.Candidate({
-            (0, 1): {1, 2, 4},
-            (0, 2): {6, 9},
-            (0, 3): {7, 8}
-        })
+        expected_assign = candidate.Candidate(
+            {
+                (0, 1): {1, 2, 4},
+                (0, 2): {6, 9},
+                (0, 3): {7, 8}
+            },
+            elements = set([str(i) for i in range(1, 10)])
+        )
         result_assign = (eg == expected_assign)
         expected_result_assign = True
 
         # Mutation of an existing entry
         eg[(0, 2)] = {9}
-        expected_mutate = candidate.Candidate({
-            (0, 1): {1, 2, 4},
-            (0, 2): {9},
-            (0, 3): {7, 8},
-        })
+        expected_mutate = candidate.Candidate(
+            {
+                (0, 1): {1, 2, 4},
+                (0, 2): {9},
+                (0, 3): {7, 8},
+            },
+            elements = set([str(i) for i in range(1, 10)])
+        )
         result_mutate = (eg == expected_mutate)
         expected_result_mutate = True
 
