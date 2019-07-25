@@ -687,9 +687,7 @@ class Candidate():
             assert names is not None, \
                 'If appearances is None, then names must not be None.'
             appearances = self.appearances(names)
-            appearances.sieve()
-        else:
-            appearances.sieve()
+        appearances.sieve()
         for k3, v3 in appearances.items():
             if v3[0] == [1, 1]: # only candid value in the subm
                 entries_to_mutate[list(v3[1])[0]] = {k3}
