@@ -13,8 +13,9 @@
 
 * Added `.appearances()` and `.unions()` methods to `Candidate` object.
 * Added `Appearance` and `Union` object that is used in `.solve_by_pairs()` method of `Sudoku` puzzle. They're written in `appearance.py` and `union.py` respectively.
-* Adjusted `Candidate` object to have `elements` argument; `n` argument is completely deprecated and is computed via `elements`.
-* Rewrote the entire docstring examples of `Candidate` to pass doctest.
+* Adjusted `Candidate` object to have `elements` argument; `n` argument is completely deprecated and is computed via `elements`. All affected objects --- `Appearance`, `Union`, and `Sudoku` --- are accustomed to adapt this change.
+* Rewrote the entire docstring examples of `Candidate` and `Sudoku` to pass doctest.
+
 
 
 ## ver 0.0.12 (current version)
