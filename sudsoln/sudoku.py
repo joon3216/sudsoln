@@ -1067,18 +1067,18 @@ class Sudoku():
         candidates_group = self.group(by = 'submatrix')
         while changing:
             sudoku_copy = self.copy()
-            entries_to_mutate = {}
+            entries_to_mutate = candidate.Candidate({}, elements=elements)
             candidates_group_old = candidates_group.copy()
             for V in candidates_group_old.values(): # for each submatrix
-                unions = initialize_unions(n, names) # OLD
-                collect_unions(unions, n, names, V) # OLD
-                r_union, c_union = aggregate_unions(unions, names) # OLD
-                appearances = collect_appearances(
-                    r_union, c_union, V, elements
-                ) # OLD
-                # appearances = V.appearances(elements, names) # NEW
-                sieve_appearances(appearances) # OLD
-                # appearances.sieve() # NEW
+                # unions = initialize_unions(n, names) # OLD
+                # collect_unions(unions, n, names, V) # OLD
+                # r_union, c_union = aggregate_unions(unions, names) # OLD
+                # appearances = collect_appearances(
+                #    r_union, c_union, V, elements
+                # ) # OLD
+                appearances = V.appearances(elements, names) # NEW
+                # sieve_appearances(appearances) # OLD
+                appearances.sieve() # NEW
                 candidates_global.refine(entries_to_mutate, appearances)
             self.itemsets(entries_to_mutate)
             self.itemsets(candidates_global)
