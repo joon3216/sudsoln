@@ -1,15 +1,18 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.14
+## Coming up: ver >= 0.0.15
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
 * Write unittests on `Appearance` and `Union` objects.
 
+## ver 0.0.14 (current version)
 
-## ver 0.0.13 (current version)
+* Packaging failed in Python ver <= 3.6; modified `__init__.py` and retried.
+
+## ver 0.0.13
 
 * Added `.appearances()` and `.unions()` methods to `Candidate` object.
 * Added `Appearance` and `Union` object that is used in `.solve_by_pairs()` method of `Sudoku` puzzle. They're written in `appearance.py` and `union.py` respectively.
