@@ -1,9 +1,12 @@
 
 import unittest
+import appearance
 import candidate
 import questions
 import sarray
 import sudoku
+import union
+
 
 # START: testing Array ###################################################
 
