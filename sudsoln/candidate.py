@@ -1,8 +1,6 @@
 
-# import sudsoln.appearance as appearance
-# import sudsoln.union as union
-import appearance
-import union
+import sudsoln.appearance as appearance
+import sudsoln.union as union
 
 
 class Candidate():

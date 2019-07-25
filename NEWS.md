@@ -3,22 +3,22 @@
 
 ## Coming up: ver >= 0.0.14
 
-* Add `Appearance` object, a concept used in `.solve_by_pairs()` method of `Sudoku` object. This is basically an "inverse" of `Candidate`: for every element in `elements`, it gives you the number of appearances in each key of `Candidate`. 
 * Create `sudsoln/data` directory to store sudoku questions
 * Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
-* Write unittests on `Appearance` object after it is defined.
+* Write unittests on `Appearance` and `Union` objects.
 
-## Working on: ver 0.0.13 (changes made after the current version)
+
+## ver 0.0.13 (current version)
 
 * Added `.appearances()` and `.unions()` methods to `Candidate` object.
 * Added `Appearance` and `Union` object that is used in `.solve_by_pairs()` method of `Sudoku` puzzle. They're written in `appearance.py` and `union.py` respectively.
 * Adjusted `Candidate` object to have `elements` argument; `n` argument is completely deprecated and is computed via `elements`. All affected objects --- `Appearance`, `Union`, and `Sudoku` --- are accustomed to adapt this change.
 * Rewrote the entire docstring examples of `Candidate` and `Sudoku` to pass doctest.
+* Rewrote the test cases in `tests.py` to adapt the change in `Candidate`.
 
 
-
-## ver 0.0.12 (current version)
+## ver 0.0.12
 
 * Commented out `install_requires=['numpy']` in `setup.py`
 

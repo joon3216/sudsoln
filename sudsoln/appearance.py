@@ -1,6 +1,5 @@
 
-# import sudsoln.candidate as candidate
-import candidate
+import sudsoln.candidate as candidate
 
 
 class Appearance():
