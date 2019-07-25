@@ -1071,7 +1071,6 @@ class Sudoku():
             candidates_group_old = candidates_group.copy()
             for V in candidates_group_old.values(): # for each submatrix
                 appearances = V.appearances(names)
-                # appearances.sieve()
                 candidates_global.refine(entries_to_mutate, appearances)
             self.itemsets(entries_to_mutate)
             self.itemsets(candidates_global)
