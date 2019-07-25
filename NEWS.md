@@ -14,6 +14,7 @@
 * Removed `import appearance` and `import union` in `tests.py` as these objects are now moved to `candidate.py`
 
 
+
 ## ver 0.0.14
 
 * Packaging failed in Python ver <= 3.6; modified `__init__.py` and retried.
