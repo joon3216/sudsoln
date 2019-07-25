@@ -1,14 +1,20 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.15
+## Coming up: ver >= 0.0.16
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Make `Sudoku` accept strings as well... but should I?
 * Write more solving features
 * Write unittests on `Appearance` and `Union` objects.
 
-## ver 0.0.14 (current version)
+## ver 0.0.15 (current version)
+
+* Packaging still failing in Python <= 3.6; moved `Appearance` and `Union` under `Candidate` and retried
+* Removed `import appearance` and `import union` in `tests.py` as these objects are now moved to `candidate.py`
+
+
+## ver 0.0.14
 
 * Packaging failed in Python ver <= 3.6; modified `__init__.py` and retried.
 

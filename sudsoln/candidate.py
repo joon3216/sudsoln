@@ -1,7 +1,5 @@
 
-import sudsoln.appearance as appearance
-import sudsoln.union as union
-
+# START: Candidate #######################################################
 
 class Candidate():
     '''Sudoku puzzle candidate collection.'''
@@ -189,7 +187,7 @@ class Candidate():
         True
         '''
 
-        return appearance.Appearance(C = self, names = names)
+        return Appearance(C = self, names = names)
 
 
     def copy(self):
@@ -742,7 +740,7 @@ class Candidate():
         True
         '''
 
-        return union.Union(self)
+        return Union(self)
 
 
     def update(self, other):
@@ -807,6 +805,331 @@ class Candidate():
         '''
 
         return self.show.values()
+
+# END: Candidate #########################################################
+
+
+# START: Union ###########################################################
+
+class Union():
+    '''Union of candidates at each group.'''
+
+    def __init__(self, C):
+        '''(Union, Candidate) -> None
+
+        Initialize Union.
+
+        >>> V = Candidate(
+        ...     { # candidates of submatrix1
+        ...         (0, 1): {'5', '4', '7', '9'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'5', '4', '6', '9'}, 
+        ...         (1, 2): {'5', '4', '6', '9'}, 
+        ...         (2, 1): {'5', '4', '7', '9', '6'}
+        ...     },
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> unions = Union(V)
+        '''
+        
+        elements = C.elements
+
+        group_col = C.group('col')
+        group_col_cp = group_col.copy()
+        group_row = C.group('row')
+        group_row_cp = group_row.copy()
+        group_sub = C.group('submatrix')
+        group_sub_cp = group_sub.copy()
+        
+        gcu = {}
+        gru = {}
+        gsu = {}
+        
+        for Kc, Vc in group_col_cp.items():
+            if Vc == Candidate({}, elements = elements):
+                group_col.pop(Kc)
+        for Kr, Vr in group_row_cp.items():
+            if Vr == Candidate({}, elements = elements):
+                group_row.pop(Kr)
+        for Ks, Vs in group_sub_cp.items():
+            if Vs == Candidate({}, elements = elements):
+                group_sub.pop(Ks)
+                
+        for ck, cv in group_col.items():
+            gcu[ck] = set()
+            for cvv in cv.values():
+                gcu[ck] = gcu[ck].union(cvv)
+        for rk, rv in group_row.items():
+            gru[rk] = set()
+            for rvv in rv.values():
+                gru[rk] = gru[rk].union(rvv)
+        for sk, sv in group_sub.items():
+            gsu[sk] = set()
+            for svv in sv.values():
+                gsu[sk] = gsu[sk].union(svv)
+
+        result = {'submatrix': gsu, 'row': gru, 'col': gcu}
+
+        self.show = result
+        self.n = C.n
+
+
+    def __eq__(self, other):
+        '''(Union, Union) -> bool
+        
+        Return True iff self.show == other.show and n are the same.
+        '''
+
+        return self.show == other.show and self.n == other.n
+
+
+    def __repr__(self):
+        '''(Union) -> str
+
+        Print the representation of Union.
+        '''
+
+        headline, endline = "Union(\n", "n: {0}\n)".format(self.n)
+        itms = [(k, v) for k, v in self.show.items()]
+        itms.sort()
+        mid = "{{'{0}': {1},\n".format(itms[0][0], itms[0][1])
+        for i in range(1, len(itms) - 1):
+            mid += " '{0}': {1},\n".format(itms[i][0], itms[i][1])
+        last = len(itms) - 1
+        mid += " '{0}': {1}}},\n".format(itms[last][0], itms[last][1])
+
+        return headline + mid + endline
+
+
+    def aggregate(self, names):
+        '''(Union, [str, str]) -> [objects], [objects]
+        
+        Preconditions:
+        1. len(set(names)) == 2
+        2. set(names).issubset(['col', 'row', 'submatrix'])
+        
+        Aggregate value sets of self by names, and return two lists of
+        numbers/objects consisting of elements in value sets.
+
+        >>> V = Candidate(
+        ...     { # candidates of submatrix1 of 9x9 sudoku
+        ...         (0, 1): {'5', '4', '7', '9'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'5', '4', '6', '9'}, 
+        ...         (1, 2): {'5', '4', '6', '9'}, 
+        ...         (2, 1): {'5', '4', '7', '9', '6'}
+        ...     },
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> unions = Union(V)
+        >>> rows_union, cols_union = unions.aggregate(['row', 'col'])
+        >>> rows_union.sort(); cols_union.sort()
+        >>> rows_union == [
+        ...     '4', '4', '4', '5', '5', '5', '6', '6', '7', '7', 
+        ...     '9', '9', '9'
+        ... ]
+        ...
+        True
+        >>> cols_union == [
+        ...     '4', '4', '4', '5', '5', '6', '6', '7', '9', '9', '9'
+        ... ]
+        ...
+        True
+        '''
+
+        letter1, letter2 = names[0], names[1]
+        union1, union2 = [], []
+        for K, V in self.items():
+            if K == letter1: # usually row
+                for v in V.values():
+                    union1.extend(list(v))
+            elif K == letter2: # usually col
+                for v in V.values():
+                    union2.extend(list(v))
+        return union1, union2
+    
+    
+    def items(self):
+        '''(Union) -> dict_items
+        
+        Return the dict_items of self.show.
+        '''
+        
+        return self.show.items()
+        
+
+    def keys(self):
+        '''(Union) -> dict_keys
+        
+        Return the keys of self.show.
+        '''
+
+        return self.show.keys()
+
+
+    def values(self):
+        '''(Union) -> dict_values
+        
+        Return the values of self.show.
+        '''
+        
+        return self.show.values()
+
+# END: Union #############################################################
+
+
+# START: Appearance ######################################################
+
+class Appearance():
+    '''Appearance collection.'''
+
+    def __init__(self, C, names = None):
+        '''(Appearance, Candidate, [str, str]) -> None
+
+        Preconditions:
+        1. names is not None and len(set(names)) == 2
+        2. set(names).issubset(['col', 'row', 'submatrix'])
+
+        Initialize Appearance object.
+        '''
+
+        assert names is not None, 'names should be specified.'
+        assert len(set(names)) == 2, 'len(set(names)) != 2'
+        assert set(names).issubset(['col', 'row', 'submatrix']), \
+            'Invalid name in names'
+
+        elements = C.elements
+        unions = C.unions()
+        union1, union2 = unions.aggregate(names)
+        appearances = {}
+        for a in elements:
+            appearances[a] = [[0, 0], set()]
+        for number1 in union1:
+            appearances[number1][0][0] += 1
+            for kV, vV in C.items():
+                if number1 in vV:
+                    appearances[number1][1].update([kV])
+        for number2 in union2:
+            appearances[number2][0][1] += 1
+            for kV2, vV2 in C.items():
+                if number2 in vV2:
+                    appearances[number2][1].update([kV2])
+
+        self.show = appearances
+        self.elements = elements
+        self.n = C.n
+        self.names = names
+
+
+    def __repr__(self):
+        '''(Appearance) -> str
+
+        Print the representation of Appearance.
+
+        >>> V = Candidate(
+        ...     {
+        ...         (0, 1): {'4', '9', '7', '5'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'4', '9', '6', '5'}, 
+        ...         (1, 2): {'4', '9', '6', '5'},
+        ...         (2, 1): {'7', '9', '6', '5', '4'}
+        ...     }, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> names = ['row', 'col']
+        >>> Appearance(V, names)
+        Appearance(
+        {
+        '1': [[0, 0], set()],
+        '2': [[0, 0], set()],
+        '3': [[0, 0], set()],
+        '4': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}],
+        '5': [[3, 2], {(0, 1), (2, 1), (1, 1), (1, 2)}],
+        '6': [[2, 2], {(1, 2), (1, 1), (2, 1)}],
+        '7': [[2, 1], {(0, 1), (2, 1)}],
+        '8': [[0, 0], set()],
+        '9': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}]
+        },
+        n: 3
+        elements: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        names: 'row', 'col' (in this order)
+        )
+        '''
+
+        elements = self.elements
+        headline, mid, endline = 'Appearance(\n{\n', "", ""
+
+        KVs = list(self.show.items())
+        KVs.sort()
+        lenKVs = len(KVs)
+        i = 0
+        for k, v in KVs:
+            if i != len(KVs) - 1:
+                mid += "'{0}': {1},\n".format(k, v)
+            else:
+                mid += "'{0}': {1}\n}},\n".format(k, v)
+            i += 1
+
+        elements_ord = list(elements)
+        elements_ord.sort()
+        el_strs = ''
+        for ch in enumerate(elements_ord):
+            if ch[0] != len(elements_ord) - 1:
+                el_strs += ch[1] + ', '
+            else:
+                el_strs += ch[1]
+        endline += 'n: {0}\n'.format(self.n)
+        endline += 'elements: {{{0}}}\n'.format(el_strs)
+        endline += "names: '{0}', '{1}' (in this order)\n)".format(
+            self.names[0], self.names[1]
+        )
+
+        return headline + mid + endline
+
+
+    def items(self):
+        '''(Appearance) -> dict_items
+
+        Return dict_items of self.show.
+        '''
+
+        return self.show.items()
+
+
+    def sieve(self):
+        '''(Appearance) -> None
+
+        Update self so that if the first element of the value list does
+        not contain 1, then the responsible key gets removed from
+        self.
+
+        >>> V = Candidate(
+        ...     {
+        ...         (0, 1): {'4', '9', '7', '5'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'4', '9', '6', '5'}, 
+        ...         (1, 2): {'4', '9', '6', '5'},
+        ...         (2, 1): {'7', '9', '6', '5', '4'}
+        ...     }, 
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> names = ['row', 'col']
+        >>> appearances = Appearance(V, names)
+        >>> appearances.sieve()
+        >>> appearances.show == {'7': [[2, 1], {(0, 1), (2, 1)}]}
+        True
+        '''
+
+        appearances_cp = self.show.copy()
+        for k2, v2 in appearances_cp.items():
+            if 1 not in v2[0]:
+                self.show.pop(k2)
+
+# END: Appearance ########################################################
 
 
 
