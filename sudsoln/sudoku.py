@@ -1,17 +1,13 @@
 
-import sudsoln.candidate as candidate
+# import sudsoln.candidate as candidate
+import candidate
 import sudsoln.sarray as sarray
 
 
 class Sudoku():
     '''Sudoku puzzle.'''
 
-    def __init__(
-            self, 
-            array,
-            elements = None, 
-            empty = '.'
-        ):
+    def __init__(self, array, elements = None, empty = '.'):
         '''(Sudoku, 2d-array of objects[, {objects} or None, str]) -> None
         
         Precondition: 
@@ -180,9 +176,8 @@ class Sudoku():
 
         Return the entry of self at key.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1
         Sudoku(
             .    .    .    |    .    2    .    |    .    .    .
@@ -214,9 +209,8 @@ class Sudoku():
 
         Return the Sudoku representation of self.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1
         Sudoku(
             .    .    .    |    .    2    .    |    .    .    .
@@ -234,7 +228,7 @@ class Sudoku():
         elements: 1, 2, 3, 4, 5, 6, 7, 8, 9
         empty: .
         )
-        >>> q_big = ss.to_sudoku(sq.q7)
+        >>> q_big = to_sudoku(sq.q7)
         >>> q_big
         Sudoku(
             1    6    F    .    |    .    .    .    .    |    .    .    .    .    |    .    E    G    7
@@ -300,9 +294,8 @@ class Sudoku():
 
         Assign value to self's key.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1
         Sudoku(
             .    .    .    |    .    2    .    |    .    .    .
@@ -320,7 +313,7 @@ class Sudoku():
         elements: 1, 2, 3, 4, 5, 6, 7, 8, 9
         empty: .
         )
-        >>> q1[(0, 0)] = 5  # q1 in __init__()
+        >>> q1[(0, 0)] = 5
         >>> q1[(8, 8)] = '5'
         >>> q1
         Sudoku(
@@ -349,9 +342,8 @@ class Sudoku():
 
         Return the string representation of self.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> str(q1)  # q1 in __init__()
         '....2....83.714.96.6.9.54.8.9.3.1..4.1.4.2..7.75...21...4...7.....5.7......196...'
         >>> q1.solve_logically()
@@ -371,9 +363,8 @@ class Sudoku():
         Return all missing values of all submatrices, rows, and columns
         of self.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1
         Sudoku(
             .    .    .    |    .    2    .    |    .    .    .
@@ -445,10 +436,8 @@ class Sudoku():
         Return all numbers that can be entered at each entry of self 
         if that entry is self.empty.
 
-        >>> import sudsoln as ss
-        >>> import sudsoln.candidate as sc
         >>> import sudsoln.questions as sq
-        >>> q6 = ss.to_sudoku(sq.q6)
+        >>> q6 = to_sudoku(sq.q6)
         >>> q6
         Sudoku(
             .    3    |    .    4
@@ -460,7 +449,7 @@ class Sudoku():
         elements: 1, 2, 3, 4
         empty: .
         )
-        >>> q6.candidates() == sc.Candidate(
+        >>> q6.candidates() == candidate.Candidate(
         ...     {
         ...         (0, 0): {'1'}, 
         ...         (0, 2): {'2'}, 
@@ -475,7 +464,7 @@ class Sudoku():
         ...         (3, 2): {'4', '3'}, 
         ...         (3, 3): {'3'}
         ...     },
-        ...     n = 2
+        ...     elements = {1, 2, 3, 4}
         ... )
         ...
         True
@@ -483,6 +472,7 @@ class Sudoku():
         
         n = self.n
         empty = self.empty
+        elements = self.elements
         entries = {}
         for i in range(1, n ** 2, n): # e.g. n == 3 => 1, 4, 7
             subm, subm_missing = {}, {}
@@ -502,7 +492,7 @@ class Sudoku():
                             )
                     if L == col_iters[subm_index]:
                         subm_index += 1
-        return candidate.Candidate(entries, n = n)
+        return candidate.Candidate(entries, elements = elements)
 
 
     def col(self, c):
@@ -512,9 +502,8 @@ class Sudoku():
         
         Return one of self.n ** 2 columns of self selected by c.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1
         Sudoku(
             .    .    .    |    .    2    .    |    .    .    .
@@ -544,9 +533,8 @@ class Sudoku():
         
         Return a deep copy of self.
 
-        >>> import sudsoln as ss
         >>> import sudsoln.questions as sq
-        >>> q1 = ss.to_sudoku(sq.q1)
+        >>> q1 = to_sudoku(sq.q1)
         >>> q1_cp = q1.copy()
         >>> q1_cp == q1
         True
@@ -579,10 +567,8 @@ class Sudoku():
         Return the candidate values grouped by 'by', which is either 
         'submatrix', 'row', or 'col'.
 
-        >>> import sudsoln as ss
-        >>> import sudsoln.candidate as sc
         >>> import sudsoln.questions as sq
-        >>> q6 = ss.to_sudoku(sq.q6)
+        >>> q6 = to_sudoku(sq.q6)
         >>> q6
         Sudoku(
             .    3    |    .    4
@@ -595,109 +581,109 @@ class Sudoku():
         empty: .
         )
         >>> q6.group(by = 'submatrix') == {
-        ...     1: sc.Candidate(
+        ...     1: candidate.Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (1, 0): {'4', '1'}, 
         ...             (1, 1): {'4', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     2: sc.Candidate(
+        ...     2: candidate.Candidate(
         ...         {
         ...             (0, 2): {'2'}, 
         ...             (1, 2): {'3', '2'}, 
         ...             (1, 3): {'3', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     3: sc.Candidate(
+        ...     3: candidate.Candidate(
         ...         {
         ...             (2, 0): {'3', '4'}, 
         ...             (2, 1): {'4'}, 
         ...             (3, 1): {'4', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     4: sc.Candidate(
+        ...     4: candidate.Candidate(
         ...         {
         ...             (2, 3): {'3', '2'}, 
         ...             (3, 2): {'3', '4'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
         True
         >>> q6.group(by = 'row') == {
-        ...     0: sc.Candidate(
+        ...     0: candidate.Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (0, 2): {'2'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     1: sc.Candidate(
+        ...     1: candidate.Candidate(
         ...         {
         ...             (1, 0): {'4', '1'}, 
         ...             (1, 1): {'4', '2', '1'}, 
         ...             (1, 2): {'3', '2'}, 
         ...             (1, 3): {'3', '2', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     2: sc.Candidate(
+        ...     2: candidate.Candidate(
         ...         {
         ...             (2, 0): {'3', '4'}, 
         ...             (2, 1): {'4'}, 
         ...             (2, 3): {'3', '2'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     3: sc.Candidate(
+        ...     3: candidate.Candidate(
         ...         {
         ...             (3, 1): {'4', '1'}, 
         ...             (3, 2): {'3', '4'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
         True
         >>> q6.group(by = 'col') == {
-        ...     0: sc.Candidate(
+        ...     0: candidate.Candidate(
         ...         {
         ...             (0, 0): {'1'}, 
         ...             (1, 0): {'4', '1'}, 
         ...             (2, 0): {'3', '4'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     1: sc.Candidate(
+        ...     1: candidate.Candidate(
         ...         {
         ...             (1, 1): {'4', '2', '1'}, 
         ...             (2, 1): {'4'}, 
         ...             (3, 1): {'4', '1'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     2: sc.Candidate(
+        ...     2: candidate.Candidate(
         ...         {
         ...             (0, 2): {'2'}, 
         ...             (1, 2): {'3', '2'}, 
         ...             (3, 2): {'3', '4'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     ), 
-        ...     3: sc.Candidate(
+        ...     3: candidate.Candidate(
         ...         {
         ...             (1, 3): {'3', '2', '1'}, 
         ...             (2, 3): {'3', '2'}, 
         ...             (3, 3): {'3'}
         ...         },
-        ...         n = 2
+        ...         elements = {1, 2, 3, 4}
         ...     )
         ... }
         ...
@@ -716,7 +702,6 @@ class Sudoku():
 
         Return True iff self is a valid sudoku answer, and False otherwise.
 
-        >>> import sudsoln as ss
         >>> q_small = [
         ...     [  1, '.',   3, '.'],
         ...     ['.',   2, '.', '.'],
@@ -724,7 +709,7 @@ class Sudoku():
         ...     ['.', '.', '.',   4]
         ... ]
         ...
-        >>> q_small = ss.Sudoku(q_small)
+        >>> q_small = Sudoku(q_small)
         >>> q_small
         Sudoku(
             1    .    |    3    .
@@ -823,7 +808,6 @@ class Sudoku():
         Mutate entry number of self according to values given in entries 
         if the value set has length 1.
 
-        >>> import sudsoln.candidate as sc
         >>> q_small = [
         ...     [  1, '.',   3, '.'],
         ...     ['.',   2, '.', '.'],
@@ -833,7 +817,7 @@ class Sudoku():
         ...
         >>> q_small = Sudoku(q_small, elements = {'1', '2', '3', '4'})
         >>> candids = q_small.candidates()
-        >>> candids == sc.Candidate(
+        >>> candids == candidate.Candidate(
         ...     {
         ...         (0, 1): {'4'}, 
         ...         (0, 3): {'2'}, 
@@ -848,7 +832,7 @@ class Sudoku():
         ...         (3, 1): {'3', '1'}, 
         ...         (3, 2): {'1', '2'}
         ...     },
-        ...     n = 2
+        ...     elements = {1, 2, 3, 4}
         ... )
         ...
         True
@@ -884,7 +868,8 @@ class Sudoku():
                 if len(values) == 1:
                     self.itemset(entry, list(values)[0])
         elif 'Candidate' in str(type(entries)):
-            if entries == candidate.Candidate({}):
+            elements = self.elements
+            if entries == candidate.Candidate({}, elements = elements):
                 return None
             for entry, values in entries.items():
                 if len(values) == 1:
@@ -898,7 +883,6 @@ class Sudoku():
         as well if include_empty is True (by default).
 
         >>> import numpy as np
-        >>> import sudsoln.candidate as sc
         >>> q_small = np.array([
         ...     [  1, '.',   3, '.'],
         ...     ['.',   2, '.', '.'],
@@ -907,17 +891,23 @@ class Sudoku():
         ... ])
         ...
         >>> q_small = Sudoku(q_small)
-        >>> q_small.melt() == sc.Candidate({
+        >>> q_small.melt() == candidate.Candidate(
+        ... {
         ...     (0, 0): {'1'}, (0, 1): {'.'}, (0, 2): {'3'}, (0, 3): {'.'}, 
         ...     (1, 0): {'.'}, (1, 1): {'2'}, (1, 2): {'.'}, (1, 3): {'.'}, 
         ...     (2, 0): {'.'}, (2, 1): {'.'}, (2, 2): {'.'}, (2, 3): {'.'}, 
         ...     (3, 0): {'.'}, (3, 1): {'.'}, (3, 2): {'.'}, (3, 3): {'4'}
-        ... }, n = 2)
+        ... }, 
+        ... elements = {1, 2, 3, 4}
+        ... )
         ...
         True
-        >>> q_small.melt(include_empty = False) == sc.Candidate({
+        >>> q_small.melt(include_empty = False) == candidate.Candidate(
+        ... {
         ...     (0, 0): {'1'}, (0, 2): {'3'}, (1, 1): {'2'}, (3, 3): {'4'}
-        ... }, n = 2)
+        ... }, 
+        ... elements = {1, 2, 3, 4}
+        ... )
         ...
         True
         '''
@@ -933,7 +923,7 @@ class Sudoku():
             for k, v in result_copy.items():
                 if list(v)[0] == empty:
                     result.pop(k)
-        return candidate.Candidate(result, n = n)
+        return candidate.Candidate(result, elements = self.elements)
 
 
     def missing(self, s = None, r = None, c = None):
@@ -1080,13 +1070,15 @@ class Sudoku():
             entries_to_mutate = {}
             candidates_group_old = candidates_group.copy()
             for V in candidates_group_old.values(): # for each submatrix
-                unions = initialize_unions(n, names)
-                collect_unions(unions, n, names, V)
-                r_union, c_union = aggregate_unions(unions, names)
+                unions = initialize_unions(n, names) # OLD
+                collect_unions(unions, n, names, V) # OLD
+                r_union, c_union = aggregate_unions(unions, names) # OLD
                 appearances = collect_appearances(
                     r_union, c_union, V, elements
-                )
-                sieve_appearances(appearances)
+                ) # OLD
+                # appearances = V.appearances(elements, names) # NEW
+                sieve_appearances(appearances) # OLD
+                # appearances.sieve() # NEW
                 candidates_global.refine(entries_to_mutate, appearances)
             self.itemsets(entries_to_mutate)
             self.itemsets(candidates_global)
@@ -1275,7 +1267,6 @@ class Sudoku():
         Return the unique candidate number at each entry, within each 
         group of self, grouped by 'by'.
         
-        >>> import sudsoln.candidate as sc
         >>> q_small = '1.3..2.........4'
         >>> q_small = to_sudoku(q_small, elements = {1, 2, 3, 4})
         >>> q_small
@@ -1289,35 +1280,45 @@ class Sudoku():
         elements: 1, 2, 3, 4
         empty: .
         )
-        >>> q_small.unique_candidates('submatrix') == sc.Candidate({
+        >>> q_small.unique_candidates('submatrix') ==\\
+        ...     candidate.Candidate({
         ...                    (0, 1): set(),                (0, 3): {'2'}, 
         ...     (1, 0): {'3'},                (1, 2): {'4'}, (1, 3): set(), 
         ...     (2, 0): set(), (2, 1): set(), (2, 2): set(), (2, 3): {'3'},
         ...     (3, 0): set(), (3, 1): set(), (3, 2): set()
-        ... }, n = 2)
+        ...     }, 
+        ...     elements = {1, 2, 3, 4}
+        ... )
         ...
         True
-        >>> q_small.unique_candidates('row') == sc.Candidate({
+        >>> q_small.unique_candidates('row') ==\\
+        ...     candidate.Candidate({
         ...                    (0, 1): {'4'},                (0, 3): {'2'}, 
         ...     (1, 0): {'3'},                (1, 2): set(), (1, 3): set(), 
         ...     (2, 0): set(), (2, 1): set(), (2, 2): set(), (2, 3): set(),
         ...     (3, 0): set(), (3, 1): set(), (3, 2): set()
-        ... }, n = 2)
+        ...     }, 
+        ...     elements = {1, 2, 3, 4}
+        ... )
         ...
         True
-        >>> q_small.unique_candidates('col') == sc.Candidate({
+        >>> q_small.unique_candidates('col') ==\\
+        ...     candidate.Candidate({
         ...                    (0, 1): set(),                (0, 3): set(),
         ...     (1, 0): set(),                (1, 2): {'4'}, (1, 3): set(),
         ...     (2, 0): set(), (2, 1): set(), (2, 2): set(), (2, 3): {'3'},
         ...     (3, 0): set(), (3, 1): set(), (3, 2): set()
-        ... }, n = 2)
+        ...     }, 
+        ...     elements = {1, 2, 3, 4}
+        ... )
         ...
         True
         '''
 
         n = self.n
         start = self.group(by = by)
-        result = candidate.Candidate({}, n = n)
+        elements = self.elements
+        result = candidate.Candidate({}, elements = elements)
         for V in start.values():
             keys = list(V.keys()); keys.sort() # sorting is unnecessary
             for i in range(len(keys)):
@@ -1427,7 +1428,6 @@ def collect_appearances(union1, union2, V, elements):
     contains the element in either union1 or union2. Apperances in
     elements are to be counted.
 
-    >>> import sudsoln.candidate as sc
     >>> rows_union = [
     ...     '4', '4', '4', '5', '5', '5', '6', '6', '7', '7', 
     ...     '9', '9', '9'
@@ -1437,11 +1437,13 @@ def collect_appearances(union1, union2, V, elements):
     ...     '4', '4', '4', '5', '5', '6', '6', '7', '9', '9', '9'
     ... ]
     ...
-    >>> V = sc.Candidate({
-    ...     (0, 1): {'4', '9', '7', '5'}, (1, 0): {'9', '4'}, 
-    ...     (1, 1): {'4', '9', '6', '5'}, (1, 2): {'4', '9', '6', '5'}, 
-    ...     (2, 1): {'7', '9', '6', '5', '4'}
-    ... })
+    >>> V = candidate.Candidate({
+    ...         (0, 1): {'4', '9', '7', '5'}, (1, 0): {'9', '4'}, 
+    ...         (1, 1): {'4', '9', '6', '5'}, (1, 2): {'4', '9', '6', '5'},
+    ...         (2, 1): {'7', '9', '6', '5', '4'}
+    ...     }, 
+    ...     elements = set([str(i) for i in range(1, 10)])
+    ... )
     ...
     >>> elements = set([str(i) for i in range(1, 3 ** 2 + 1)])
     >>> appearances = collect_appearances(
@@ -1491,17 +1493,18 @@ def collect_unions(unions, n, names, V):
     where V is a collection of subset candidates from n ** 2 by n ** 2 
     Sudoku.
 
-    >>> import sudsoln.candidate as sc
     >>> n = 3
     >>> names = ['row', 'col']
     >>> unions = initialize_unions(n, names)
-    >>> V = sc.Candidate({
-    ...     (0, 1): {'5', '4', '7', '9'}, 
-    ...     (1, 0): {'9', '4'}, 
-    ...     (1, 1): {'5', '4', '6', '9'}, 
-    ...     (1, 2): {'5', '4', '6', '9'}, 
-    ...     (2, 1): {'5', '4', '7', '9', '6'}
-    ... })
+    >>> V = candidate.Candidate({
+    ...         (0, 1): {'5', '4', '7', '9'}, 
+    ...         (1, 0): {'9', '4'}, 
+    ...         (1, 1): {'5', '4', '6', '9'}, 
+    ...         (1, 2): {'5', '4', '6', '9'}, 
+    ...         (2, 1): {'5', '4', '7', '9', '6'}
+    ...     }, 
+    ...     elements = set([str(i) for i in range(1, 10)])
+    ... )
     ...
     >>> collect_unions(unions, n, names, V)
     >>> unions == {
@@ -1590,11 +1593,7 @@ def sieve_appearances(appearances):
             appearances.pop(k2)
 
 
-def to_sudoku(
-        sudoku_str, 
-        elements = None, 
-        empty = '.'
-    ):
+def to_sudoku(sudoku_str, elements = None, empty = '.'):
     '''(str[, {objects} or None, str]) -> Sudoku
 
     Preconditions if elements is not None:
