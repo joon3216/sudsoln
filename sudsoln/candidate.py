@@ -1,4 +1,6 @@
 
+import union
+
 class Candidate():
     '''Sudoku puzzle candidate collection.'''
 
@@ -550,6 +552,41 @@ class Candidate():
                     if k_g2[1] == list(v3[1])[0][1] and\
                         k_g2[0] not in rows_exception and k3 in v_g2:
                         v_g2.remove(k3)
+
+
+    def unions(self):
+        '''(Candidate) -> Union
+
+        Return the unions of candidates at each group.
+
+        >>> V = Candidate({ # candidates of submatrix1
+        ...     (0, 1): {'5', '4', '7', '9'}, 
+        ...     (1, 0): {'9', '4'}, 
+        ...     (1, 1): {'5', '4', '6', '9'}, 
+        ...     (1, 2): {'5', '4', '6', '9'}, 
+        ...     (2, 1): {'5', '4', '7', '9', '6'}
+        ... })
+        >>> unions = V.unions()
+        >>> unions.show == {
+        ...     'submatrix': {
+        ...         1: {'7', '5', '9', '6', '4'}
+        ...     }, 
+        ...     'row': {
+        ...         0: {'7', '4', '9', '5'}, 
+        ...         1: {'4', '9', '6', '5'}, 
+        ...         2: {'7', '9', '6', '4', '5'}
+        ...     }, 
+        ...     'col': {
+        ...         0: {'9', '4'}, 
+        ...         1: {'7', '5', '9', '6', '4'}, 
+        ...         2: {'9', '6', '4', '5'}
+        ...     }
+        ... }
+        ...
+        True
+        '''
+
+        return union.Union(self)
 
 
     def update(self, other):
