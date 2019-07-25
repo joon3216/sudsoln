@@ -267,7 +267,7 @@ class Candidate():
 
     
     def items(self):
-        '''(Candidate) -> dict_items of (int, int), {object}
+        '''(Candidate) -> dict_items of {(int, int), {object}}
 
         Return dict_items of self.
 
