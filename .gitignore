@@ -103,7 +103,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Scrap papers
+# Scrap papers and extras
 features.md
 sudsoln/features.md
 sudsoln/formatting.py
+README.Rmd
