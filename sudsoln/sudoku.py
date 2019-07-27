@@ -1047,31 +1047,45 @@ class Sudoku():
             return str(end - start)
 
 
-    def solve_by_pairs(self, by = 'submatrix'):
-        '''(Sudoku, str) -> Candidate
+    def solve_by_pairs(self, by = 'submatrix', start = None):
+        '''(Sudoku, str, Candidate) -> Candidate
 
         Precondition: by in ['row', 'col', 'submatrix']
 
-        Eliminate candidate numbers in other entries of the same rows or
-        columns based on entries of submatrix it belongs, mutate self 
-        into the closest answer form, and return a refined Candidate 
-        (better than self.candidates() in a sense that it has fewer,
-        equal at worst, candidate numbers at each entry) based on 
-        iterations.
+        Say bases = ['row', 'col', 'submatrix'], and one item is removed by
+        bases.remove(by). Define the two leftovers in bases as group1 and 
+        group2 respectively. This method eliminates candidate numbers in 
+        other entries of the same group1 (e.g. row) or group2 
+        (e.g. columns) based on entries of 'by' (e.g. submatrix) it 
+        belongs, mutate self into the closest answer form, and return a 
+        refined Candidate (better than self.candidates() in a sense that 
+        it has fewer, equal at worst, candidate numbers at each entry) 
+        based on iterations. Starting candidate can be specified with
+        'start' argument; if start is None, then self.candidates() will be
+        the starting point.
         '''
 
         n = self.n
         elements = self.elements
-        names = ['row', 'col']
+        bases = ['row', 'col', 'submatrix']
+        bases.remove(by)
+        names = bases
+        # names = ['row', 'col']
         changing = True
-        candidates_global = self.candidates()
-        candidates_group = self.group(by = 'submatrix')
+        if start is None:
+            candidates_global = self.candidates()
+            candidates_group = self.group(by = by)
+        else:
+            candidates_global = start
+            candidates_group = start.group(by = by)
+        
         while changing:
             sudoku_copy = self.copy()
             entries_to_mutate = candidate.Candidate({}, elements=elements)
             candidates_group_old = candidates_group.copy()
             for V in candidates_group_old.values(): # for each submatrix
                 appearances = V.appearances(names)
+                appearances.sieve()
                 candidates_global.refine(entries_to_mutate, appearances)
             self.itemsets(entries_to_mutate)
             self.itemsets(candidates_global)
