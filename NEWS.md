@@ -5,7 +5,8 @@
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Make `Sudoku` accept strings as well... but should I?
-* Write more solving features
+* Write more solving features:
+	+ Currently working on `.solve_by_hidden_pairs()`
 * Write unittests on `Appearance` and `Union` objects.
 
 ## ver 0.0.15 (current version)
