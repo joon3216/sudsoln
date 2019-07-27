@@ -1110,13 +1110,28 @@ class Appearance():
         return self.show.items()
 
 
-    def sieve(self):
-        '''(Appearance) -> None
+    def sieve(self, condition = ['contains', 1], deep = False):
+        '''(Appearance, [str, int][, bool]) -> None
 
-        Update self so that if the first element of the value list does
-        not contain 1, then the responsible key gets removed from
-        self.
+        Precondition: 
+        1. condition[0] in ['contains', 'both']
+        2. condition[1] >= 1
 
+        Update self so that keys that satisfy the condition stay while
+        others are removed. For example, if the condition is:
+        1. ['contains', 1]:
+            any key with its first element of the value list containing 1
+            (i.e. [1, x] or [x, 1]) will stay while others are removed 
+            from self.
+        2. ['both', 2]:
+            any key with its first element of the value list being [2, 2]
+            will stay while others get removed from self.
+        If deep = True (False by default), then the second element of the
+        value list is checked so that if its length is not equal to
+        condition[1], then the respective keys that passed condition are 
+        furthur removed from self.
+
+        >>> # CASE 1: ['contains', 1]
         >>> V = Candidate(
         ...     {
         ...         (0, 1): {'4', '9', '7', '5'}, 
@@ -1130,15 +1145,97 @@ class Appearance():
         ...
         >>> names = ['row', 'col']
         >>> appearances = Appearance(V, names)
+        >>> appearances
+        Appearance(
+        {
+        '1': [[0, 0], set()],
+        '2': [[0, 0], set()],
+        '3': [[0, 0], set()],
+        '4': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}],
+        '5': [[3, 2], {(0, 1), (2, 1), (1, 1), (1, 2)}],
+        '6': [[2, 2], {(1, 2), (1, 1), (2, 1)}],
+        '7': [[2, 1], {(0, 1), (2, 1)}],
+        '8': [[0, 0], set()],
+        '9': [[3, 3], {(0, 1), (1, 2), (2, 1), (1, 0), (1, 1)}]
+        },
+        n: 3
+        elements: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        names: 'row', 'col' (in this order)
+        )
         >>> appearances.sieve()
         >>> appearances.show == {'7': [[2, 1], {(0, 1), (2, 1)}]}
+        True
+        >>>
+        >>> # CASE 2: ['both', 2], deep == True
+        >>> V2 = Candidate(
+        ...     {
+        ...         (3, 1): {'8', '2', '9'}, 
+        ...         (3, 2): {'8', '7', '9', '6', '2'}, 
+        ...         (4, 0): {'2', '9', '5'}, 
+        ...         (4, 2): {'8', '2', '9'}, 
+        ...         (5, 0): {'7', '5', '9', '6'}, 
+        ...         (5, 1): {'5', '9'}
+        ...     },
+        ...     elements = set([str(i) for i in range(1, 10)])
+        ... )
+        ...
+        >>> appearances2 = V2.appearances(names)
+        >>> appearances2
+        Appearance(
+        {
+        '1': [[0, 0], set()],
+        '2': [[2, 3], {(4, 2), (3, 2), (3, 1), (4, 0)}],
+        '3': [[0, 0], set()],
+        '4': [[0, 0], set()],
+        '5': [[2, 2], {(5, 1), (5, 0), (4, 0)}],
+        '6': [[2, 2], {(3, 2), (5, 0)}],
+        '7': [[2, 2], {(3, 2), (5, 0)}],
+        '8': [[2, 2], {(4, 2), (3, 2), (3, 1)}],
+        '9': [[3, 3], {(3, 2), (5, 1), (3, 1), (5, 0), (4, 2), (4, 0)}]
+        },
+        n: 3
+        elements: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        names: 'row', 'col' (in this order)
+        )
+        >>> appearances2.sieve(condition = ['both', 2])
+        >>> appearances2.show == {        
+        ...     '5': [[2, 2], {(5, 1), (5, 0), (4, 0)}],
+        ...     '6': [[2, 2], {(3, 2), (5, 0)}],
+        ...     '7': [[2, 2], {(3, 2), (5, 0)}],
+        ...     '8': [[2, 2], {(4, 2), (3, 2), (3, 1)}]
+        ... }
+        ...
+        True
+        >>> appearances2.sieve(condition = ['both', 2], deep = True)
+        >>> appearances2.show == {
+        ...     '6': [[2, 2], {(3, 2), (5, 0)}],
+        ...     '7': [[2, 2], {(3, 2), (5, 0)}],
+        ... }
+        ...
         True
         '''
 
         appearances_cp = self.show.copy()
-        for k2, v2 in appearances_cp.items():
-            if 1 not in v2[0]:
-                self.show.pop(k2)
+        if condition == ['contains', 1]:
+            for k2, v2 in appearances_cp.items():
+                if condition[1] not in v2[0]:
+                    self.show.pop(k2)
+            if deep:
+                for k3, v3 in appearances_cp.items():
+                    if len(v3[1]) != condition[1]:
+                        self.show.pop(k3)
+        elif condition == ['both', 2]:
+            for k4, v4 in appearances_cp.items():
+                if v4[0] != [condition[1], condition[1]]:
+                    self.show.pop(k4)
+            if deep:
+                for k5, v5 in appearances_cp.items():
+                    if len(v5[1]) != condition[1]:
+                        self.show.pop(k5)
+
+
+
+
 
 # END: Appearance ########################################################
 
