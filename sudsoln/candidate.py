@@ -112,9 +112,20 @@ class Candidate():
         Return the Candidate representation of self.
         '''
 
-        return 'Candidate(\n{0},\nelements = {1}\n)\n(n: {2})'.format(
-            self.show, self.elements, self.n
-        )
+        n = self.n
+        elements = self.elements
+        headline = 'Candidate(\n{'
+        mid = ''
+        endline = "elements = {0}\n)\n(n: {1})".format(elements, n)
+        si = self.items()
+        for item in enumerate(si):
+            if item[0] == 0:
+                mid += "{0}: {1},\n".format(item[1][0], item[1][1])
+            elif item[0] == len(si) - 1:
+                mid += " {0}: {1}}},\n".format(item[1][0], item[1][1])
+            else:
+                mid += " {0}: {1},\n".format(item[1][0], item[1][1])
+        return headline + mid + endline
 
 
     def __setitem__(self, key, value):
