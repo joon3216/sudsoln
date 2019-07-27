@@ -1115,7 +1115,8 @@ class Appearance():
 
         Precondition: 
         1. condition[0] in ['contains', 'both']
-        2. condition[1] >= 1
+        2. condition[1] >= 0
+        3. condition[1] == int(condition[1])
 
         Update self so that keys that satisfy the condition stay while
         others are removed. For example, if the condition is:
@@ -1215,24 +1216,28 @@ class Appearance():
         True
         '''
 
-        appearances_cp = self.show.copy()
-        if condition == ['contains', 1]:
-            for k2, v2 in appearances_cp.items():
-                if condition[1] not in v2[0]:
-                    self.show.pop(k2)
-            if deep:
-                for k3, v3 in appearances_cp.items():
-                    if len(v3[1]) != condition[1]:
-                        self.show.pop(k3)
-        elif condition == ['both', 2]:
-            for k4, v4 in appearances_cp.items():
-                if v4[0] != [condition[1], condition[1]]:
-                    self.show.pop(k4)
-            if deep:
-                for k5, v5 in appearances_cp.items():
-                    if len(v5[1]) != condition[1]:
-                        self.show.pop(k5)
+        assert condition[0] in ['contains', 'both'], \
+            ".sieve() method only handles either 'contains' or 'both'" +\
+            " condition"
+        assert condition[1] >= 0, \
+            ".sieve() method should have condition[1] >= 0"
+        assert condition[1] == int(condition[1]), \
+            ".sieve() doesn't understand a number other than integers"
 
+        appearances_cp = self.show.copy()
+
+        if condition[0] == 'contains':
+            for k1, v1 in appearances_cp.items():
+                if condition[1] not in v1[0]:
+                    self.show.pop(k1)
+        elif condition[0] == 'both':
+            for k2, v2 in appearances_cp.items():
+                if v2[0] != [condition[1], condition[1]]:
+                    self.show.pop(k2)
+        if deep:
+            for k, v in appearances_cp.items():
+                if len(v[1]) != condition[1]:
+                    self.show.pop(k)
 
 
 
