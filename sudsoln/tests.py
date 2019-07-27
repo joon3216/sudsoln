@@ -5,6 +5,10 @@ import questions
 import sarray
 import sudoku
 
+# START: testing Appearance ##############################################
+
+# END: testing Appearance ################################################
+
 
 # START: testing Array ###################################################
 
@@ -1508,6 +1512,12 @@ class TestSudoku(unittest.TestCase):
 
 
 # END: testing Sudoku ####################################################
+
+
+# START: Union ###########################################################
+
+
+# END: Union #############################################################
 
 
 if __name__ == '__main__':
