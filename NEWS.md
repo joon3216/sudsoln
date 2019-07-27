@@ -1,13 +1,19 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.16
+## Coming up: ver >= 0.0.17
 
 * Create `sudsoln/data` directory to store sudoku questions
-* Make `Sudoku` accept strings as well... but should I?
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()`
 * Write unittests on `Appearance` and `Union` objects.
+
+## ver 0.0.16 (working on)
+
+* Added `by` argument to `.solve_by_pairs()` of `Sudoku`
+* Cancelled a plan to make `Sudoku` accept strings; it seems unnecessary because `to_sudoku()` function already does the job of transforming sudoku strings into `Array`. Moreover, unifying the type of `array` argument in `Sudoku()` seems important.
+* Edited `__repr__()` of `Candidate`
+
 
 ## ver 0.0.15 (current version)
 
