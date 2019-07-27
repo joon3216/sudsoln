@@ -1101,7 +1101,7 @@ class Sudoku():
             seed = None, 
             quietly = False
         ):
-        '''(Sudoku[, int, int or None, bool]) -> None
+        '''(Sudoku, int[, int or None, bool]) -> None
 
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met. seed
