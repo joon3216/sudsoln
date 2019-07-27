@@ -685,9 +685,9 @@ class Candidate():
             appearances = self.appearances(names)
         appearances.sieve()
         for k3, v3 in appearances.items():
-            if v3[0] == [1, 1]: # only candid value in the subm
+            if v3[0] == [1, 1]: # only candid value
                 entries_to_mutate[list(v3[1])[0]] = {k3}
-            elif v3[0][0] == 1: # eliminate the same candid in rows
+            elif v3[0][0] == 1: # eliminate the same candid in names[0]
                 cols_exception = []
                 for v3_item1 in list(v3[1]):
                     cols_exception.append(v3_item1[1])
@@ -695,7 +695,7 @@ class Candidate():
                     if k_g1[0] == list(v3[1])[0][0] and\
                         k_g1[1] not in cols_exception and k3 in v_g1:
                         v_g1.remove(k3)
-            elif v3[0][1] == 1: # eliminate the same candid in cols
+            elif v3[0][1] == 1: # eliminate the same candid in names[1]
                 rows_exception = []
                 for v3_item2 in list(v3[1]):
                     rows_exception.append(v3_item2[0])
