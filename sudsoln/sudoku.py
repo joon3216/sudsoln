@@ -1048,7 +1048,7 @@ class Sudoku():
 
 
     def solve_by_pairs(self, by = 'submatrix', start = None):
-        '''(Sudoku, str, Candidate) -> Candidate
+        '''(Sudoku, str[, Candidate]) -> Candidate
 
         Precondition: by in ['row', 'col', 'submatrix']
 
@@ -1070,7 +1070,6 @@ class Sudoku():
         bases = ['row', 'col', 'submatrix']
         bases.remove(by)
         names = bases
-        # names = ['row', 'col']
         changing = True
         if start is None:
             candidates_global = self.candidates()
@@ -1083,13 +1082,13 @@ class Sudoku():
             sudoku_copy = self.copy()
             entries_to_mutate = candidate.Candidate({}, elements=elements)
             candidates_group_old = candidates_group.copy()
-            for V in candidates_group_old.values(): # for each submatrix
+            for V in candidates_group_old.values(): # for each 'by'-group
                 appearances = V.appearances(names)
                 appearances.sieve()
                 candidates_global.refine(entries_to_mutate, appearances)
             self.itemsets(entries_to_mutate)
             self.itemsets(candidates_global)
-            candidates_group = candidates_global.group(by = 'submatrix')
+            candidates_group = candidates_global.group(by = by)
             if sudoku_copy == self and\
                 candidates_group_old == candidates_group:
                 changing = False
