@@ -1047,8 +1047,10 @@ class Sudoku():
             return str(end - start)
 
 
-    def solve_by_pairs(self):
-        '''(Sudoku) -> Candidate
+    def solve_by_pairs(self, by = 'submatrix'):
+        '''(Sudoku, str) -> Candidate
+
+        Precondition: by in ['row', 'col', 'submatrix']
 
         Eliminate candidate numbers in other entries of the same rows or
         columns based on entries of submatrix it belongs, mutate self 
