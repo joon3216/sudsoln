@@ -1047,6 +1047,13 @@ class Sudoku():
             return str(end - start)
 
 
+    def solve_by_hidden_pairs(self, start = None):
+        '''(Sudoku[, Candidate]) -> Candidate
+
+        Solve self by hidden pairs method.
+        '''
+
+
     def solve_by_pairs(self, by = 'submatrix', start = None):
         '''(Sudoku, str[, Candidate]) -> Candidate
 
