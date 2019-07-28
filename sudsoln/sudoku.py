@@ -1073,12 +1073,13 @@ class Sudoku():
             for V in cg_cp.values():
                 appearances = V.appearances(names)
                 appearances.sieve(condition = ['both', 2], deep = True)
-                candidates_global.refine(
-                    etm, 
-                    appearances = appearances,
-                    condition = ['both', 2],
-                    deep = True
-                )
+                if appearances.show != {}:
+                    candidates_global.refine(
+                        etm, 
+                        appearances = appearances,
+                        condition = ['both', 2],
+                        deep = True
+                    )
             self.itemsets(etm)
             self.itemsets(candidates_global)
             candidates_group = candidates_global.group(by = by)
