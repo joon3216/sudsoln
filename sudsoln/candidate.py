@@ -429,18 +429,41 @@ class Candidate():
         self.show.pop(key)
 
     
-    def refine(self, entries_to_mutate, appearances = None, names = None):
-        '''(Candidate, Candidate, Appearance or None, [str, str] or None)
-            -> None
+    def refine(
+            self, 
+            entries_to_mutate, 
+            appearances = None, 
+            names = None,
+            sieve = False,
+            condition = ['contains', 1],
+            deep = False
+        ):
+        '''(Candidate, Candidate, Appearance or None, [str, str] or None,
+            bool, [str, int], bool) -> None
 
-        Precondition: names is not None if appearances is None
+        Preconditions: 
+        1. names is not None if appearances is None
+        2. (condition, deep) == (['contains', 1], False) or 
+           (condition, deep) == (['both', 2], True), irrespective of sieve
 
-        Update self and entries_to_mutate so that any unique candidate 
-        number and the respective entry according to appearances is added
-        to entries_to_mutate, and any candidate number that should be
-        eliminated from some values of self due to the uniqueness of 
-        candidate number in a certain row or column in appearances is
-        eliminated.
+        Update self and entries_to_mutate by the following rule(s):
+        1. if (condition, deep) = (['contains', 1], False) (default), then:
+            any unique candidate number and the respective entry according
+            to appearances is added to entries_to_mutate, and any candidate
+            number that should be eliminated from some values of self due 
+            to the uniqueness of candidate number in a certain names[0]
+            (e.g. row) or names[1] (e.g. column) in appearances is 
+            eliminated. 
+        2. if (condition, deep) = (['both', 2], True), then:
+            for keys in appearances (e.g. '1', '6') whose first item of 
+            the value list is [2, 2] and the second item has the length 2, 
+            eliminate all candidates at self's entries that belong to the 
+            second item of the value list except those candidates that 
+            match keys in appearances.
+        If sieve = False, then deep will be ignored; if sieve = True, then 
+        appearances.sieve(condition, deep) will be applied. That is, 
+        depending on (condition, deep), refinement process will be
+        different.
 
         >>> candids_old = Candidate({
         ...     (0, 0): {'4', '9', '7', '5', '1'}, 
@@ -688,31 +711,86 @@ class Candidate():
         ... )
         ...
         True
+        >>> 
+        >>> # Case 4: (sieve, condition, deep) = (True, ['both', 2], True)
+        >>> V = Candidate(
+        ...     {
+        ...         (0, 6): {'7', '6', '3'}, 
+        ...         (0, 7): {'3', '8', '6'}, 
+        ...         (0, 8): {'7', '6', '8', '9', '3'}, 
+        ...         (1, 6): {'4', '3', '2', '7'}, 
+        ...         (1, 8): {'3', '8', '7'}, 
+        ...         (2, 7): {'6', '8', '4', '3', '2'}, 
+        ...         (2, 8): {'3', '8', '6', '7'}
+        ...     },
+        ...     elements = {'6', '7', '1', '8', '4', '5', '3', '9', '2'}
+        ... )
+        ...
+        >>> etm = Candidate({}, elements = set([i for i in range(1, 10)]))
+        >>> etm_before = etm.copy()
+        >>> V.refine(
+        ...     etm, 
+        ...     names = ['row', 'col'], 
+        ...     sieve = True, 
+        ...     condition = ['both', 2], 
+        ...     deep = True
+        ... )
+        ...
+        >>> etm == etm_before
+        True
+        >>> V == Candidate(
+        ...     {
+        ...         (0, 6): {'7', '6', '3'}, 
+        ...         (0, 7): {'3', '8', '6'}, 
+        ...         (0, 8): {'7', '6', '8', '9', '3'}, 
+        ...         (1, 6): {'4', '2'},           # '3' and '7' gone
+        ...         (1, 8): {'3', '8', '7'}, 
+        ...         (2, 7): {'4', '2'},           # '3', '6', and '8' gone
+        ...         (2, 8): {'3', '8', '6', '7'}
+        ...     },
+        ...     elements = {'6', '7', '1', '8', '4', '5', '3', '9', '2'}
+        ... )
+        ...
+        True
         '''
 
         if appearances is None:
             assert names is not None, \
                 'If appearances is None, then names must not be None.'
             appearances = self.appearances(names)
-        for k3, v3 in appearances.items():
-            if v3[0] == [1, 1]: # only candid value
-                entries_to_mutate[list(v3[1])[0]] = {k3}
-            elif v3[0][0] == 1: # eliminate the same candid in names[0]
-                cols_exception = []
-                for v3_item1 in list(v3[1]):
-                    cols_exception.append(v3_item1[1])
-                for k_g1, v_g1 in self.items():
-                    if k_g1[0] == list(v3[1])[0][0] and\
-                        k_g1[1] not in cols_exception and k3 in v_g1:
-                        v_g1.remove(k3)
-            elif v3[0][1] == 1: # eliminate the same candid in names[1]
-                rows_exception = []
-                for v3_item2 in list(v3[1]):
-                    rows_exception.append(v3_item2[0])
-                for k_g2, v_g2 in self.items():
-                    if k_g2[1] == list(v3[1])[0][1] and\
-                        k_g2[0] not in rows_exception and k3 in v_g2:
-                        v_g2.remove(k3)
+        if sieve:
+            appearances.sieve(condition = condition, deep = deep)
+
+        if (condition, deep) == (['contains', 1], False):
+            for k3, v3 in appearances.items():
+                if v3[0] == [1, 1]: # only candid value
+                    entries_to_mutate[list(v3[1])[0]] = {k3}
+                elif v3[0][0] == 1: # eliminate the same candid in names[0]
+                    names0_exception = []
+                    for v3_item1 in list(v3[1]):
+                        names0_exception.append(v3_item1[1])
+                    for k_g1, v_g1 in self.items():
+                        if k_g1[0] == list(v3[1])[0][0] and\
+                            k_g1[1] not in names0_exception and k3 in v_g1:
+                            v_g1.remove(k3)
+                elif v3[0][1] == 1: # eliminate the same candid in names[1]
+                    names1_exception = []
+                    for v3_item2 in list(v3[1]):
+                        names1_exception.append(v3_item2[0])
+                    for k_g2, v_g2 in self.items():
+                        if k_g2[1] == list(v3[1])[0][1] and\
+                            k_g2[0] not in names1_exception and k3 in v_g2:
+                            v_g2.remove(k3)
+        
+        elif (condition, deep) == (['both', 2], True):
+            replacement_candids = set(appearances.keys())
+            replacement_entries = set()
+            for val_list in list(appearances.values()):
+                replacement_entries.update(val_list[1])
+            replacement_entries = list(replacement_entries)
+            for entry in replacement_entries:
+                if entry in self.keys():
+                    self[entry] = replacement_candids
 
 
     def unions(self):
@@ -987,6 +1065,7 @@ class Union():
         
         return self.show.values()
 
+
 # END: Union #############################################################
 
 
@@ -1098,6 +1177,15 @@ class Appearance():
         )
 
         return headline + mid + endline
+
+
+    def keys(self):
+        '''(Appearance) -> dict_keys
+
+        Return dict_keys of self.show.
+        '''
+
+        return self.show.keys()
 
 
     def items(self):
@@ -1224,7 +1312,6 @@ class Appearance():
             ".sieve() doesn't understand a number other than integers"
 
         appearances_cp = self.show.copy()
-
         if condition[0] == 'contains':
             for k1, v1 in appearances_cp.items():
                 if condition[1] not in v1[0]:
@@ -1233,12 +1320,21 @@ class Appearance():
             for k2, v2 in appearances_cp.items():
                 if v2[0] != [condition[1], condition[1]]:
                     self.show.pop(k2)
+        
+        appearances_cp = self.show.copy() # new copy
         if deep:
             for k, v in appearances_cp.items():
                 if len(v[1]) != condition[1]:
                     self.show.pop(k)
 
 
+    def values(self):
+        '''(Appearance) -> dict_values
+
+        Return dict_values of self.show.
+        '''
+
+        return self.show.values()
 
 
 # END: Appearance ########################################################
