@@ -1,18 +1,25 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.18
+## Coming up: ver >= 0.0.19
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()`
 * Write unittests on `Appearance` and `Union` objects.
 
-## ver 0.0.17 (working on)
+## ver 0.0.18 (working on)
 
 * to be continued
 
-## ver 0.0.16 (current version)
+## ver 0.0.17 (current version)
+
+* `.solve_by_hidden_pairs()` yields an 'answer' that cannot be transformed into the answer form; needs revision.
+	+ `Candidate.refine()` body modified so that it works only if `len(replacing_candids) == 2 and len(ent_to_replace) == 2` 
+* Packaging again to see if `.solve_by_hidden_pairs()` now works properly.
+
+
+## ver 0.0.16
 
 * Added `by` and `start` arguments to `.solve_by_pairs()` of `Sudoku`
 * Added `condition` and `deep` arguments to `.sieve()` method of `Appearance`.
