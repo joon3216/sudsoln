@@ -1,15 +1,18 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.17
+## Coming up: ver >= 0.0.18
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()`
 * Write unittests on `Appearance` and `Union` objects.
 
+## ver 0.0.17 (working on)
 
-## ver 0.0.16 (working on)
+* to be continued
+
+## ver 0.0.16 (current version)
 
 * Added `by` and `start` arguments to `.solve_by_pairs()` of `Sudoku`
 * Added `condition` and `deep` arguments to `.sieve()` method of `Appearance`.
@@ -17,10 +20,10 @@
 * Added `.keys()` and `.values()` method to `Appearance`
 * Cancelled a plan to make `Sudoku` accept strings; it seems unnecessary because `to_sudoku()` function already does the job of transforming sudoku strings into `Sudoku`. Moreover, simplifying the type of `array` argument in `Sudoku()` seems important.
 * Edited `__repr__()` of `Candidate`; dictionary will be displayed as if it is passed to `pprint.pprint()`
+* Packaging done to check `.solve_by_hidden_pairs()`
 
 
-
-## ver 0.0.15 (current version)
+## ver 0.0.15
 
 * Packaging still failing in Python <= 3.6; moved `Appearance` and `Union` under `Candidate` and retried
 * Removed `import appearance` and `import union` in `tests.py` as these objects are now moved to `candidate.py`

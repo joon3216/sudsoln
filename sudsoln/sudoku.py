@@ -1047,11 +1047,44 @@ class Sudoku():
             return str(end - start)
 
 
-    def solve_by_hidden_pairs(self, start = None):
-        '''(Sudoku[, Candidate]) -> Candidate
+    def solve_by_hidden_pairs(self, by = 'submatrix', start = None):
+        '''(Sudoku, str[, Candidate]) -> Candidate
 
-        Solve self by hidden pairs method.
+        Mutate self by hidden pairs method.
         '''
+
+        n = self.n
+        elements = self.elements
+        bases = ['row', 'col', 'submatrix']
+        bases.remove(by)
+        names = bases
+        if start is None:
+            candidates_global = self.candidates()
+            candidates_group = self.group(by = by)
+        else:
+            candidates_global = start
+            candidates_group = start.group(by = by)
+
+        changing = True
+        etm = candidate.Candidate({}, elements = elements) # a placeholder
+        while changing:
+            sudoku_copy = self.copy()
+            cg_cp = candidates_group.copy()
+            for V in cg_cp.values():
+                appearances = V.appearances(names)
+                appearances.sieve(condition = ['both', 2], deep = True)
+                candidates_global.refine(
+                    etm, 
+                    appearances = appearances,
+                    condition = ['both', 2],
+                    deep = True
+                )
+            self.itemsets(etm)
+            self.itemsets(candidates_global)
+            candidates_group = candidates_global.group(by = by)
+            if self == sudoku_copy and cg_cp == candidates_group:
+                changing = False
+        return candidates_global
 
 
     def solve_by_pairs(self, by = 'submatrix', start = None):
@@ -1087,17 +1120,16 @@ class Sudoku():
         
         while changing:
             sudoku_copy = self.copy()
-            entries_to_mutate = candidate.Candidate({}, elements=elements)
-            candidates_group_old = candidates_group.copy()
-            for V in candidates_group_old.values(): # for each 'by'-group
+            etm = candidate.Candidate({}, elements=elements)
+            cg_cp = candidates_group.copy()
+            for V in cg_cp.values(): # for each 'by'-group
                 appearances = V.appearances(names)
                 appearances.sieve()
-                candidates_global.refine(entries_to_mutate, appearances)
-            self.itemsets(entries_to_mutate)
+                candidates_global.refine(etm, appearances)
+            self.itemsets(etm)
             self.itemsets(candidates_global)
             candidates_group = candidates_global.group(by = by)
-            if sudoku_copy == self and\
-                candidates_group_old == candidates_group:
+            if self == sudoku_copy and cg_cp == candidates_group:
                 changing = False
         return candidates_global
 
