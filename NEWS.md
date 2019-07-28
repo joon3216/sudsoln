@@ -4,7 +4,6 @@
 ## Coming up: ver >= 0.0.17
 
 * Create `sudsoln/data` directory to store sudoku questions
-* Edit `.refine()` argument to accept `condition` argument of `Appearance.sieve()`
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()`
 * Write unittests on `Appearance` and `Union` objects.
