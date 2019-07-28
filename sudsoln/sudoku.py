@@ -1123,6 +1123,8 @@ class Sudoku():
             sudoku_copy = self.copy()
             etm = candidate.Candidate({}, elements=elements)
             cg_cp = candidates_group.copy()
+
+            # 1. pointing pairs based on submatrix
             for V in cg_cp.values(): # for each 'by'-group
                 appearances = V.appearances(names)
                 appearances.sieve()
