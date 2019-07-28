@@ -799,14 +799,15 @@ class Candidate():
 
         Return the unions of candidates at each group.
 
-        >>> V = Candidate({ # candidates of submatrix1
-        ...     (0, 1): {'5', '4', '7', '9'}, 
-        ...     (1, 0): {'9', '4'}, 
-        ...     (1, 1): {'5', '4', '6', '9'}, 
-        ...     (1, 2): {'5', '4', '6', '9'}, 
-        ...     (2, 1): {'5', '4', '7', '9', '6'}
-        ... },
-        ... elements = set([str(i) for i in range(1, 10)])
+        >>> V = Candidate(
+        ...     { # candidates of submatrix1
+        ...         (0, 1): {'5', '4', '7', '9'}, 
+        ...         (1, 0): {'9', '4'}, 
+        ...         (1, 1): {'5', '4', '6', '9'}, 
+        ...         (1, 2): {'5', '4', '6', '9'}, 
+        ...         (2, 1): {'5', '4', '7', '9', '6'}
+        ...     },
+        ...     elements = set([str(i) for i in range(1, 10)])
         ... )
         ...
         >>> unions = V.unions()
