@@ -1050,10 +1050,11 @@ class Sudoku():
     def solve_by_hidden_pairs(self, by = 'submatrix', start = None):
         '''(Sudoku, str[, Candidate]) -> Candidate
 
-        Mutate self by hidden pairs method.
+        Mutate self by hidden pairs method based on 'by'. Starting 
+        candidate can be specified with 'start' argument; if start is 
+        None, then self.candidates() will be the starting point.
         '''
 
-        n = self.n
         elements = self.elements
         bases = ['row', 'col', 'submatrix']
         bases.remove(by)
@@ -1106,7 +1107,6 @@ class Sudoku():
         the starting point.
         '''
 
-        n = self.n
         elements = self.elements
         bases = ['row', 'col', 'submatrix']
         bases.remove(by)
