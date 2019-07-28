@@ -783,14 +783,15 @@ class Candidate():
                             v_g2.remove(k3)
         
         elif (condition, deep) == (['both', 2], True):
-            replacement_candids = set(appearances.keys())
-            replacement_entries = set()
+            replacing_candids = set(appearances.keys()) # must be of len 2
+            ent_to_replace = set()
             for val_list in list(appearances.values()):
-                replacement_entries.update(val_list[1])
-            replacement_entries = list(replacement_entries)
-            for entry in replacement_entries:
-                if entry in self.keys():
-                    self[entry] = replacement_candids
+                ent_to_replace.update(val_list[1])
+            ent_to_replace = list(ent_to_replace) # must be of len 2 also
+            if len(replacing_candids) == 2 and len(ent_to_replace) == 2:
+                for entry in ent_to_replace:
+                    if entry in self.keys():
+                        self[entry] = replacing_candids
 
 
     def unions(self):
