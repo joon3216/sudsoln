@@ -1097,7 +1097,7 @@ class Sudoku():
         Say bases = ['row', 'col', 'submatrix'], and one item is removed by
         bases.remove(by). Define the two leftovers in bases as group1 and 
         group2 respectively. This method eliminates candidate numbers in 
-        other entries of the same group1 (e.g. row) or group2 
+        other entries of the same group1 (e.g. rows) or group2 
         (e.g. columns) based on entries of 'by' (e.g. submatrix) it 
         belongs, mutate self into the closest answer form, and return a 
         refined Candidate (better than self.candidates() in a sense that 
