@@ -1050,7 +1050,7 @@ class Sudoku():
     def solve_by_hidden_pairs(self, by = 'submatrix', start = None):
         '''(Sudoku, str[, Candidate]) -> Candidate
 
-        Mutate self by hidden pairs method based on 'by'. Starting 
+        Mutate self and by hidden pairs method based on 'by'. Starting 
         candidate can be specified with 'start' argument; if start is 
         None, then self.candidates() will be the starting point.
         '''
@@ -1089,7 +1089,7 @@ class Sudoku():
         return candidates_global
 
 
-    def solve_by_pairs(self, by = 'submatrix', start = None):
+    def solve_by_pointing_pairs(self, by = 'submatrix', start = None):
         '''(Sudoku, str[, Candidate]) -> Candidate
 
         Precondition: by in ['row', 'col', 'submatrix']
@@ -1158,7 +1158,7 @@ class Sudoku():
         while empty in self.show.flatten():
             if empty not in self.show.flatten():
                 return None
-            entries = self.solve_by_pairs()
+            entries = self.solve_by_pointing_pairs()
             if set() in list(entries.values()):
                 if not quietly:
                     print(\
@@ -1233,8 +1233,11 @@ class Sudoku():
         '''
 
         empty = self.empty
-        there_is_a_progress = True
         sudoku_copy = self.copy()
+
+        not_ready = True
+        there_is_a_progress = True
+        
         while there_is_a_progress:
             sudoku_copy_after_iter = self.copy()
             self.solve_globally()
@@ -1245,9 +1248,14 @@ class Sudoku():
                 self.solve_globally()
                 if empty not in str(self):
                     return None
-            self.solve_by_pairs()
-            if sudoku_copy == self or sudoku_copy_after_iter == self:
+
+            start = self.solve_by_hidden_pairs()
+            start_before = start.copy()
+            self.solve_by_pointing_pairs(start = start)
+
+            if (sudoku_copy == self or sudoku_copy_after_iter == self):
                 there_is_a_progress = False
+            
 
 
     def submatrix(self, s):
