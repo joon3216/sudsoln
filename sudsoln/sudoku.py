@@ -1073,12 +1073,12 @@ class Sudoku():
             cg_cp = candidates_group.copy()
             for V in cg_cp.values():
                 appearances = V.appearances(names)
-                appearances.sieve(condition = ['both', 2], deep = True)
+                appearances.sieve(condition = ['contains', 2], deep = True)
                 if appearances.show != {}:
                     candidates_global.refine(
                         etm, 
                         appearances = appearances,
-                        condition = ['both', 2],
+                        condition = ['contains', 2],
                         deep = True
                     )
             self.itemsets(etm)
@@ -1253,7 +1253,8 @@ class Sudoku():
             start_before = start.copy()
             self.solve_by_pointing_pairs(start = start)
 
-            if (sudoku_copy == self or sudoku_copy_after_iter == self):
+            if (sudoku_copy == self or sudoku_copy_after_iter == self) and\
+                start_before == start:
                 there_is_a_progress = False
             
 
