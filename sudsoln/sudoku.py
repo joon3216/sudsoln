@@ -1249,6 +1249,7 @@ class Sudoku():
                 if empty not in str(self):
                     return None
 
+
             start = self.solve_by_hidden_pairs()
             start_before = start.copy()
             self.solve_by_pointing_pairs(start = start)
