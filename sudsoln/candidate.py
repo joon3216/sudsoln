@@ -1407,14 +1407,6 @@ class Appearance():
         
         appearances_cp = self.show.copy() # new copy
         if deep:
-            # v_lst = []
-            # for v in appearances_cp.values():
-            #     v_lst.append(v)
-            # v_set = set(v_lst)
-            # if len(v_set) == 1: # unique list test
-            #     for k, v in appearances_cp.items():
-            #         if len(v[1]) != condition[1]: # length test
-            #             self.show.pop(k)
             kv_lst = [[k, v[1]] for k, v in appearances_cp.items()]
             v_lst = [v[1] for v in appearances_cp.values()]
             v_lst2 = [(len(v), v_lst.count(v), v) for v in v_lst]
@@ -1425,12 +1417,6 @@ class Appearance():
                 for i in range(len(v_lst3)):
                     if item[1] == v_lst3[i][2]:
                         k_set.update(item[0])
-                        # the_entries = list(v_lst3[i][2])
-                        # for entry in the_entries:
-                        #     if entry not in kv_dict:
-                        #         kv_dict[entry] = {item[0]}
-                        #     else:
-                        #         kv_dict[entry].update({item[0]})
             for k in appearances_cp.keys():
                 if k not in k_set:
                     self.show.pop(k)
