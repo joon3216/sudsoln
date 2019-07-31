@@ -444,7 +444,8 @@ class Candidate():
         Preconditions: 
         1. names is not None if appearances is None
         2. (condition, deep) == (['contains', 1], False) or 
-           (condition, deep) == (['both', 2], True), irrespective of sieve
+           (condition, deep) == (['contains', 2], True), irrespective of 
+           whether sieve is True or False
 
         Update self and entries_to_mutate by the following rule(s):
         1. if (condition, deep) = (['contains', 1], False) (default), then:
@@ -454,12 +455,12 @@ class Candidate():
             to the uniqueness of candidate number in a certain names[0]
             (e.g. row) or names[1] (e.g. column) in appearances is 
             eliminated. 
-        2. if (condition, deep) = (['both', 2], True), then:
+        2. if (condition, deep) = (['contains', 2], True), then:
             for keys in appearances (e.g. '1', '6') whose first item of 
-            the value list is [2, 2] and the second item has the length 2, 
-            eliminate all candidates at self's entries that belong to the 
-            second item of the value list except those candidates that 
-            match keys in appearances.
+            the value list contains 2 (i.e. [2, x] or [x, 2]) AND the 
+            second item has the length 2, eliminate all candidates at 
+            self's entries that belong to the second item of the value 
+            list except those candidates that match keys in appearances.
         If sieve = False, then deep will be ignored; if sieve = True, then 
         appearances.sieve(condition, deep) will be applied. That is, 
         depending on (condition, deep), refinement process will be
@@ -712,7 +713,7 @@ class Candidate():
         ...
         True
         >>> 
-        >>> # Case 4: (sieve, condition, deep) = (True, ['both', 2], True)
+        >>> # Case 4: (sieve = True, ['contains', 2], True)
         >>> V = Candidate(
         ...     {
         ...         (0, 6): {'7', '6', '3'}, 
@@ -732,7 +733,7 @@ class Candidate():
         ...     etm, 
         ...     names = ['row', 'col'], 
         ...     sieve = True, 
-        ...     condition = ['both', 2], 
+        ...     condition = ['contains', 2], 
         ...     deep = True
         ... )
         ...
@@ -749,6 +750,43 @@ class Candidate():
         ...         (2, 8): {'3', '8', '6', '7'}
         ...     },
         ...     elements = {'6', '7', '1', '8', '4', '5', '3', '9', '2'}
+        ... )
+        ...
+        True
+        >>> # Case 5: (sieve = False, ['contains', 2], True)
+        >>> V3 = Candidate(
+        ...     {
+        ...         (2, 2): {'6', '9', '7', '3'},
+        ...         (2, 3): {'6', '9', '7', '5'},
+        ...         (2, 4): {'6', '9'},
+        ...         (2, 5): {'9', '7', '5'},
+        ...         (2, 6): {'5', '6', '9', '3'},
+        ...         (2, 7): {'3', '4', '9', '8', '5'},
+        ...         (2, 8): {'6', '3', '4', '9', '8', '5'}
+        ...     },
+        ...     elements = {'6', '3', '1', '4', '9', '7', '2', '8', '5'}
+        ... )
+        ...
+        >>> appearances3 = V3.appearances(['col', 'submatrix'])
+        >>> appearances3.sieve(condition = ['contains', 2], deep = True)
+        >>> V3.refine(
+        ...     etm, 
+        ...     appearances3, 
+        ...     condition = ['contains', 2], 
+        ...     deep = True
+        ... )
+        ...
+        >>> V3 == Candidate(
+        ...     {
+        ...         (2, 2): {'9', '6', '7', '3'},
+        ...         (2, 3): {'9', '5', '6', '7'},
+        ...         (2, 4): {'9', '6'},
+        ...         (2, 5): {'9', '5', '7'},
+        ...         (2, 6): {'9', '5', '6', '3'},
+        ...         (2, 7): {'8', '4'}, # '3', '5', and '9' gone
+        ...         (2, 8): {'8', '4'}  # '3', 5', '6', and '9' gone
+        ...     },
+        ...     elements = {'5', '3', '4', '1', '6', '8', '9', '2', '7'}
         ... )
         ...
         True
@@ -782,7 +820,7 @@ class Candidate():
                             k_g2[0] not in names1_exception and k3 in v_g2:
                             v_g2.remove(k3)
         
-        elif (condition, deep) == (['both', 2], True):
+        elif (condition, deep) == (['contains', 2], True):
             replacing_candids = set(appearances.keys()) # must be of len 2
             ent_to_replace = set()
             for val_list in list(appearances.values()):
@@ -1208,18 +1246,22 @@ class Appearance():
         3. condition[1] == int(condition[1])
 
         Update self so that keys that satisfy the condition stay while
-        others are removed. For example, if the condition is:
-        1. ['contains', 1]:
+        others are removed. If deep = True (False by default), then the 
+        second element of the value list is checked to see if they are 
+        all the same AND all has length condition[1]; if not, then the 
+        respective keys that passed condition are furthur removed from 
+        self. For example:
+        1. condition = ['contains', 1]:
             any key with its first element of the value list containing 1
             (i.e. [1, x] or [x, 1]) will stay while others are removed 
             from self.
-        2. ['both', 2]:
+        2. condition = ['both', 2]:
             any key with its first element of the value list being [2, 2]
             will stay while others get removed from self.
-        If deep = True (False by default), then the second element of the
-        value list is checked so that if its length is not equal to
-        condition[1], then the respective keys that passed condition are 
-        furthur removed from self.
+        3. condition = ['contains', 2], deep = True:
+            among those keys with its first element of the value list 
+            containing 2, the method will check to see if the second
+            elements of these keys are the same AND has length 2.
 
         >>> # CASE 1: ['contains', 1]
         >>> V = Candidate(
@@ -1303,6 +1345,46 @@ class Appearance():
         ... }
         ...
         True
+        >>>
+        >>> # CASE 3: ['contains', 2], deep == True
+        >>> V3 = Candidate(
+        ...     {
+        ...         (2, 2): {'6', '9', '7', '3'},
+        ...         (2, 3): {'6', '9', '7', '5'},
+        ...         (2, 4): {'6', '9'},
+        ...         (2, 5): {'9', '7', '5'},
+        ...         (2, 6): {'5', '6', '9', '3'},
+        ...         (2, 7): {'3', '4', '9', '8', '5'},
+        ...         (2, 8): {'6', '3', '4', '9', '8', '5'}
+        ...     },
+        ...      elements = {'6', '3', '1', '4', '9', '7', '2', '8', '5'}
+        ... )
+        ...
+        >>> appearances3 = V3.appearances(['col', 'submatrix'])
+        >>> appearances3.show == {
+        ...     '1': [[0, 0], set()],
+        ...     '2': [[0, 0], set()],
+        ...     '3': [[4, 2], {(2, 7), (2, 8), (2, 6), (2, 2)}],
+        ...     '4': [[2, 1], {(2, 7), (2, 8)}],
+        ...     '5': [[5, 2], {(2, 7), (2, 6), (2, 8), (2, 3), (2, 5)}],
+        ...     '6': [[5, 3], {(2, 6), (2, 8), (2, 3), (2, 2), (2, 4)}],
+        ...     '7': [[3, 2], {(2, 5), (2, 3), (2, 2)}],
+        ...     '8': [[2, 1], {(2, 7), (2, 8)}],
+        ...     '9': [
+        ...         [7, 3], 
+        ...         {(2, 7), (2, 6), (2, 8), 
+        ...          (2, 3), (2, 2), (2, 5), (2, 4)}
+        ...     ]
+        ... }
+        ...
+        True
+        >>> appearances3.sieve(['contains', 2], True)
+        >>> appearances3.show == {
+        ...     '4': [[2, 1], {(2, 7), (2, 8)}],
+        ...     '8': [[2, 1], {(2, 7), (2, 8)}]
+        ... }
+        ...
+        True
         '''
 
         assert condition[0] in ['contains', 'both'], \
@@ -1325,8 +1407,32 @@ class Appearance():
         
         appearances_cp = self.show.copy() # new copy
         if deep:
-            for k, v in appearances_cp.items():
-                if len(v[1]) != condition[1]:
+            # v_lst = []
+            # for v in appearances_cp.values():
+            #     v_lst.append(v)
+            # v_set = set(v_lst)
+            # if len(v_set) == 1: # unique list test
+            #     for k, v in appearances_cp.items():
+            #         if len(v[1]) != condition[1]: # length test
+            #             self.show.pop(k)
+            kv_lst = [[k, v[1]] for k, v in appearances_cp.items()]
+            v_lst = [v[1] for v in appearances_cp.values()]
+            v_lst2 = [(len(v), v_lst.count(v), v) for v in v_lst]
+            v_lst3 = list(filter(lambda x: (x[0], x[1]) == (2, 2), v_lst2))
+            kv_dict = {}
+            k_set = set()
+            for item in kv_lst:
+                for i in range(len(v_lst3)):
+                    if item[1] == v_lst3[i][2]:
+                        k_set.update(item[0])
+                        # the_entries = list(v_lst3[i][2])
+                        # for entry in the_entries:
+                        #     if entry not in kv_dict:
+                        #         kv_dict[entry] = {item[0]}
+                        #     else:
+                        #         kv_dict[entry].update({item[0]})
+            for k in appearances_cp.keys():
+                if k not in k_set:
                     self.show.pop(k)
 
 
