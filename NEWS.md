@@ -4,11 +4,12 @@
 ## Coming up: ver >= 0.0.19
 
 * Create `sudsoln/data` directory to store sudoku questions
-* Create `Candidate.issubset(Candidate)`.
+* Create `Candidate.issubset(Candidate)` to make sure incompatible `Candidate`s are not given to `start` argument of `.solve_by_*_pairs()`.
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()` and its `by` argument
-	+ Working on `.solve_by_pointing_pairs()` to handle `by` argument properly.
+	+ Next: work on `.solve_by_pointing_pairs()` to handle `by` argument properly.
 * Write unittests on `Appearance`.
+
 
 ## ver 0.0.18 (working on)
 
