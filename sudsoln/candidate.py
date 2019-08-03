@@ -458,7 +458,7 @@ class Candidate():
         2. if (condition, deep) = (['contains', 2], True), then:
             for keys in appearances (e.g. '1', '6') whose first item of 
             the value list contains 2 (i.e. [2, x] or [x, 2]) AND the 
-            second item has the length 2, eliminate all candidates at 
+            second item are the same, eliminate all candidates at 
             self's entries that belong to the second item of the value 
             list except those candidates that match keys in appearances.
         If sieve = False, then deep will be ignored; if sieve = True, then 
@@ -829,7 +829,8 @@ class Candidate():
             if len(replacing_candids) == 2 and len(ent_to_replace) == 2:
                 for entry in ent_to_replace:
                     if entry in self.keys():
-                        self[entry] = replacing_candids
+                        self[entry] =\
+                            self[entry].intersection(replacing_candids)
 
 
     def unions(self):
@@ -1407,9 +1408,9 @@ class Appearance():
         
         appearances_cp = self.show.copy() # new copy
         if deep:
-            kv_lst = [[k, v[1]] for k, v in appearances_cp.items()]
-            v_lst = [v[1] for v in appearances_cp.values()]
-            v_lst2 = [(len(v), v_lst.count(v), v) for v in v_lst]
+            kv_lst = [[k3, v3[1]] for k3, v3 in appearances_cp.items()]
+            v_lst = [v4[1] for v4 in appearances_cp.values()]
+            v_lst2 = [(len(v5), v_lst.count(v5), v5) for v5 in v_lst]
             v_lst3 = list(filter(lambda x: (x[0], x[1]) == (2, 2), v_lst2))
             kv_dict = {}
             k_set = set()
@@ -1417,9 +1418,9 @@ class Appearance():
                 for i in range(len(v_lst3)):
                     if item[1] == v_lst3[i][2]:
                         k_set.update(item[0])
-            for k in appearances_cp.keys():
-                if k not in k_set:
-                    self.show.pop(k)
+            for k6 in appearances_cp.keys():
+                if k6 not in k_set:
+                    self.show.pop(k6)
 
 
     def values(self):
