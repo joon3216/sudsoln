@@ -1235,6 +1235,7 @@ class Sudoku():
         empty = self.empty
         sudoku_copy = self.copy()
 
+        bases = ['submatrix', 'row', 'col']
         not_ready = True
         there_is_a_progress = True
         
@@ -1243,19 +1244,19 @@ class Sudoku():
             self.solve_globally()
             if empty not in str(self):
                 return None
-            for component in ['submatrix', 'row', 'col']:
+            for component in bases:
                 self.solve_locally(by = component)
                 self.solve_globally()
                 if empty not in str(self):
                     return None
 
-
-            start = self.solve_by_hidden_pairs()
+            start = self.solve_by_pointing_pairs()
             start_before = start.copy()
-            self.solve_by_pointing_pairs(start = start)
+            for component2 in bases:
+                self.solve_by_hidden_pairs(by = component2, start = start)
+                self.solve_by_pointing_pairs(start = start)
 
-            if (sudoku_copy == self or sudoku_copy_after_iter == self) and\
-                start_before == start:
+            if (sudoku_copy == self or sudoku_copy_after_iter == self):
                 there_is_a_progress = False
             
 
