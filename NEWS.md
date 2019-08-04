@@ -1,18 +1,20 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.19
+## Coming up: ver >= 0.0.20
 
 * Create `sudsoln/data` directory to store sudoku questions
-* Create `Candidate.issubset(Candidate)` to make sure incompatible `Candidate`s are not given to `start` argument of `.solve_by_*_pairs()`.
 * Eliminate duplicate codes in `.solve_by_*_pairs()`
 * Write more solving features:
 	+ Currently working on `.solve_by_hidden_pairs()` and its `by` argument
 	+ Next: work on `.solve_by_pointing_pairs()` to handle `by` argument properly.
 * Write unittests on `Appearance`.
 
+## ver 0.0.19 (working on)
 
-## ver 0.0.18 (working on)
+* to be continued
+
+## ver 0.0.18 (current version)
 
 * `Candidate.refine()` now accepts either `condition = ['contains', 1]` or `condition = ['contains', 2]` only; `['both', 2]` has been completely deprecated from `Candidate.refine()` (but NOT from `Appearance.sieve()`) since `['contains', 2]` is a more versatile condition that also works with `by = row` and `by = col` in `.solve_by_hidden_pairs()`.
 * Changed the name of method: `.solve_by_pairs()` -> `.solve_by_pointing_pairs()`
@@ -20,7 +22,7 @@
 * The behaviour of `Appearance.sieve()` when `deep = True` has changed; if `deep = True`, then the method will check all the second elements of the value lists of `Appearance` so that 1. they are all the same AND 2. all has length `condition[1]`. If not, then the respective keys that passed `condition` are furthur removed from `Appearance`. Docstring has been added to explain this behaviour.
 
 
-## ver 0.0.17 (current version)
+## ver 0.0.17
 
 * `.solve_by_hidden_pairs()` yields an 'answer' that cannot be transformed into the answer form; needs revision.
 	+ `Candidate.refine()` body modified so that it works only if `len(replacing_candids) == 2 and len(ent_to_replace) == 2` 
