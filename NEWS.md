@@ -8,11 +8,16 @@
 	+ working on `.solve_by_pointing_pairs()` to handle `by` argument properly; currently, it only works with `by = 'submatrix'`
 * Write unittests on `Appearance`.
 
-## ver 0.0.21 (working on)
+## ver 0.0.22 (working on)
 
 * to be continued
 
-## ver 0.0.20 (current version)
+## ver 0.0.21 (current version)
+
+* Adjusted the code in `.solve()` to NOT give `start` argument to `.solve_forcefully()`
+* Deleted the commented code in `.solve()`
+
+## ver 0.0.20
 
 * Deprecated `start` argument of `.solve_forcefully()`; `.solve_logically()` already provides the highest quality of starting `Candidate` that this package can provide
 
