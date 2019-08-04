@@ -1140,17 +1140,14 @@ class Sudoku():
             self,
             max_trial = 300, 
             seed = None, 
-            quietly = False,
-            start = None
+            quietly = False
         ):
         '''(Sudoku, int[, int or None, bool, Candidate]) -> int
 
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met. seed
         can be given for reproducibility. Set quietly = True if you don't 
-        want to display any messages. If start is not None, then it will
-        be used as the starting Candidate of guessing process in each
-        trial.
+        want to display any messages.
         '''
 
         import random
@@ -1162,10 +1159,7 @@ class Sudoku():
         while empty in self.show.flatten():
             if empty not in self.show.flatten():
                 return trial
-            if start is None:
-                entries = self.solve_logically()
-            if start is not None:
-                entries = start.copy()
+            entries = self.solve_logically()
             if set() in list(entries.values()):
                 if not quietly:
                     print(\
