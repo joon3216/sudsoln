@@ -1163,11 +1163,8 @@ class Sudoku():
             if empty not in self.show.flatten():
                 return trial
             if start is None:
-                # entries = self.solve_logically()
-                entries = self.solve_by_pointing_pairs()
-                for comp in ['row', 'col', 'submatrix']:
-                    self.solve_by_hidden_pairs(by = comp, start = entries)
-            else:
+                entries = self.solve_logically()
+            if start is not None:
                 entries = start.copy()
             if set() in list(entries.values()):
                 if not quietly:
