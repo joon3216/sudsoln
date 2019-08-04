@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sudsoln",
-    version="0.0.18",
+    version="0.0.20",
     author="Junkyu Park",
     author_email="joon3216@gmail.com",
     description="A n ** 2-by-n ** 2 sudoku solver.",

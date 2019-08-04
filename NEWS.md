@@ -1,25 +1,31 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.20
+## Coming up: ver >= 0.0.22
 
 * Create `sudsoln/data` directory to store sudoku questions
-* Eliminate duplicate codes in `.solve_by_*_pairs()`
 * Write more solving features:
-	+ Currently working on `.solve_by_hidden_pairs()` and its `by` argument
-	+ Next: work on `.solve_by_pointing_pairs()` to handle `by` argument properly.
+	+ working on `.solve_by_pointing_pairs()` to handle `by` argument properly; currently, it only works with `by = 'submatrix'`
 * Write unittests on `Appearance`.
 
-## ver 0.0.19 (working on)
+## ver 0.0.21 (working on)
+
+* to be continued
+
+## ver 0.0.20 (current version)
+
+* Deprecated `start` argument of `.solve_forcefully()`; `.solve_logically()` already provides the highest quality of starting `Candidate`
+
+## ver 0.0.19
 
 * Changed the return value of `.solve*()` methods:
-	+ `.solve()` now returns `str` and `int`, where `int` is the number of trials in `.solve_forcefully()`; if the returning `int` is `0`, then it means the sudoku puzzle is solved using only logical approaches.
+	+ `.solve()` now returns `str` and `int`, where `int` is the number of trials in `.solve_forcefully()`; if the returning `int` is `0`, then it means the sudoku puzzle is solved via logical approaches, and logical approaches only.
 	+ `.solve_forcefully()` now returns `int`, the number of trials
 	+ `.solve_logically()` now returns either `Candidate` or `None`; if `.solve_by_*_pairs()` methods are not used (i.e. easy puzzles), then it returns `None`
-* Revived `.solve_by_pairs()` to handle duplicate codes in `.solve_by_*_pairs()` methods
+* Revived `.solve_by_pairs()` to handle duplicate codes in `.solve_by_*_pairs()` methods; the default behaviour of `.solve_by_pairs()` is `.solve_by_pointing_pairs()`
 
 
-## ver 0.0.18 (current version)
+## ver 0.0.18
 
 * `Candidate.refine()` now accepts either `condition = ['contains', 1]` or `condition = ['contains', 2]` only; `['both', 2]` has been completely deprecated from `Candidate.refine()` (but NOT from `Appearance.sieve()`) since `['contains', 2]` is a more versatile condition that also works with `by = row` and `by = col` in `.solve_by_hidden_pairs()`.
 * Changed the name of method: `.solve_by_pairs()` -> `.solve_by_pointing_pairs()`
