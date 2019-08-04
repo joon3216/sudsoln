@@ -1,7 +1,7 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.22
+## Coming up: ver >= 0.0.23
 
 * Create `sudsoln/data` directory to store sudoku questions
 * Write more solving features:
@@ -10,11 +10,11 @@
 
 ## ver 0.0.22 (working on)
 
-* to be continued
+* Added `fprint()` function; it prints out a formatted string version of `Sudoku`.
 
 ## ver 0.0.21 (current version)
 
-* Adjusted the code in `.solve()` to NOT give `start` argument to `.solve_forcefully()`
+* Adjusted the code in `.solve()` to NOT give `start` argument to `.solve_forcefully()` since it is deprecated
 * Deleted the commented code in `.solve()`
 
 ## ver 0.0.20

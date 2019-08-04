@@ -1424,6 +1424,28 @@ def change_empty(array, old, new):
         raise TypeError(str(type(array)) + ' not supported')
 
 
+def fprint(Sudoku):
+    '''(Sudoku) -> None
+
+    Print out the formatted version of Sudoku.
+    '''
+
+    n = Sudoku.n
+    the_range = range(0, n ** 4 + 1, n ** 2)
+    item = ''
+    result = ''
+    sudoku_lst = list(str(Sudoku))
+    for c in enumerate(sudoku_lst):
+        item += c[1]
+        if c[0] != 0 and c[0] + 1 in the_range:
+            if c[0] != n ** 4 - 1:
+                result += item + '\n'
+            else:
+                result += item + ''
+            item = ''
+    print(result)
+
+
 def to_sudoku(sudoku_str, elements = None, empty = '.'):
     '''(str[, {objects} or None, str]) -> Sudoku
 
