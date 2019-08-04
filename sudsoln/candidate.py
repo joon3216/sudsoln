@@ -1411,7 +1411,10 @@ class Appearance():
             kv_lst = [[k3, v3[1]] for k3, v3 in appearances_cp.items()]
             v_lst = [v4[1] for v4 in appearances_cp.values()]
             v_lst2 = [(len(v5), v_lst.count(v5), v5) for v5 in v_lst]
-            v_lst3 = list(filter(lambda x: (x[0], x[1]) == (2, 2), v_lst2))
+            v_lst3 = list(filter(
+                lambda x: x[0] == x[1] == condition[1], 
+                v_lst2
+            ))
             kv_dict = {}
             k_set = set()
             for item in kv_lst:
