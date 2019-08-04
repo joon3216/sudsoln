@@ -1012,7 +1012,7 @@ class Sudoku():
 
 
     def solve(self, max_trial = 300, seed = None, quietly = False):
-        '''(Sudoku[, int, int or None, bool]) -> str
+        '''(Sudoku[, int, int or None, bool]) -> str, int
 
         Mutate self to the answer form, or until max_trial is met, and
         return the time it took to compute the answer. seed can be given
@@ -1020,31 +1020,35 @@ class Sudoku():
         display any messages.
         '''
 
+        trial = 0
         import datetime
         n = self.n
         empty = self.empty
         start = datetime.datetime.now()
-        self.solve_logically()
+        start_entry = self.solve_logically()
         sudoku_copy = self.copy()
+        sudoku_copy_melted = sudoku_copy.melt()
         if empty in self.show.flatten():
             if not quietly:
                 print("Logical approaches weren't enough.")
                 print("Solving with a brute force...")
-            self.solve_forcefully(
+            trial += self.solve_forcefully(
                 max_trial = max_trial, 
                 seed = seed,
-                quietly = quietly
+                quietly = quietly,
+                start = start_entry
             )
         end = datetime.datetime.now()
         if self.is_valid_answer():
-            return str(end - start)
+            return str(end - start), trial
         else:
             if not quietly:
                 print('Mission failed; max_trial of', max_trial, 'met.')
-            for i in range(n ** 2):
-                for j in range(n ** 2):
-                    self.itemset((i, j), sudoku_copy.show[(i, j)])
-            return str(end - start)
+            self.itemsets(sudoku_copy_melted)
+            # for i in range(n ** 2):
+            #     for j in range(n ** 2):
+            #         self.itemset((i, j), sudoku_copy.show[(i, j)])
+            return str(end - start), max_trial
 
 
     def solve_by_hidden_pairs(self, by = 'submatrix', start = None):
@@ -1053,6 +1057,26 @@ class Sudoku():
         Mutate self and by hidden pairs method based on 'by'. Starting 
         candidate can be specified with 'start' argument; if start is 
         None, then self.candidates() will be the starting point.
+        '''
+
+        return self.solve_by_pairs(
+            by = by, start = start,
+            condition = ['contains', 2], deep = True
+        )
+
+
+    def solve_by_pairs(
+            self, 
+            by, 
+            start = None, 
+            condition = ['contains', 1], 
+            deep = False
+        ):
+        '''(Sudoku, str[, Candidate, [str, int], bool]) -> Candidate
+
+        Precondition: by in ['row', 'col', 'submatrix']
+
+        Solve self by methods involving pairs.
         '''
 
         elements = self.elements
@@ -1067,20 +1091,19 @@ class Sudoku():
             candidates_group = start.group(by = by)
 
         changing = True
-        etm = candidate.Candidate({}, elements = elements) # a placeholder
         while changing:
             sudoku_copy = self.copy()
+            etm = candidate.Candidate({}, elements = elements)
             cg_cp = candidates_group.copy()
             for V in cg_cp.values():
                 appearances = V.appearances(names)
-                appearances.sieve(condition = ['contains', 2], deep = True)
-                if appearances.show != {}:
-                    candidates_global.refine(
-                        etm, 
-                        appearances = appearances,
-                        condition = ['contains', 2],
-                        deep = True
-                    )
+                appearances.sieve(condition = condition, deep = deep)
+                candidates_global.refine(
+                    etm, 
+                    appearances = appearances,
+                    condition = condition,
+                    deep = deep
+                )
             self.itemsets(etm)
             self.itemsets(candidates_global)
             candidates_group = candidates_global.group(by = by)
@@ -1107,46 +1130,27 @@ class Sudoku():
         the starting point.
         '''
 
-        elements = self.elements
-        bases = ['row', 'col', 'submatrix']
-        bases.remove(by)
-        names = bases
-        changing = True
-        if start is None:
-            candidates_global = self.candidates()
-            candidates_group = self.group(by = by)
-        else:
-            candidates_global = start
-            candidates_group = start.group(by = by)
-        
-        while changing:
-            sudoku_copy = self.copy()
-            etm = candidate.Candidate({}, elements=elements)
-            cg_cp = candidates_group.copy()
-            for V in cg_cp.values(): # for each 'by'-group
-                appearances = V.appearances(names)
-                appearances.sieve()
-                candidates_global.refine(etm, appearances)
-            self.itemsets(etm)
-            self.itemsets(candidates_global)
-            candidates_group = candidates_global.group(by = by)
-            if self == sudoku_copy and cg_cp == candidates_group:
-                changing = False
-        return candidates_global
+        return self.solve_by_pairs(
+            by = by, start = start,
+            condition = ['contains', 1], deep = False
+        )
 
 
     def solve_forcefully(
             self,
             max_trial = 300, 
             seed = None, 
-            quietly = False
+            quietly = False,
+            start = None
         ):
-        '''(Sudoku, int[, int or None, bool]) -> None
+        '''(Sudoku, int[, int or None, bool, Candidate]) -> int
 
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met. seed
         can be given for reproducibility. Set quietly = True if you don't 
-        want to display any messages.
+        want to display any messages. If start is not None, then it will
+        be used as the starting Candidate of guessing process in each
+        trial.
         '''
 
         import random
@@ -1157,8 +1161,14 @@ class Sudoku():
         sudoku_melt = self.melt()
         while empty in self.show.flatten():
             if empty not in self.show.flatten():
-                return None
-            entries = self.solve_by_pointing_pairs()
+                return trial
+            if start is None:
+                # entries = self.solve_logically()
+                entries = self.solve_by_pointing_pairs()
+                for comp in ['row', 'col', 'submatrix']:
+                    self.solve_by_hidden_pairs(by = comp, start = entries)
+            else:
+                entries = start.copy()
             if set() in list(entries.values()):
                 if not quietly:
                     print(\
@@ -1170,7 +1180,7 @@ class Sudoku():
                     )
                 trial += 1
                 if trial == max_trial:
-                    return None
+                    return max_trial
                 self.itemsets(sudoku_melt)
             else:
                 keys = list(entries.keys()); keys.sort()
@@ -1180,7 +1190,7 @@ class Sudoku():
                 if empty not in self.show.flatten() and \
                     not self.is_valid_answer():
                     self.itemsets(sudoku_melt)
-        return None
+        return trial
 
 
     def solve_globally(self):
@@ -1224,7 +1234,7 @@ class Sudoku():
 
 
     def solve_logically(self):
-        '''(Sudoku) -> None
+        '''(Sudoku) -> Candidate or None
 
         Mutate self to the answer form as close as possible (that is, 
         having the least number of empty's), using only logical 
@@ -1251,14 +1261,13 @@ class Sudoku():
                     return None
 
             start = self.solve_by_pointing_pairs()
-            start_before = start.copy()
             for component2 in bases:
                 self.solve_by_hidden_pairs(by = component2, start = start)
                 self.solve_by_pointing_pairs(start = start)
 
             if (sudoku_copy == self or sudoku_copy_after_iter == self):
                 there_is_a_progress = False
-            
+        return start
 
 
     def submatrix(self, s):

@@ -12,8 +12,12 @@
 
 ## ver 0.0.19 (working on)
 
-* Checked that `.solve_by_hidden_pairs()` is working properly in ver 0.0.18. Hooray!
-	+ Now I can upgrade the candidate set used in `.solve_forcefully()`!
+* Changed the return value of `.solve*()` methods:
+	+ `.solve()` now returns `str` and `int`, where `int` is the number of trials in `.solve_forcefully()`; if the returning `int` is `0`, then it means the sudoku puzzle is solved using only logical approaches.
+	+ `.solve_forcefully()` now returns `int`, the number of trials
+	+ `.solve_logically()` now returns either `Candidate` or `None`; if `.solve_by_*_pairs()` methods are not used (i.e. easy puzzles), then it returns `None`
+* Revived `.solve_by_pairs()` to handle duplicate codes in `.solve_by_*_pairs()` methods
+
 
 ## ver 0.0.18 (current version)
 
