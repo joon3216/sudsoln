@@ -1025,7 +1025,7 @@ class Sudoku():
         n = self.n
         empty = self.empty
         start = datetime.datetime.now()
-        start_entry = self.solve_logically()
+        self.solve_logically()
         sudoku_copy = self.copy()
         sudoku_copy_melted = sudoku_copy.melt()
         if empty in self.show.flatten():
@@ -1035,8 +1035,7 @@ class Sudoku():
             trial += self.solve_forcefully(
                 max_trial = max_trial, 
                 seed = seed,
-                quietly = quietly,
-                start = start_entry
+                quietly = quietly
             )
         end = datetime.datetime.now()
         if self.is_valid_answer():
@@ -1045,9 +1044,6 @@ class Sudoku():
             if not quietly:
                 print('Mission failed; max_trial of', max_trial, 'met.')
             self.itemsets(sudoku_copy_melted)
-            # for i in range(n ** 2):
-            #     for j in range(n ** 2):
-            #         self.itemset((i, j), sudoku_copy.show[(i, j)])
             return str(end - start), max_trial
 
 
