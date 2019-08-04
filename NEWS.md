@@ -14,7 +14,7 @@
 
 ## ver 0.0.20 (current version)
 
-* Deprecated `start` argument of `.solve_forcefully()`; `.solve_logically()` already provides the highest quality of starting `Candidate`
+* Deprecated `start` argument of `.solve_forcefully()`; `.solve_logically()` already provides the highest quality of starting `Candidate` that this package can provide
 
 ## ver 0.0.19
 
