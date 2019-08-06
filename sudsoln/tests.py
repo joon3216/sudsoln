@@ -89,7 +89,7 @@ class TestArray(unittest.TestCase):
         result1_1_3 = result1_1_3_1 == result1_1_3_2
 
         # 1.2.1 key[0] is slice and key[1] is int
-        result1_2_1 = eg[::2, 1].show == [['2', '5']]
+        result1_2_1 = eg[::2, 1].show == [['2'], ['5']]
 
         # 1.2.2 key[0] is slice and key[1] is slice
         result1_2_2 = eg[:3:3, ::2].show == [['1', '3']]
