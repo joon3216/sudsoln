@@ -1030,8 +1030,9 @@ class Sudoku():
         sudoku_copy_melted = sudoku_copy.melt()
         if empty in self.show.flatten():
             if not quietly:
-                print("Logical approaches weren't enough.")
-                print("Solving with a brute force...")
+                msg = "Logical approaches weren't enough. " +\
+                    "Solving with a brute force..."
+                print(msg)
             trial += self.solve_forcefully(
                 max_trial = max_trial, 
                 seed = seed,
