@@ -1011,7 +1011,7 @@ class Sudoku():
         return self.show[r, :]
 
 
-    def solve(self, max_trial = 300, seed = None, quietly = False):
+    def solve(self, max_trial = 200, seed = None, quietly = False):
         '''(Sudoku[, int, int or None, bool]) -> str, int
 
         Mutate self to the answer form, or until max_trial is met, and
