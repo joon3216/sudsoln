@@ -78,7 +78,7 @@ class Array():
 
 
     def __getitem__(self, key):
-        '''(Array, (int, int) or slices) -> object or Array
+        '''(Array, (int, int)/slices/tuple/list) -> object or Array
 
         Return the entry of self at key.
         
@@ -100,7 +100,10 @@ class Array():
         ])
         >>> test[:, 3]
         Array([
-        ['4', '3', '0', '4']
+        ['4'],
+        ['3'],
+        ['0'],
+        ['4']
         ])
         >>> test[(1, -1, 2), :]
         Array([
@@ -162,14 +165,14 @@ class Array():
         
         elif key0_is_slice and key1_is_int:
             cols = [list(row) for row in list(zip(*self.show))]
-            return Array([cols[key[1]][key[0]]])
+            return Array(cols[key[1]][key[0]])
         elif key0_is_slice and key1_is_slice:
             lz_inner = list(zip(*self.show[key[0]]))[key[1]]
             lz = [list(row) for row in zip(*lz_inner)]
             return Array(lz)
         elif key0_is_slice and key1_is_tl:
             base = self[key[0], :]
-            [result.append(base[:, i].show[0]) for i in key[1]]
+            [result.append(base[:, i].flatten()) for i in key[1]]
             return Array(list(zip(*result)))
             
         elif key0_is_tl and key1_is_int:
