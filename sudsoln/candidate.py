@@ -1200,7 +1200,7 @@ class Appearance():
             if i != len(KVs) - 1:
                 mid += "'{0}': {1},\n".format(k, v)
             else:
-                mid += "'{0}': {1}\n}},\n".format(k, v)
+                mid += "'{0}': {1}\n".format(k, v)
             i += 1
 
         elements_ord = list(elements)
@@ -1211,7 +1211,7 @@ class Appearance():
                 el_strs += ch[1] + ', '
             else:
                 el_strs += ch[1]
-        endline += 'n: {0}\n'.format(self.n)
+        endline += '}},\nn: {0}\n'.format(self.n)
         endline += 'elements: {{{0}}}\n'.format(el_strs)
         endline += "names: '{0}', '{1}' (in this order)\n)".format(
             self.names[0], self.names[1]
