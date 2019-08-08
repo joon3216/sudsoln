@@ -3,7 +3,7 @@ class Array():
     '''A 2-dimensional array.'''
 
     def __init__(self, array):
-        '''(Array, list of objects or [objects]) -> None
+        '''(Array, list of ints/strs or [ints/strs]) -> None
 
         Initialize the 2-dimensional Array object.
 
@@ -78,7 +78,7 @@ class Array():
 
 
     def __getitem__(self, key):
-        '''(Array, (int, int)/slices/tuple/list) -> object or Array
+        '''(Array, ints/lists/slices/tuples) -> str or Array
 
         Return the entry of self at key.
         
@@ -195,7 +195,7 @@ class Array():
 
 
     def __repr__(self):
-        '''(Array) -> str
+        '''(Array) -> Array
 
         Return the Array representation of self.
         >>> test = [
@@ -225,7 +225,7 @@ class Array():
 
 
     def __setitem__(self, key, value):
-        '''(Array, (int, int), object) -> None
+        '''(Array, (int, int), int/str) -> None
 
         Assign value to self's key.
 
@@ -292,7 +292,7 @@ class Array():
 
 
     def itemset(self, key, value):
-        '''(Array, (int, int), object) -> None
+        '''(Array, (int, int), int/str) -> None
         
         Mutate key number of self to value; this is exactly the same as 
         .__setitem__().
