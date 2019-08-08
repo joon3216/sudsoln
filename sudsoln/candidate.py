@@ -5,7 +5,7 @@ class Candidate():
     '''Sudoku puzzle candidate collection.'''
 
     def __init__(self, candidates, elements = None):
-        '''(Candidate, {(int, int): set of objects}) -> None
+        '''(Candidate, {(int, int): set of ints/strs}) -> None
 
         Precondition: 
         1. ints in "(int, int)" are from 0 to n ** 2 - 1 
@@ -40,7 +40,7 @@ class Candidate():
 
 
     def __dict__(self):
-        '''(Candidate) -> {(int, int): set of objects}
+        '''(Candidate) -> {(int, int): set of ints/strs}
 
         Return the dict representation of Candidate.
 
@@ -85,18 +85,18 @@ class Candidate():
         '''
 
         return self.show == other.show and\
-            self.n == other.n and self.elements == other.elements
+            self.elements == other.elements
 
 
     def __getitem__(self, key):
-        '''(Candidate, (int, int)) -> set of objects
+        '''(Candidate, (int, int)) -> set of str
 
         Return the value of self at key.
 
         >>> eg = {(0, 1): {1, 2, 4}, (0, 2): {6, 9}}
         >>> eg = Candidate(
         ...     eg, 
-        ...     elements = set([str(i) for i in range(1, 10)])
+        ...     elements = set([i for i in range(1, 10)])
         ... )
         ...
         >>> eg[(0, 1)] == {'1', '2', '4'}
@@ -107,29 +107,29 @@ class Candidate():
 
 
     def __repr__(self):
-        '''(Candidate) -> str
+        '''(Candidate) -> Candidate
 
         Return the Candidate representation of self.
         '''
 
         n = self.n
         elements = self.elements
-        headline = 'Candidate(\n{'
+        headline = 'Candidate(\n{\n'
         mid = ''
-        endline = "elements = {0}\n)\n(n: {1})".format(elements, n)
+        endline = "}},\nelements = {0}\n)\n(n: {1})".format(elements, n)
         si = self.items()
         for item in enumerate(si):
             if item[0] == 0:
                 mid += "{0}: {1},\n".format(item[1][0], item[1][1])
             elif item[0] == len(si) - 1:
-                mid += " {0}: {1}}},\n".format(item[1][0], item[1][1])
+                mid += "{0}: {1},\n".format(item[1][0], item[1][1])
             else:
-                mid += " {0}: {1},\n".format(item[1][0], item[1][1])
+                mid += "{0}: {1},\n".format(item[1][0], item[1][1])
         return headline + mid + endline
 
 
     def __setitem__(self, key, value):
-        '''(Candidate, (int, int), set of objects) -> None
+        '''(Candidate, (int, int), set of ints/strs) -> None
 
         Assign value to key that either already exists in self, or 
         initialize key with value if key doesn't already
@@ -375,7 +375,7 @@ class Candidate():
 
     
     def items(self):
-        '''(Candidate) -> dict_items of {(int, int), {object}}
+        '''(Candidate) -> dict_items
 
         Return dict_items of self.
         '''
@@ -384,7 +384,7 @@ class Candidate():
 
     
     def keys(self):
-        '''(Candidate) -> dict_keys of (int, int)
+        '''(Candidate) -> dict_keys
 
         Return dict_keys of self.
 
@@ -820,13 +820,14 @@ class Candidate():
                             k_g2[0] not in names1_exception and k3 in v_g2:
                             v_g2.remove(k3)
         
-        elif (condition, deep) == (['contains', 2], True):
-            replacing_candids = set(appearances.keys()) # must be of len 2
+        elif (condition[0], deep) == ('contains', True):
+            m = condition[1]
+            replacing_candids = set(appearances.keys()) # must be of len m
             ent_to_replace = set()
             for val_list in list(appearances.values()):
                 ent_to_replace.update(val_list[1])
-            ent_to_replace = list(ent_to_replace) # must be of len 2 also
-            if len(replacing_candids) == 2 and len(ent_to_replace) == 2:
+            ent_to_replace = list(ent_to_replace) # must be of len m also
+            if len(replacing_candids) == m and len(ent_to_replace) == m:
                 for entry in ent_to_replace:
                     if entry in self.keys():
                         self[entry] =\
@@ -873,7 +874,7 @@ class Candidate():
 
 
     def update(self, other):
-        '''(Candidate, Candidate or {(int, int): set of objects}) -> None
+        '''(Candidate, Candidate or {(int, int): set of ints/strs}) -> None
 
         Update self using other.
 
@@ -928,12 +929,13 @@ class Candidate():
 
 
     def values(self):
-        '''(Candidate) -> dict_values of {objects}
+        '''(Candidate) -> dict_values
 
         Return dict_values of self.
         '''
 
         return self.show.values()
+
 
 # END: Candidate #########################################################
 
@@ -1014,7 +1016,7 @@ class Union():
 
 
     def __repr__(self):
-        '''(Union) -> str
+        '''(Union) -> Union
 
         Print the representation of Union.
         '''
@@ -1032,7 +1034,7 @@ class Union():
 
 
     def aggregate(self, names):
-        '''(Union, [str, str]) -> [objects], [objects]
+        '''(Union, [str, str]) -> [strs], [strs]
         
         Preconditions:
         1. len(set(names)) == 2
@@ -1154,7 +1156,7 @@ class Appearance():
 
 
     def __repr__(self):
-        '''(Appearance) -> str
+        '''(Appearance) -> Appearance
 
         Print the representation of Appearance.
 
