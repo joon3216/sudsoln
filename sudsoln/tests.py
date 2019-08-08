@@ -7,6 +7,85 @@ import sudoku
 
 # START: testing Appearance ##############################################
 
+class TestAppearance(unittest.TestCase):
+
+    def test_sieve(self):
+        '''
+        Test .sieve() to see if:
+        1. condition = ['contains', 1], deep = False is handled properly
+        2. condition = ['both', 2], deep = True is handled properly
+        3. condition = ['contains', 2], deep = True is handled properly
+        '''
+
+        names = ['row', 'col']
+
+        # 1. condition = ['contains', 1], deep = False
+        V = candidate.Candidate(
+            {
+                (0, 1): {'4', '9', '7', '5'}, 
+                (1, 0): {'9', '4'}, 
+                (1, 1): {'4', '9', '6', '5'}, 
+                (1, 2): {'4', '9', '6', '5'},
+                (2, 1): {'7', '9', '6', '5', '4'}
+            }, 
+            elements = set([str(i) for i in range(1, 10)])
+        )
+        appearances = candidate.Appearance(V, names)
+        appearances.sieve()
+        result1 = appearances.show == {'7': [[2, 1], {(0, 1), (2, 1)}]}
+
+        # 2. condition = ['both', 2], deep = True
+        V2 = candidate.Candidate(
+            {
+                (3, 1): {'8', '2', '9'}, 
+                (3, 2): {'8', '7', '9', '6', '2'}, 
+                (4, 0): {'2', '9', '5'}, 
+                (4, 2): {'8', '2', '9'}, 
+                (5, 0): {'7', '5', '9', '6'}, 
+                (5, 1): {'5', '9'}
+            },
+            elements = set([i for i in range(1, 10)])
+        )
+        appearances2 = V2.appearances(names)
+        appearances2.sieve(condition = ['both', 2], deep = True)
+        result2 = appearances2.show == {
+            '6': [[2, 2], {(3, 2), (5, 0)}],
+            '7': [[2, 2], {(3, 2), (5, 0)}],
+        }
+
+        # 3. condition = ['contains', 2], deep = True
+        V3 = candidate.Candidate(
+            {
+                (2, 2): {'6', '9', '7', '3'},
+                (2, 3): {'6', '9', '7', '5'},
+                (2, 4): {'6', '9'},
+                (2, 5): {'9', '7', '5'},
+                (2, 6): {'5', '6', '9', '3'},
+                (2, 7): {'3', '4', '9', '8', '5'},
+                (2, 8): {'6', '3', '4', '9', '8', '5'}
+            },
+            elements = {'6', '3', '1', '4', '9', '7', '2', '8', '5'}
+        )
+        appearances3 = V3.appearances(['col', 'submatrix'])
+        appearances3.sieve(condition = ['contains', 2], deep = True)
+        result3 = appearances3.show == {
+            '4': [[2, 1], {(2, 7), (2, 8)}],
+            '8': [[2, 1], {(2, 7), (2, 8)}]
+        }
+
+        result = {
+            'test1': result1,
+            'test2': result2,
+            'test3': result3
+        }
+        expected_result = {
+            'test1': True,
+            'test2': True,
+            'test3': True
+        }
+        self.assertEqual(result, expected_result)
+
+
 # END: testing Appearance ################################################
 
 
