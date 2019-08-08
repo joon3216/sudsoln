@@ -1,22 +1,22 @@
 
 # `sudsoln`
 
-## Coming up: ver >= 0.0.23
+## Coming up: ver >= 0.1.1
 
-* Create `sudsoln/data` directory to store sudoku questions
-* Make `.solve_forcefully()` faster by implementing `start` argument properly. This argument will revive soon.
 * Write more solving features:
 	+ working on `.solve_by_pointing_pairs()` to handle `by` argument properly; currently, it only works with `by = 'submatrix'`
 
-## ver 0.0.22 (working on)
+
+## ver 0.1.0 (current version)
 
 * Added `fprint()` function; it prints out a formatted string version of `Sudoku`.
 * Changed the name: `.solve_by_pairs()` -> `.solve_by()` because it can now handle cases involving more than pairs (e.g. triples).
 * Changed the displaying message in `.solve_forcefully()`
+* Declared `Development Status :: 3 - Alpha`
 * Deleted unittests on `Sudoku.solve_forcefully()` since its case is now covered under `test_solve()` in `tests.py`
 * Wrote unittests on `Appearance.sieve()`, `Candidate.refine()`, and `Sudoku.solve()` in `tests.py`
 
-## ver 0.0.21 (current version)
+## ver 0.0.21
 
 * Adjusted the code in `.solve()` to NOT give `start` argument to `.solve_forcefully()` since it is deprecated
 * Deleted the commented code in `.solve()`
