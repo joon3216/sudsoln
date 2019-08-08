@@ -14,18 +14,16 @@ A `n ** 2`-by-`n ** 2` sudoku solver.
 
 ## Installation
 
-Currently, the package is only uploaded in TestPyPI.
-
 To install, type:
 
 ``` bash
-pip install -i https://test.pypi.org/simple/ sudsoln
+pip install sudsoln
 ```
 
 To update, type:
 
 ``` bash
-pip install -i https://test.pypi.org/simple/ sudsoln --upgrade
+pip install sudsoln --upgrade
 ```
 
 ## A very brief introduction to `sudsoln`
@@ -52,7 +50,7 @@ eg
 #> empty: .
 #> )
 eg.solve()
-#> ('0:00:00.084772', 0)
+#> ('0:00:00.086731', 0)
 eg
 #> Sudoku(
 #>     6    3    5    |    8    9    7    |    2    4    1
