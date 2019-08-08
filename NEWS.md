@@ -13,7 +13,8 @@
 * Added `fprint()` function; it prints out a formatted string version of `Sudoku`.
 * Changed the name: `.solve_by_pairs()` -> `.solve_by()` because it can now handle cases involving more than pairs (e.g. triples).
 * Changed the displaying message in `.solve_forcefully()`
-* Wrote unittests on `Appearance.sieve()` and `Candidate.refine()` in `tests.py`
+* Deleted unittests on `Sudoku.solve_forcefully()` since its case is now covered under `test_solve()` in `tests.py`
+* Wrote unittests on `Appearance.sieve()`, `Candidate.refine()`, and `Sudoku.solve()` in `tests.py`
 
 ## ver 0.0.21 (current version)
 
