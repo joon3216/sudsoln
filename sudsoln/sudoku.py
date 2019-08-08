@@ -6,8 +6,8 @@ import sudsoln.sarray as sarray
 class Sudoku():
     '''Sudoku puzzle.'''
 
-    def __init__(self, array, elements = None, empty = '.'):
-        '''(Sudoku, 2d-array of objects[, {objects} or None, str]) -> None
+    def __init__(self, array, empty = '.', elements = None):
+        '''(Sudoku, 2d-array of object, str[, {objects}]) -> None
         
         Precondition: 
         1. each element in elements is of length 1 if specified.
@@ -171,7 +171,7 @@ class Sudoku():
 
 
     def __getitem__(self, key):
-        '''(Sudoku, (int, int)) -> object
+        '''(Sudoku, ints/lists/slices/tuples) -> str or Array
 
         Return the entry of self at key.
 
@@ -204,7 +204,7 @@ class Sudoku():
 
 
     def __repr__(self):
-        '''(Sudoku) -> str
+        '''(Sudoku) -> Sudoku
 
         Return the Sudoku representation of self.
 
@@ -289,7 +289,7 @@ class Sudoku():
 
 
     def __setitem__(self, key, value):
-        '''(Sudoku, (int, int), object) -> None
+        '''(Sudoku, (int, int), int/str) -> None
 
         Assign value to self's key.
 
@@ -343,7 +343,7 @@ class Sudoku():
 
         >>> import sudsoln.questions as sq
         >>> q1 = to_sudoku(sq.q1)
-        >>> str(q1)  # q1 in __init__()
+        >>> str(q1)
         '....2....83.714.96.6.9.54.8.9.3.1..4.1.4.2..7.75...21...4...7.....5.7......196...'
         >>> q1.solve_logically()
         >>> str(q1)
@@ -357,7 +357,7 @@ class Sudoku():
 
 
     def all_missings(self):
-        '''(Sudoku) -> {str: {int: set of ints}}
+        '''(Sudoku) -> {str: {int: set of str}}
 
         Return all missing values of all submatrices, rows, and columns
         of self.
@@ -561,7 +561,7 @@ class Sudoku():
     def group(self, by):
         '''(Sudoku, str) -> {int: Candidate}
 
-        Precondition: by == 'submatrix' or 'row' or 'col'
+        Precondition: by in ['submatrix', 'row', 'col']
 
         Return the candidate values grouped by 'by', which is either 
         'submatrix', 'row', or 'col'.
@@ -754,7 +754,7 @@ class Sudoku():
 
 
     def itemset(self, entry, value):
-        '''(Sudoku, (int, int), object) -> None
+        '''(Sudoku, (int, int), int/str) -> None
 
         Precondition: 
         1. value in self.elements
@@ -799,7 +799,7 @@ class Sudoku():
 
 
     def itemsets(self, entries):
-        '''(Sudoku, {(int, int): set of objects} or Candidate) -> None
+        '''(Sudoku, Candidate or {(int, int): set of ints/strs}) -> None
 
         Precondition: each int in entries is exactly one element of 
         self.elements.
@@ -876,7 +876,7 @@ class Sudoku():
 
 
     def melt(self, include_empty = True):
-        '''(Sudoku[, bool]) -> Candidate
+        '''(Sudoku, bool) -> Candidate
 
         Return Candidate form of self, and include empty entries
         as well if include_empty is True (by default).
@@ -926,7 +926,7 @@ class Sudoku():
 
 
     def missing(self, s = None, r = None, c = None):
-        '''(Sudoku[, int, int, int]) -> set of objects
+        '''(Sudoku[, int, int, int]) -> set of str
         
         Precondition: 
         1. 1 <= s <= self.n ** 2
@@ -1011,13 +1011,13 @@ class Sudoku():
         return self.show[r, :]
 
 
-    def solve(self, max_trial = 200, seed = None, quietly = False):
-        '''(Sudoku[, int, int or None, bool]) -> str, int
+    def solve(self, max_trial = 200, quietly = False, seed = None):
+        '''(Sudoku, int, bool[, int]) -> str, int
 
         Mutate self to the answer form, or until max_trial is met, and
-        return the time it took to compute the answer. seed can be given
-        for reproducibility. Set quietly = True if you don't want to
-        display any messages.
+        return the time it took to compute the answer and the number of 
+        trials used. seed can be given for reproducibility. Set 
+        quietly = True to display no messages.
         '''
 
         trial = 0
@@ -1035,8 +1035,8 @@ class Sudoku():
                 print(msg)
             trial += self.solve_forcefully(
                 max_trial = max_trial, 
-                seed = seed,
-                quietly = quietly
+                quietly = quietly,
+                seed = seed
             )
         end = datetime.datetime.now()
         if self.is_valid_answer():
@@ -1051,18 +1051,18 @@ class Sudoku():
     def solve_by_hidden_pairs(self, by = 'submatrix', start = None):
         '''(Sudoku, str[, Candidate]) -> Candidate
 
-        Mutate self and by hidden pairs method based on 'by'. Starting 
+        Mutate self using the hidden pairs method based on 'by'. Starting 
         candidate can be specified with 'start' argument; if start is 
         None, then self.candidates() will be the starting point.
         '''
 
-        return self.solve_by_pairs(
+        return self.solve_by(
             by = by, start = start,
             condition = ['contains', 2], deep = True
         )
 
 
-    def solve_by_pairs(
+    def solve_by(
             self, 
             by, 
             start = None, 
@@ -1073,7 +1073,7 @@ class Sudoku():
 
         Precondition: by in ['row', 'col', 'submatrix']
 
-        Solve self by methods involving pairs.
+        Solve self by methods involving pairs, triples, or a higher order.
         '''
 
         elements = self.elements
@@ -1127,7 +1127,7 @@ class Sudoku():
         the starting point.
         '''
 
-        return self.solve_by_pairs(
+        return self.solve_by(
             by = by, start = start,
             condition = ['contains', 1], deep = False
         )
@@ -1136,10 +1136,10 @@ class Sudoku():
     def solve_forcefully(
             self,
             max_trial = 300, 
-            seed = None, 
-            quietly = False
+            quietly = False,
+            seed = None
         ):
-        '''(Sudoku, int[, int or None, bool, Candidate]) -> int
+        '''(Sudoku, int, bool[, int or None]) -> int
 
         Try out candidate numbers in each entry randomly until self is 
         mutated into the answer form, or until max_trial is met. seed
@@ -1159,12 +1159,10 @@ class Sudoku():
             entries = self.solve_logically()
             if set() in list(entries.values()):
                 if not quietly:
-                    print(\
-                        "Trial number ", trial, 
-                        " out of ", max_trial, "; ",
-                        round(trial * 100 / max_trial, 4), '%', 
-                        ' in progress',
-                        sep = ''
+                    print(
+                        "Trial number", trial, 
+                        "out of", max_trial, "failed;",
+                        "proceeding to the next trial..."
                     )
                 trial += 1
                 if trial == max_trial:
@@ -1203,7 +1201,7 @@ class Sudoku():
     def solve_locally(self, by):
         '''(Sudoku, str) -> None
 
-        Precondition: by == 'submatrix', 'row', or 'col'
+        Precondition: by in ['submatrix', 'row', 'col']
 
         Find the unique candidate number within each 'by' of self,
         plug that number into that entry, and repeat the process across
@@ -1227,7 +1225,8 @@ class Sudoku():
         Mutate self to the answer form as close as possible (that is, 
         having the least number of empty's), using only logical 
         approaches that don't involve randomness or brute force in number
-        assignment.
+        assignment. Return Candidate if .solve_by*() methods have involved,
+        and None otherwise.
         '''
 
         empty = self.empty
