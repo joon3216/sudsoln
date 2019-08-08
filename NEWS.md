@@ -4,15 +4,16 @@
 ## Coming up: ver >= 0.0.23
 
 * Create `sudsoln/data` directory to store sudoku questions
+* Make `.solve_forcefully()` faster by implementing `start` argument properly. This argument will revive soon.
 * Write more solving features:
 	+ working on `.solve_by_pointing_pairs()` to handle `by` argument properly; currently, it only works with `by = 'submatrix'`
-* Write unittests on `Appearance`.
 
 ## ver 0.0.22 (working on)
 
 * Added `fprint()` function; it prints out a formatted string version of `Sudoku`.
 * Changed the name: `.solve_by_pairs()` -> `.solve_by()` because it can now handle cases involving more than pairs (e.g. triples).
 * Changed the message from `.solve_forcefully()`
+* Wrote unittests on `Appearance.sieve()` in `tests.py`
 
 ## ver 0.0.21 (current version)
 
@@ -39,7 +40,7 @@
 * Checked that `start` argument is working properly on both `.solve_by_hidden_pairs()` and `.solve_by_pointing_pairs()`.
 * The behaviour of `Appearance.sieve()` when `deep = True` has changed; if `deep = True`, then the method will check all the second elements of the value lists of `Appearance` so that: 
 	1. they are all the same AND 
-	2. all has length `condition[1]`. 
+	2. all has length `condition[1]`.  
 If not, then the respective keys that passed `condition` are furthur removed from `Appearance`. Docstring has been added to explain this behaviour.
 
 
