@@ -1718,6 +1718,19 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+    def test_solve(self):
+        '''
+        Test .solve() to see if (5 ** 2)-by-(5 ** 2) alphadoku is solved
+        using .solve() method.
+        '''
+
+        q8_1 = sudoku.to_sudoku(questions.q8_1)
+        q8_1.solve(quietly = True)
+        result = str(q8_1) == questions.a8_1
+        expected_result = True
+        self.assertEqual(result, expected_result)
+
+
     def test_solve_logically(self):
         '''
         Test .solve_logically() to see if Sudoku question that requires:
