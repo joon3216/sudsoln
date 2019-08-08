@@ -28,7 +28,7 @@ install:
   - pip3 install --upgrade pip
   # - pip install -r requires.txt
   - pip install codecov
-  - pip install -i https://test.pypi.org/simple/ sudsoln
+  - pip install sudsoln
 script: 
   - coverage run sudsoln/tests.py
 after_success:
