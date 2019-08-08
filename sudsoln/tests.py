@@ -1720,14 +1720,44 @@ class TestSudoku(unittest.TestCase):
 
     def test_solve(self):
         '''
-        Test .solve() to see if (5 ** 2)-by-(5 ** 2) alphadoku is solved
-        using .solve() method.
+        Test .solve() to see if 
+        1. a brute force works
+        2. (5 ** 2)-by-(5 ** 2) alphadoku is solved using .solve() method.
         '''
 
+        # 1. brute force
+        q_sta = sudoku.to_sudoku(questions.q_sta410_testing)
+        result_q_sta = q_sta.solve()
+        result1 = [
+            result_q_sta[1] != 0, 
+            # i.e. logical approaches weren't enough to solve this puzzle
+            # In fact, using only logical approaches will never be 
+            # sufficient to solve this puzzle since there are multiple
+            # solutions.
+            str(q_sta) in [
+                questions.a_sta410_4, 
+                questions.a_sta410_5,
+                questions.a_sta410_6
+            ],
+            q_sta.is_valid_answer()
+        ]
+
+        # 2. alphadoku
         q8_1 = sudoku.to_sudoku(questions.q8_1)
         q8_1.solve(quietly = True)
-        result = str(q8_1) == questions.a8_1
-        expected_result = True
+        result2 = [
+            str(q8_1) == questions.a8_1, 
+            q8_1.is_valid_answer()
+        ]
+
+        result = {
+            'test1': result1,
+            'test2': result2
+        }
+        expected_result = {
+            'test1': [True, True, True],
+            'test2': [True, True]
+        }
         self.assertEqual(result, expected_result)
 
 
@@ -1847,33 +1877,9 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
-    def test_solve_forcefully(self):
-        '''
-        Test .solve_forcefully() to see if a brute force works.
-        '''
-
-        q_sta = sudoku.to_sudoku(questions.q_sta410_testing)
-        q_sta.solve_logically()
-        q_sta.solve_forcefully(quietly = True)
-        result = (
-            str(q_sta) in [
-                questions.a_sta410_4, 
-                questions.a_sta410_5,
-                questions.a_sta410_6
-            ],
-            q_sta.is_valid_answer()
-        )
-        expected_result = (True, True)
-        self.assertEqual(result, expected_result)
-
 
 # END: testing Sudoku ####################################################
 
-
-# START: Union ###########################################################
-
-
-# END: Union #############################################################
 
 
 if __name__ == '__main__':
