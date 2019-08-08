@@ -1274,6 +1274,270 @@ class TestCandidate(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+    def test_refine(self):
+        '''
+        Test .refine() to test the case where:
+        1. only self is mutated
+        2. only entries_to_mutate is mutated
+        3. both self and entries_to_mutate are mutated
+        4. (sieve = True, condition = ['contains', 2], deep = True) are
+           specified (i.e. names is not None)
+        5. (sieve = False, condition = ['contains', 2], deep = True) are
+           specified (i.e. appearances is not None) 
+        '''
+
+        q1 = sudoku.to_sudoku(questions.q1)
+        candids_old = q1.candidates()
+        candids = candids_old.copy()
+        entries_to_mutate = candidate.Candidate(
+            {}, 
+            elements = set([i for i in range(1, 10)])
+        )
+
+        # 1. only candids changes
+        candids_part1 = candids.group('submatrix')[1]
+        appearances1 = candids_part1.appearances(['row', 'col'])
+        appearances1.sieve()
+        result1_1 = appearances1.show == {
+            '4': [[1, 2], {(0, 1), (0, 0)}], 
+            '9': [[1, 2], {(0, 0), (0, 2)}], 
+            '5': [[1, 2], {(0, 1), (0, 0)}]
+        }
+        candids.refine(entries_to_mutate, appearances1)
+        result1_2 = entries_to_mutate == candidate.Candidate(
+            {}, 
+            elements = set([i for i in range(1, 10)])
+        )
+        result1_3 = candids != candids_old
+        result1_4 = candids == candidate.Candidate(
+            {
+                (0, 0): {'5', '1', '9', '4', '7'}, 
+                (0, 1): {'5', '4'}, 
+                (0, 2): {'1', '9', '7'}, 
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'8', '3'}, 
+                (0, 6): {'1', '3'}, # '5' eliminated
+                (0, 7): {'3', '7'}, # '5' eliminated
+                (0, 8): {'1', '3'}, # '5' eliminated
+                (1, 2): {'2'}, 
+                (1, 6): {'5'}, 
+                (2, 0): {'1', '2', '7'}, 
+                (2, 2): {'1', '2', '7'}, 
+                (2, 4): {'3'}, 
+                (2, 7): {'2', '3', '7'}, 
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'8', '2', '6'}, 
+                (3, 4): {'5', '8', '6', '7'}, 
+                (3, 6): {'5', '8', '6'}, 
+                (3, 7): {'5', '8', '6'}, 
+                (4, 0): {'3', '6'}, 
+                (4, 2): {'8', '3', '6'}, 
+                (4, 4): {'5', '8', '6'}, 
+                (4, 6): {'5', '6', '9', '8', '3'}, 
+                (4, 7): {'5', '8', '3', '6'}, 
+                (5, 0): {'4', '3', '6'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}, 
+                (5, 8): {'9', '3'}, 
+                (6, 0): {'5', '6', '1', '9', '2', '3'}, 
+                (6, 1): {'5', '8', '2'}, 
+                (6, 3): {'8', '2'}, 
+                (6, 4): {'8', '3'}, 
+                (6, 5): {'8', '3'}, 
+                (6, 7): {'5', '6', '8', '2', '3'}, 
+                (6, 8): {'5', '1', '9', '2', '3'}, 
+                (7, 0): {'6', '1', '9', '2', '3'}, 
+                (7, 1): {'8', '2'}, 
+                (7, 2): {'2', '6', '1', '9', '8', '3'}, 
+                (7, 4): {'8', '3', '4'}, 
+                (7, 6): {'6', '1', '9', '8', '3'}, 
+                (7, 7): {'6', '8', '2', '3', '4'}, 
+                (7, 8): {'1', '9', '2', '3'}, 
+                (8, 0): {'5', '2', '3', '7'}, 
+                (8, 1): {'5', '8', '2'}, 
+                (8, 2): {'8', '2', '3', '7'}, 
+                (8, 6): {'5', '8', '3'}, 
+                (8, 7): {'5', '8', '2', '3', '4'}, 
+                (8, 8): {'5', '2', '3'}
+            },
+            elements = set([str(i) for i in range(1, 10)])
+        )
+        
+        # 2. only entries_to_mutate changes
+        candids_part2 = candids.group('submatrix')[2]
+        candids_old = candids.copy()
+        appearances2 = candids_part2.appearances(['row', 'col'])
+        appearances2.sieve()
+        result2_1 = appearances2.show == {
+            '8': [[1, 2], {(0, 3), (0, 5)}], 
+            '6': [[1, 1], {(0, 3)}]
+        }
+        candids.refine(entries_to_mutate, appearances2)
+        result2_2 = entries_to_mutate == candidate.Candidate(
+            {(0, 3): {'6'}},
+            elements = set([str(i) for i in range(1, 10)])
+        )
+
+        # 3. both candids and entries_to_mutate change
+        candids_part3 = candids.group('submatrix')[3]
+        appearances3 = candids_part3.appearances(['row', 'col'])
+        appearances3.sieve()
+        result3_1 = appearances3.show == {
+            '1': [[1, 2], {(0, 6), (0, 8)}], 
+            '2': [[1, 1], {(2, 7)}], 
+            '5': [[1, 1], {(1, 6)}],
+            '7': [[2, 1], {(2, 7), (0, 7)}]
+        }
+        candids.refine(entries_to_mutate, appearances3)
+        result3_2 = entries_to_mutate == candidate.Candidate(
+            {(0, 3): {'6'}, (1, 6): {'5'}, (2, 7): {'2'}},
+            elements = set([i for i in range(1, 10)])
+        )
+        result3_3 = candids != candids_old
+        result3_4 = candids == candidate.Candidate(
+            {
+                (0, 0): {'5', '1', '9', '4', '7'}, # '1' eliminated
+                (0, 1): {'5', '4'}, 
+                (0, 2): {'1', '9', '7'},           # '1' eliminated
+                (0, 3): {'8', '6'}, 
+                (0, 5): {'8', '3'}, 
+                (0, 6): {'1', '3'}, 
+                (0, 7): {'3', '7'}, 
+                (0, 8): {'1', '3'}, 
+                (1, 2): {'2'}, 
+                (1, 6): {'5'}, 
+                (2, 0): {'1', '2', '7'}, 
+                (2, 2): {'1', '2', '7'}, 
+                (2, 4): {'3'}, 
+                (2, 7): {'2', '3', '7'}, 
+                (3, 0): {'2', '6'}, 
+                (3, 2): {'8', '2', '6'}, 
+                (3, 4): {'5', '8', '6', '7'}, 
+                (3, 6): {'5', '8', '6'}, 
+                (3, 7): {'5', '8', '6'}, 
+                (4, 0): {'3', '6'}, 
+                (4, 2): {'8', '3', '6'}, 
+                (4, 4): {'5', '8', '6'}, 
+                (4, 6): {'5', '6', '9', '8', '3'}, 
+                (4, 7): {'5', '8', '3', '6'}, 
+                (5, 0): {'4', '3', '6'}, 
+                (5, 3): {'8', '6'}, 
+                (5, 4): {'8', '6'}, 
+                (5, 5): {'9', '8'}, 
+                (5, 8): {'9', '3'}, 
+                (6, 0): {'5', '6', '1', '9', '2', '3'}, 
+                (6, 1): {'5', '8', '2'}, 
+                (6, 3): {'8', '2'}, 
+                (6, 4): {'8', '3'}, 
+                (6, 5): {'8', '3'}, 
+                (6, 7): {'5', '6', '8', '2', '3'}, 
+                (6, 8): {'5', '1', '9', '2', '3'}, 
+                (7, 0): {'6', '1', '9', '2', '3'}, 
+                (7, 1): {'8', '2'}, 
+                (7, 2): {'2', '6', '1', '9', '8', '3'}, 
+                (7, 4): {'8', '3', '4'}, 
+                (7, 6): {'6', '1', '9', '8', '3'}, 
+                (7, 7): {'6', '8', '2', '3', '4'}, 
+                (7, 8): {'1', '9', '2', '3'}, 
+                (8, 0): {'5', '2', '3', '7'}, 
+                (8, 1): {'5', '8', '2'}, 
+                (8, 2): {'8', '2', '3', '7'}, 
+                (8, 6): {'5', '8', '3'}, 
+                (8, 7): {'5', '8', '2', '3', '4'}, 
+                (8, 8): {'5', '2', '3'}
+            },
+            elements = set([str(i) for i in range(1, 10)])
+        )
+
+        # 4. (sieve = True, condition = ['contains', 2], deep = True)
+        V = candidate.Candidate(
+            {
+                (0, 6): {'7', '6', '3'}, 
+                (0, 7): {'3', '8', '6'}, 
+                (0, 8): {'7', '6', '8', '9', '3'}, 
+                (1, 6): {'4', '3', '2', '7'}, 
+                (1, 8): {'3', '8', '7'}, 
+                (2, 7): {'6', '8', '4', '3', '2'}, 
+                (2, 8): {'3', '8', '6', '7'}
+            },
+            elements = set([i for i in range(1, 10)])
+        )
+        etm = candidate.Candidate(
+            {}, 
+            elements = set([i for i in range(1, 10)])
+        )
+        etm_before = etm.copy()
+        V.refine(
+            etm, 
+            names = ['row', 'col'],
+            sieve = True,
+            condition = ['contains', 2],
+            deep = True
+        )
+        result4 = V == candidate.Candidate(
+            {
+                (0, 6): {'7', '6', '3'}, 
+                (0, 7): {'3', '8', '6'}, 
+                (0, 8): {'7', '6', '8', '9', '3'}, 
+                (1, 6): {'4', '2'},           # '3' and '7' gone
+                (1, 8): {'3', '8', '7'}, 
+                (2, 7): {'4', '2'},           # '3', '6', and '8' gone
+                (2, 8): {'3', '8', '6', '7'}
+            },
+            elements = set([i for i in range(1, 10)])
+        )
+
+        # 5. (sieve = False, ['contains', 2], True)
+        V3 = candidate.Candidate(
+            {
+                (2, 2): {'6', '9', '7', '3'},
+                (2, 3): {'6', '9', '7', '5'},
+                (2, 4): {'6', '9'},
+                (2, 5): {'9', '7', '5'},
+                (2, 6): {'5', '6', '9', '3'},
+                (2, 7): {'3', '4', '9', '8', '5'},
+                (2, 8): {'6', '3', '4', '9', '8', '5'}
+            },
+            elements = set([i for i in range(1, 10)])
+        )
+        appearances3 = V3.appearances(['col', 'submatrix'])
+        appearances3.sieve(condition = ['contains', 2], deep = True)
+        V3.refine(
+            etm,
+            appearances = appearances3,
+            condition = ['contains', 2],
+            deep = True
+        )
+        result5 = V3 == candidate.Candidate(
+            {
+                (2, 2): {'9', '6', '7', '3'},
+                (2, 3): {'9', '5', '6', '7'},
+                (2, 4): {'9', '6'},
+                (2, 5): {'9', '5', '7'},
+                (2, 6): {'9', '5', '6', '3'},
+                (2, 7): {'8', '4'}, # '3', '5', and '9' gone
+                (2, 8): {'8', '4'}  # '3', 5', '6', and '9' gone
+            },
+            elements = set([i for i in range(1, 10)])   
+        )
+
+        result = {
+            'test1': (result1_1, result1_2, result1_3, result1_4),
+            'test2': (result2_1, result2_2),
+            'test3': (result3_1, result3_2, result3_3, result3_4),
+            'test4': result4,
+            'test5': result5
+        }
+        expected_result = {
+            'test1': (True, True, True, True),
+            'test2': (True, True),
+            'test3': (True, True, True, True),
+            'test4': True,
+            'test5': True
+        }
+
+
 # END: testing Candidate #################################################
 
 # START: testing Sudoku ##################################################
