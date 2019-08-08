@@ -1727,7 +1727,7 @@ class TestSudoku(unittest.TestCase):
 
         # 1. brute force
         q_sta = sudoku.to_sudoku(questions.q_sta410_testing)
-        result_q_sta = q_sta.solve()
+        result_q_sta = q_sta.solve(quietly = True)
         result1 = [
             result_q_sta[1] != 0, 
             # i.e. logical approaches weren't enough to solve this puzzle
