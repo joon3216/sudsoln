@@ -11,6 +11,8 @@
 ## ver 0.0.22 (working on)
 
 * Added `fprint()` function; it prints out a formatted string version of `Sudoku`.
+* Changed the name: `.solve_by_pairs()` -> `.solve_by()` because it can now handle cases involving more than pairs (e.g. triples).
+* Changed the message from `.solve_forcefully()`
 
 ## ver 0.0.21 (current version)
 
